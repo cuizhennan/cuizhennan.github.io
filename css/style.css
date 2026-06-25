@@ -556,6 +556,115 @@ blockquote:before,
   color: var(--accent-dark);
 }
 
+.research-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 300px);
+  gap: 54px;
+  padding: 38px 0 42px;
+  align-items: start;
+}
+
+.research-index {
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 300px);
+}
+
+.research-article {
+  max-width: 820px;
+}
+
+.research-article > h1 {
+  margin: 0 0 18px;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(34px, 5.4vw, 64px);
+  line-height: 1.08;
+}
+
+.research-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.research-card {
+  min-height: 210px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper-soft);
+  box-shadow: var(--shadow);
+}
+
+.research-card h2 {
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.research-card p:last-child {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.research-toc {
+  position: sticky;
+  top: 24px;
+  padding-left: 26px;
+  border-left: 1px solid var(--line);
+}
+
+.research-toc h2 {
+  margin: 0 0 14px;
+  font-family: var(--serif);
+  font-size: 22px;
+}
+
+.research-toc ol {
+  margin: 0 0 22px;
+  padding-left: 1.2em;
+}
+
+.research-toc li {
+  margin: 0 0 10px;
+  color: var(--muted);
+}
+
+.research-table-wrap {
+  overflow-x: auto;
+  margin: 1.5em 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.research-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  background: var(--paper-soft);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.research-table th,
+.research-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.research-table th {
+  color: var(--ink);
+  background: var(--paper-warm);
+  font-weight: 700;
+}
+
+.research-table tr:last-child td {
+  border-bottom: 0;
+}
+
 .page-navigator {
   margin-top: 25px;
   padding: 25px 0 0;
@@ -674,6 +783,24 @@ pre {
   .post .post-content {
     font-size: 17px;
     line-height: 1.9;
+  }
+
+  .research-layout,
+  .research-index {
+    display: block;
+    padding: 26px 0 34px;
+  }
+
+  .research-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .research-toc {
+    position: static;
+    margin-top: 28px;
+    padding: 24px 0 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
   }
 }
 
