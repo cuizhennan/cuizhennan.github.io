@@ -1,0 +1,855 @@
+# Blog Editorial Redesign Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Turn the generated static blog into the approved warm paper-editorial personal site while preserving existing identity and links.
+
+**Architecture:** This repository contains generated static output only, so implementation edits visible HTML pages plus the shared stylesheet directly. The CSS owns the theme system, responsive behavior, and dark-mode palette; HTML edits remove template clutter and add stable semantic hooks for the refreshed layout.
+
+**Tech Stack:** Static HTML, CSS, existing Pure grid classes, existing Font Awesome CDN references, no build step.
+
+---
+
+## File Structure
+
+- Modify `css/style.css`: replace the old Maupassant visual skin with a variable-driven editorial theme, responsive layout, dark mode, and article/archive/sidebar styling.
+- Modify `index.html`: preserve the same content and links, add a compact editorial intro, and simplify sidebar modules.
+- Modify `2017/06/20/hello-world/index.html`: preserve article content and generated scripts, simplify sidebar modules, and make article/share hooks fit the new theme.
+- Modify `archives/index.html`, `archives/2017/index.html`, `archives/2017/06/index.html`: preserve archive links while applying the same sidebar cleanup and archive page structure.
+- Create `.gitignore`: ignore `.superpowers/` visual-companion artifacts.
+
+## Task 1: Add Local Artifact Ignore Rule
+
+**Files:**
+- Create: `.gitignore`
+
+- [ ] **Step 1: Create ignore rule for visual companion artifacts**
+
+Add this file:
+
+```gitignore
+.superpowers/
+```
+
+- [ ] **Step 2: Verify temporary artifacts are ignored**
+
+Run: `git status --short`
+
+Expected: `.superpowers/` does not appear in the untracked file list.
+
+## Task 2: Replace Shared CSS With Editorial Theme
+
+**Files:**
+- Modify: `css/style.css`
+
+- [ ] **Step 1: Replace `css/style.css` with the editorial theme**
+
+Use one cohesive stylesheet containing:
+
+```css
+/**
+ * Paper editorial refresh for the generated Maupassant/Hexo static output.
+ */
+:root {
+  --paper: #f6f0e6;
+  --paper-soft: #fffaf1;
+  --paper-warm: #efe3d1;
+  --ink: #25211c;
+  --ink-soft: #3f372f;
+  --muted: #7d7062;
+  --muted-soft: #a69989;
+  --line: #dccbb5;
+  --accent: #a65332;
+  --accent-dark: #7d3d27;
+  --code-bg: #eee2d1;
+  --shadow: 0 18px 48px rgba(57, 43, 28, 0.08);
+  --serif: Georgia, "Times New Roman", "Songti SC", "SimSun", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #171410;
+    --paper-soft: #211c17;
+    --paper-warm: #2b241d;
+    --ink: #f1e7d6;
+    --ink-soft: #dfd0bb;
+    --muted: #b4a28d;
+    --muted-soft: #8f806e;
+    --line: #43382c;
+    --accent: #d1845f;
+    --accent-dark: #efaa84;
+    --code-bg: #2b241d;
+    --shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+  }
+}
+
+html,
+button,
+input,
+select,
+textarea,
+.MJXc-TeX-unknown-R,
+.pure-g [class*="pure-u"] {
+  font-family: var(--sans) !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--paper);
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    linear-gradient(90deg, rgba(166, 83, 50, 0.04) 0, transparent 34%),
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--accent-dark);
+  text-decoration: none;
+  text-underline-offset: 0.18em;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+a:hover,
+a:active {
+  color: var(--accent);
+}
+
+a:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.hidden,
+.hidden1 {
+  display: none;
+}
+
+.clear {
+  clear: both;
+}
+
+.body_container {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 0;
+}
+
+#header {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: end;
+  padding: 62px 0 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+#header .site-name {
+  max-width: 760px;
+  margin: 0;
+}
+
+#header .site-name h1 {
+  margin: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+#header .site-name #logo {
+  display: inline-block;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(42px, 8vw, 86px);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+#header .site-name #logo:hover {
+  color: var(--accent-dark);
+}
+
+#header .site-name .description {
+  position: relative;
+  max-width: 620px;
+  margin: 18px 0 0;
+  padding-left: 18px;
+  border-left: 2px solid var(--accent);
+  color: var(--muted);
+  font-family: var(--serif);
+  font-size: clamp(15px, 2vw, 19px);
+  line-height: 1.85;
+}
+
+#header #nav-menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 0 0 4px;
+  padding: 0;
+}
+
+#header #nav-menu a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+#header #nav-menu a:hover,
+#header #nav-menu a.current {
+  border-color: var(--line);
+  background: var(--paper-soft);
+  color: var(--accent-dark);
+}
+
+#layout {
+  align-items: flex-start;
+}
+
+.content_container {
+  padding: 38px 56px 32px 0;
+}
+
+.editorial-intro {
+  margin: 0 0 18px;
+  padding: 0 0 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.editorial-kicker {
+  margin: 0 0 10px;
+  color: var(--accent-dark);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.editorial-intro p:last-child {
+  max-width: 680px;
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.8;
+}
+
+.post {
+  padding: 34px 0 30px;
+  border-bottom: 1px solid var(--line);
+}
+
+.post:last-child {
+  border-bottom: 0;
+}
+
+.post .post-title {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(30px, 4.6vw, 54px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.post .post-title a {
+  color: var(--ink);
+}
+
+.post .post-title a:hover {
+  color: var(--accent-dark);
+}
+
+.post .post-meta {
+  float: none;
+  display: block;
+  margin: 16px 0 0;
+  padding: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+  text-indent: 0;
+}
+
+.post .post-meta:before {
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  margin: 0 10px 4px 0;
+  background: var(--accent);
+  font-family: inherit;
+  padding: 0;
+}
+
+.post .post-meta .category:before,
+.post .post-meta #busuanzi_value_page_pv:before {
+  content: "";
+  padding: 0;
+}
+
+.post .post-content {
+  clear: both;
+  max-width: 760px;
+  padding-top: 24px;
+  color: var(--ink-soft);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.95;
+  text-align: left;
+  text-justify: auto;
+  word-break: normal;
+}
+
+.post .post-content p {
+  margin: 0 0 1.25em;
+}
+
+.post .post-content h2,
+.post .post-content h3 {
+  color: var(--ink);
+  font-family: var(--serif);
+  line-height: 1.25;
+}
+
+.post .post-content h2 {
+  margin: 2.2em 0 0.8em;
+  padding-bottom: 0.35em;
+  border-bottom: 1px solid var(--line);
+  font-size: 1.55em;
+}
+
+.post .post-content h3 {
+  margin: 1.7em 0 0.7em;
+  font-size: 1.18em;
+}
+
+.post .post-content a {
+  border-bottom: 1px solid rgba(166, 83, 50, 0.35);
+  color: var(--accent-dark);
+  word-break: break-word;
+}
+
+.post .post-content a:hover {
+  border-bottom-color: var(--accent);
+}
+
+.post .post-content img {
+  display: block;
+  max-width: 100%;
+  margin: 2em auto;
+  padding: 0;
+  border-radius: 4px;
+}
+
+.post .post-content code {
+  display: inline;
+  margin: 0 0.18em;
+  padding: 0.1em 0.32em;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--code-bg);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.86em;
+}
+
+.post .post-content figure.highlight,
+.post .post-content pre {
+  overflow-x: auto;
+  margin: 2em 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--code-bg);
+}
+
+.post .post-content figure.highlight table {
+  width: 100%;
+  border-spacing: 0;
+}
+
+.post .post-content figure.highlight pre,
+.post .post-content pre {
+  padding: 18px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.post .post-content figure.highlight .gutter {
+  width: 42px;
+  border-right: 1px solid var(--line);
+  color: var(--muted-soft);
+  user-select: none;
+}
+
+.post .post-content figure.highlight .code {
+  padding-left: 12px;
+}
+
+.post .post-content blockquote,
+blockquote,
+.stressed {
+  position: relative;
+  margin: 2em 0;
+  padding: 0.4em 0 0.4em 1.4em;
+  border-left: 2px solid var(--accent);
+  color: var(--ink-soft);
+}
+
+blockquote:before,
+.stressed-quote:before {
+  content: "";
+}
+
+.readmore {
+  margin: 20px 0 0;
+}
+
+.readmore a,
+.article-share-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper-soft);
+  color: var(--accent-dark);
+  font-family: var(--sans);
+  font-size: 13px;
+}
+
+.readmore a:hover,
+.article-share-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.article-share-link {
+  margin-top: 12px;
+}
+
+.post .tags {
+  padding-bottom: 1em;
+}
+
+.post .tags a {
+  margin-right: 0.5em;
+}
+
+.post .tags a:before {
+  content: "#";
+  padding-right: 0.1em;
+}
+
+#sidebar {
+  margin-top: 42px;
+  padding: 28px 0 20px 32px;
+  border-left: 1px solid var(--line);
+  color: var(--muted);
+  word-wrap: break-word;
+}
+
+#sidebar .widget {
+  margin-bottom: 30px;
+}
+
+#sidebar .widget .widget-title,
+#sidebar .widget .comments-title {
+  display: block;
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+#sidebar .widget ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#sidebar .widget ul li {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+#sidebar .widget a {
+  color: var(--muted);
+}
+
+#sidebar .widget a:hover {
+  color: var(--accent-dark);
+}
+
+#sidebar .widget .search-form {
+  position: relative;
+  overflow: visible;
+}
+
+#sidebar .widget .search-form input[type="text"] {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper-soft);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+#sidebar .widget .search-form input[type="text"]::placeholder {
+  color: var(--muted-soft);
+}
+
+.site-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.post-archive {
+  max-width: 760px;
+  padding: 12px 0 18px;
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 2;
+}
+
+.post-archive h2 {
+  margin: 0 0 18px;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(36px, 7vw, 70px);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.post-archive .listing {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.post-archive .listing li {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 18px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.post-archive .date {
+  padding: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.post-archive a {
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.post-archive a:hover {
+  color: var(--accent-dark);
+}
+
+.page-navigator {
+  margin-top: 25px;
+  padding: 25px 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+  font-size: 14px;
+  text-align: center;
+}
+
+.page-navigator .page-number {
+  display: inline-block;
+  margin: 0 5px 5px 0;
+}
+
+.page-navigator a,
+.page-navigator span {
+  display: inline-block;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper-soft);
+  line-height: 22px;
+  text-align: center;
+}
+
+.page-navigator .current,
+.page-navigator a:hover,
+.page-navigator span:hover {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+#footer {
+  margin-top: 10px;
+  padding: 24px 0 56px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+  text-align: left;
+}
+
+#footer a {
+  color: var(--muted);
+  border-bottom: 1px solid transparent;
+}
+
+#footer a:hover {
+  color: var(--accent-dark);
+  border-bottom-color: var(--accent);
+}
+
+strong,
+b,
+em {
+  font-weight: 700;
+}
+
+pre {
+  margin: 2em 0;
+}
+
+#process,
+#rocket {
+  display: none;
+}
+
+@media print, screen and (max-width: 48em) {
+  .body_container {
+    width: min(100% - 32px, 760px);
+  }
+
+  #header {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 42px 0 22px;
+  }
+
+  #header .site-name {
+    text-align: left;
+  }
+
+  #header #nav-menu {
+    justify-content: flex-start;
+  }
+
+  .content_container {
+    padding: 26px 0 28px;
+  }
+
+  .hidden_mid_and_down {
+    display: block !important;
+  }
+
+  #sidebar {
+    margin: 8px 0 24px;
+    padding: 24px 0 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .post .post-content {
+    font-size: 17px;
+    line-height: 1.9;
+  }
+}
+
+@media print, screen and (max-width: 35.5em) {
+  body {
+    font-size: 15px;
+  }
+
+  .body_container {
+    width: min(100% - 24px, 680px);
+  }
+
+  #header .site-name .description {
+    padding-left: 14px;
+  }
+
+  #header #nav-menu a {
+    min-height: 32px;
+    padding: 0 10px;
+  }
+
+  .editorial-intro p:last-child {
+    font-size: 17px;
+  }
+
+  .post {
+    padding: 28px 0 24px;
+  }
+
+  .post .post-content {
+    font-size: 16px;
+  }
+
+  .post-archive .listing li {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+```
+
+- [ ] **Step 2: Verify CSS selectors and syntax**
+
+Run: `python3 - <<'PY'\nfrom pathlib import Path\ncss = Path('css/style.css').read_text()\nassert css.count('{') == css.count('}'), 'unbalanced braces'\nfor token in ['--paper', 'prefers-color-scheme: dark', '.editorial-intro', '.post-archive', '#sidebar']:\n    assert token in css, f'missing {token}'\nprint('css structural checks passed')\nPY`
+
+Expected: `css structural checks passed`
+
+## Task 3: Refresh Home Page HTML
+
+**Files:**
+- Modify: `index.html`
+
+- [ ] **Step 1: Add editorial intro after `.content_container` opens**
+
+Inside the home page `.content_container`, before the existing first `<div class="post">`, add:
+
+```html
+<section class="editorial-intro"><p class="editorial-kicker">Personal Journal / Since 2017</p><p>墨萧是一处慢写的个人角落，收纳技术、生活与那些值得反复咀嚼的片刻。</p></section>
+```
+
+- [ ] **Step 2: Replace sidebar widgets with useful static modules**
+
+Replace the current sidebar content between `<div id="sidebar">` and its matching close with:
+
+```html
+<div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://cuizhennan.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-compass"> 站点索引</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/.">首页</a></li><li class="post-list-item"><a class="post-list-link" href="/archives/">归档</a></li><li class="post-list-item"><a class="post-list-link" href="/atom.xml">订阅</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/06/20/hello-world/">Hello World</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-leaf"> 关于此处</i></div><p class="site-note">保留旧日的第一篇问候，也给往后的文字留一张安静的纸。</p></div>
+```
+
+- [ ] **Step 3: Verify home page structure**
+
+Run: `rg -n "editorial-intro|站点索引|关于此处|example1|分类|标签" index.html`
+
+Expected: output includes `editorial-intro`, `站点索引`, `关于此处`; output does not include `example1`, `分类`, or `标签`.
+
+## Task 4: Refresh Article Page HTML
+
+**Files:**
+- Modify: `2017/06/20/hello-world/index.html`
+
+- [ ] **Step 1: Replace sidebar widgets with the same useful static modules**
+
+Use the same sidebar HTML from Task 3 Step 2.
+
+- [ ] **Step 2: Verify article content and cleanup**
+
+Run: `rg -n "Hello World|Quick Start|站点索引|关于此处|example1|分类|标签" 2017/06/20/hello-world/index.html`
+
+Expected: output includes `Hello World`, `Quick Start`, `站点索引`, `关于此处`; output does not include `example1`, `分类`, or `标签`.
+
+## Task 5: Refresh Archive Page HTML
+
+**Files:**
+- Modify: `archives/index.html`
+- Modify: `archives/2017/index.html`
+- Modify: `archives/2017/06/index.html`
+
+- [ ] **Step 1: Replace sidebar widgets on all archive pages**
+
+Use the same sidebar HTML from Task 3 Step 2 in each archive page.
+
+- [ ] **Step 2: Verify archive links and cleanup**
+
+Run: `for f in archives/index.html archives/2017/index.html archives/2017/06/index.html; do rg -n "2017/06/20/hello-world|站点索引|example1|分类|标签" "$f"; done`
+
+Expected: each file includes the post link and `站点索引`; no file includes `example1`, `分类`, or `标签`.
+
+## Task 6: Full Static Verification
+
+**Files:**
+- Inspect: all modified files
+
+- [ ] **Step 1: Check no visual companion files are tracked**
+
+Run: `git status --short`
+
+Expected: modified/generated site files appear; `.superpowers/` does not appear.
+
+- [ ] **Step 2: Start a local static server**
+
+Run: `python3 -m http.server 8000`
+
+Expected: server starts and serves from the repository root.
+
+- [ ] **Step 3: Inspect key pages**
+
+Open these URLs:
+
+```text
+http://localhost:8000/
+http://localhost:8000/archives/
+http://localhost:8000/2017/06/20/hello-world/
+```
+
+Expected: pages render with the paper editorial theme, no obvious overlap on desktop width, sidebar modules are useful, archive link works, article typography and code blocks are readable.
+
+- [ ] **Step 4: Stop the local server**
+
+Stop the `python3 -m http.server` process with `Ctrl-C`.
+
+- [ ] **Step 5: Commit implementation**
+
+Run:
+
+```bash
+git add .gitignore css/style.css index.html archives/index.html archives/2017/index.html archives/2017/06/index.html 2017/06/20/hello-world/index.html
+git commit -m "Refresh blog editorial theme"
+```
+
+Expected: implementation commit succeeds.
+
+## Self-Review
+
+- Spec coverage: CSS theme, dark mode, home page, article page, archive pages, sidebar cleanup, footer styling, and local artifact handling are covered.
+- Placeholder scan: no `TBD`, `TODO`, `implement later`, or undefined future work appears in the tasks.
+- Consistency: the shared sidebar HTML is identical across home, article, and archive tasks; CSS classes referenced by HTML are defined in Task 2.
+
