@@ -4,13 +4,27 @@
   "private": true,
   "description": "墨萧个人 GitHub Pages 静态站点及 Obsidian 内容编译工具",
   "type": "module",
+  "packageManager": "npm@11.9.0",
   "scripts": {
     "build": "npm run build:daily",
     "build:daily": "node scripts/build-github-daily.mjs",
     "check": "node scripts/check-site.mjs"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24.14.1 <25",
+    "npm": ">=11.9.0 <12"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^24.14.1",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "npm",
+      "version": "^11.9.0",
+      "onFail": "error"
+    }
   },
   "dependencies": {
     "markdown-it": "14.3.0",

@@ -18,7 +18,7 @@
 ## 技术栈
 
 - 静态 HTML5 + CSS3：GitHub Pages 可直接部署，零运行时依赖。
-- Node.js 20+：仅用于本地内容构建与校验。
+- Node.js 24.14.1：本地内容构建、校验与 GitHub Actions 的统一运行时。
 - markdown-it：将 Markdown 转换为 HTML。
 - markdown-it-anchor：为标题生成可链接的锚点。
 - npm：锁定构建依赖并提供统一脚本入口。
@@ -29,7 +29,7 @@
 npm install
 ```
 
-当前开发环境已验证 Node.js 24 与 npm 11。项目声明最低 Node.js 20。
+当前工具链固定为 Node.js 24.14.1 与 npm 11.9.0。版本同时记录在 `.node-version`、`package.json` 和锁文件中；使用 `nodenv`、`asdf` 等版本管理器时可自动切换。
 
 ## 同步并构建 GitHub 日报
 
@@ -60,13 +60,15 @@ OBSIDIAN_GITHUB_DAILY_DIR="/path/to/GitHub Daily" npm run build
 
 ## 发布
 
-确认 `npm run check` 通过后提交并推送 `master`，GitHub Pages 会从仓库根目录发布静态文件：
+确认 `npm run check` 通过后提交并推送 `master`。`.github/workflows/pages.yml` 会使用 Node.js 24 安装锁定依赖、检查已提交的站点产物、只打包公开目录，再部署到 GitHub Pages：
 
 ```bash
 git add README.md package.json package-lock.json scripts css index.html archives docs/obsidian/GitHub\ Daily github-daily
 git commit -m "Publish recent GitHub Trending daily reports"
 git push origin master
 ```
+
+工作流采用 Node.js 24 运行时的 `actions/checkout@v6`、`actions/setup-node@v6`、`actions/upload-artifact@v6` 和 `actions/deploy-pages@v5`，避免 GitHub Actions 的 Node.js 20 弃用警告。首次启用时，仓库 Settings → Pages → Build and deployment 的 Source 需要设为 **GitHub Actions**。
 
 ## 目录结构
 
