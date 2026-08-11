@@ -117,6 +117,10 @@ main { min-height: 65vh; }
 .article-body code { padding: .12em .32em; border-radius: .25rem; background: var(--paper-soft); font-size: .9em; }
 .article-body pre { overflow-x: auto; margin: 1.8rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: var(--radius); }
 .article-body pre code { padding: 0; background: transparent; }
+.article-body .katex { color: var(--ink); font-size: 1.04em; }
+.article-body .katex-display { overflow-x: auto; overflow-y: hidden; margin: 1.85rem 0; padding: 1rem 1.25rem; border: 1px solid color-mix(in srgb, var(--line) 78%, transparent); border-radius: var(--radius); background: color-mix(in srgb, var(--surface) 68%, transparent); text-align: center; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.article-body .katex-display > .katex { min-width: max-content; white-space: nowrap; }
+.article-body .katex-error { color: var(--accent); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em; }
 .mermaid-diagram { overflow-x: auto; margin: 2rem 0; padding: clamp(1rem, 3vw, 1.75rem); border: 1px solid var(--line); border-radius: var(--radius); background: color-mix(in srgb, var(--surface) 82%, var(--paper)); text-align: center; scrollbar-width: thin; }
 .mermaid-diagram svg { display: block; max-width: 100%; height: auto; margin-inline: auto; }
 .mermaid-diagram.mermaid-error { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .78rem; line-height: 1.55; text-align: left; white-space: pre-wrap; }
@@ -175,6 +179,7 @@ main { min-height: 65vh; }
 :root[data-theme="ink"] .article-toc { border-color: color-mix(in srgb, var(--line) 78%, transparent); background: color-mix(in srgb, var(--paper-soft) 82%, transparent); box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 18%); }
 :root[data-theme="ink"] .toc-nav a[aria-current="location"] { background: color-mix(in srgb, var(--accent) 12%, transparent); }
 :root[data-theme="ink"] .mermaid-diagram { background: color-mix(in srgb, var(--paper-soft) 80%, var(--paper)); }
+:root[data-theme="ink"] .article-body .katex-display { background: color-mix(in srgb, var(--paper-soft) 72%, var(--paper)); }
 
 @media (max-width: 760px) {
   .site-header { display: block; }
@@ -193,6 +198,7 @@ main { min-height: 65vh; }
   .article-body h2 { margin-top: 2.4em; }
   .article-body table { margin-inline: 0; }
   .mermaid-diagram { margin-inline: -.25rem; padding: .75rem; }
+  .article-body .katex-display { margin-inline: -.25rem; padding: .8rem .65rem; text-align: left; }
   .section-switcher label { grid-template-columns: 1fr; gap: .35rem; }
   .section-pager { grid-template-columns: 1fr; }
   .section-pager .next { text-align: left; }

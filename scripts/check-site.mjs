@@ -51,6 +51,7 @@ const techIndex = await readFile(path.join(outputRoot, "tech-knowledge/index.htm
 const techLinks = [...new Set([...techIndex.matchAll(/href="\/tech-knowledge\/([^"/]+)\/"/g)].map((match) => match[1]))];
 if (techLinks.length === 0) throw new Error("技术知识首页没有文章链接");
 let mermaidArticleFound = false;
+let mathArticleFound = false;
 for (const slug of techLinks) {
   const output = path.join(outputRoot, "tech-knowledge", slug, "index.html");
   await access(output);
@@ -59,7 +60,9 @@ for (const slug of techLinks) {
     mermaidArticleFound = true;
     if (!html.includes("data-mermaid-runtime")) throw new Error(`Mermaid 文章缺少客户端渲染器：${slug}`);
   }
+  if (html.includes("katex-display")) mathArticleFound = true;
 }
 if (!mermaidArticleFound) throw new Error("同步的技术文章中未发现 Mermaid 图表");
+if (!mathArticleFound) throw new Error("同步的技术文章中未发现构建后的数学公式");
 
-console.log(`站点检查通过：${requiredFiles.length} 个入口，${reportLinks.length} 篇日报，${techLinks.length} 篇技术文章，Mermaid 与章节导航完整`);
+console.log(`站点检查通过：${requiredFiles.length} 个入口，${reportLinks.length} 篇日报，${techLinks.length} 篇技术文章，Mermaid、数学公式与章节导航完整`);

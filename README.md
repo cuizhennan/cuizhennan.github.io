@@ -15,6 +15,7 @@
 - 系列导航：日报支持日期切换，日本研究支持 Chapter 切换以及前后篇导航。
 - 技术知识同步：按日期选取 Obsidian `tech-knowledge/` 的近期文章，生成稳定 URL 和同步清单。
 - Mermaid 增强：只在含 Mermaid 的文章中加载本地渲染器，图表跟随三套主题重新配色，并保留失败时的源码回退。
+- 数学公式：使用 KaTeX 在构建期渲染 `$...$` 行内公式与 `$$...$$` 块级公式，支持移动端横向滚动。
 - Obsidian Callout：自动识别 `note`、`tip`、`warning`、`danger` 等提示块并适配主题。
 - 内容辅助输出：自动生成 RSS、Sitemap、404 页面和社交分享元数据。
 - GitHub Actions 发布：每次推送 `master` 后自动编译、校验、打包并部署到 GitHub Pages。
@@ -40,6 +41,7 @@
 - Astro Content Collections：内容发现、加载和类型推导。
 - Zod 4：研究文章 Frontmatter 校验。
 - Mermaid 11：客户端按需渲染 Markdown 图表，使用严格安全模式。
+- remark-math、rehype-katex 与 KaTeX：构建期解析和排版 LaTeX 数学公式。
 - Shiki：构建期代码语法高亮，亮色与暗色分别采用 GitHub Light/GitHub Dark。
 - TypeScript：页面、内容映射和构建配置的静态检查。
 - Node.js 24.14.1 / npm 11.9.0：本地与 CI 的统一工具链。
@@ -209,6 +211,7 @@ src/pages/**/*.astro + src/layouts/**/*.astro
                 │
                 ├── Markdown → HTML
                 ├── Shiki 代码高亮
+                ├── KaTeX 构建期公式渲染
                 ├── Mermaid 浏览器端按需渲染
                 ├── 全局 CSS 与主题切换脚本打包
                 ├── RSS / Sitemap / SEO 元数据
@@ -262,7 +265,7 @@ Astro 在构建期将 Markdown 渲染为 HTML，并复用：
 - `ArticleLayout.astro`：文章标题、元数据和正文阅读布局。
 - `global.css`：三套颜色、字体、宽度和响应式视觉变量。
 
-页面默认不加载 React、Vue 等客户端框架。主题选择器是少量原生 JavaScript。Mermaid 只进入确实包含 `mermaid` 代码围栏的文章包，以 `securityLevel: strict` 渲染；主题变化时根据 CSS 变量重新绘制，窄屏图表可横向滚动。普通文章不会下载 Mermaid 运行时代码。
+页面默认不加载 React、Vue 等客户端框架。主题选择器是少量原生 JavaScript。数学公式由 `remark-math` 识别、`rehype-katex` 在编译期转换成 HTML，并随 KaTeX 字体静态发布，不依赖浏览器执行脚本。Mermaid 只进入确实包含 `mermaid` 代码围栏的文章包，以 `securityLevel: strict` 渲染；主题变化时根据 CSS 变量重新绘制，窄屏图表和长公式均可横向滚动。普通文章不会下载 Mermaid 运行时代码。
 
 ### 5. 复制资源并输出 `dist/`
 
@@ -289,7 +292,7 @@ npm run check
 2. `scripts/check-site.mjs`
    - 确认首页、归档、日报目录、日本研究目录和技术知识目录已经输出。
    - 从日报索引提取所有日期链接，并确认对应详情页存在。
-   - 确认每篇技术文章的详情页存在，并至少有一篇同时输出 Mermaid 源码与渲染器。
+   - 确认每篇技术文章的详情页存在，并至少存在 Mermaid 增强文章和 KaTeX 数学公式文章。
    - 确认首页包含 `editorial`、`paper`、`ink` 三个主题选项。
 
 当前检查脚本验证的是生成结果，而不是仓库根目录中的旧版 HTML。
