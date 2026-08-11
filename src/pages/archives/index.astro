@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { dailyDate } from "../../lib/content";
+
+const reports = (await getCollection("daily")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
+---
+
+<BaseLayout title="归档" description="墨萧的文章与研究归档" active="archives">
+  <header class="collection-hero compact">
+    <p class="eyebrow">Archive · Since 2017</p>
+    <h1>归档</h1>
+    <p>文字按时间归拢，像书架一样保留来时的顺序。</p>
+  </header>
+  <section class="archive-year">
+    <h2>2026</h2>
+    <ol>
+      {reports.map((report) => {
+        const date = dailyDate(report.id);
+        return <li><time datetime={date}>{date.slice(5)}</time><a href={`/github-daily/${date}/`}>GitHub Trending 日报</a></li>;
+      })}
+      <li><time datetime="2026-05">05</time><a href="/japan-research/">日本旅行研究素材</a></li>
+    </ol>
+  </section>
+  <section class="archive-year">
+    <h2>2017</h2>
+    <ol><li><time datetime="2017-06-20">06-20</time><a href="/2017/06/20/hello-world/">Hello World</a></li></ol>
+  </section>
+</BaseLayout>

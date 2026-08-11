@@ -1,0 +1,24 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow: string;
+  meta?: string;
+  active: "daily" | "research" | "archives";
+}
+
+const { title, description, eyebrow, meta, active } = Astro.props;
+---
+
+<BaseLayout {title} {description} {active}>
+  <article class="article-page">
+    <header class="article-header">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{title}</h1>
+      {meta && <p class="article-meta">{meta}</p>}
+    </header>
+    <div class="article-body"><slot /></div>
+  </article>
+</BaseLayout>

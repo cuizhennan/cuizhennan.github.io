@@ -2,13 +2,15 @@
   "name": "cuizhennan-github-pages",
   "version": "1.0.0",
   "private": true,
-  "description": "墨萧个人 GitHub Pages 静态站点及 Obsidian 内容编译工具",
+  "description": "墨萧的 Astro 静态博客与 Obsidian 内容站",
   "type": "module",
   "packageManager": "npm@11.9.0",
   "scripts": {
-    "build": "npm run build:daily",
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "build:daily": "node scripts/build-github-daily.mjs",
-    "check": "node scripts/check-site.mjs"
+    "check": "ASTRO_TELEMETRY_DISABLED=1 astro check && node scripts/check-site.mjs"
   },
   "engines": {
     "node": ">=24.14.1 <25",
@@ -27,7 +29,15 @@
     }
   },
   "dependencies": {
+    "@astrojs/rss": "4.0.19",
+    "@astrojs/sitemap": "3.7.3",
+    "astro": "7.2.0",
     "markdown-it": "14.3.0",
-    "markdown-it-anchor": "9.2.0"
+    "markdown-it-anchor": "9.2.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.6",
+    "typescript": "5.9.3"
   }
 }

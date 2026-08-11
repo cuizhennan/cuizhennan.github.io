@@ -29,22 +29,17 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Validate committed site output
-        run: npm run check
+      - name: Build Astro site
+        run: npm run build
 
-      - name: Stage public files
-        run: |
-          mkdir _site
-          cp index.html _site/
-          cp -R 2017 archives css fancybox github-daily japan-research js _site/
-          mkdir -p _site/docs
-          cp -R docs/obsidian _site/docs/
+      - name: Validate generated site
+        run: npm run check
 
       - name: Package GitHub Pages artifact
         run: |
           tar \
             --dereference --hard-dereference \
-            --directory _site \
+            --directory dist \
             -cvf "$RUNNER_TEMP/artifact.tar" \
             .
 

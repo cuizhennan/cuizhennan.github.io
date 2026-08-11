@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { researchPages } from "../../lib/content";
+
+const entries = await getCollection("research");
+const byId = new Map(entries.map((entry) => [entry.id, entry]));
+---
+
+<BaseLayout title="日本旅行研究素材" description="博物馆、古建筑、城市文化遗产与历史分层的日本旅行案头研究" active="research">
+  <header class="collection-hero research-hero">
+    <p class="eyebrow">Lonely Planet Notes · Japan</p>
+    <h1>旅行开始以前，<br />先读懂时间留下的纹理。</h1>
+    <p>这不是景点清单，而是一组关于博物馆、古建筑、城市文化遗产与历史分层的案头研究。</p>
+  </header>
+  <section class="research-grid" aria-label="研究目录">
+    {researchPages.map((page) => {
+      const entry = byId.get(page.id);
+      return (
+        <article>
+          <p class="chapter">Chapter {page.chapter}</p>
+          <h2><a href={`/japan-research/${page.slug}/`}>{entry?.data.title ?? page.id}</a></h2>
+          <p>{page.summary}</p>
+          <a class="text-link" href={`/japan-research/${page.slug}/`}>阅读研究 →</a>
+        </article>
+      );
+    })}
+  </section>
+</BaseLayout>

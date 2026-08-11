@@ -1,0 +1,26 @@
+---
+import { getCollection, render } from "astro:content";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import { researchPages } from "../../lib/content";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("research");
+  return researchPages.flatMap((page) => {
+    const entry = entries.find((item) => item.id === page.id);
+    return entry ? [{ params: { slug: page.slug }, props: { entry, page } }] : [];
+  });
+}
+
+const { entry, page } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<ArticleLayout
+  title={entry.data.title}
+  description={page.summary}
+  eyebrow={`Japan Research · Chapter ${page.chapter}`}
+  meta="旅行前案头研究 · 2026 年 5 月"
+  active="research"
+>
+  <Content />
+</ArticleLayout>

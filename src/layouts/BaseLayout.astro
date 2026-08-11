@@ -1,0 +1,96 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  active?: "home" | "archives" | "daily" | "research";
+}
+
+const {
+  title = "墨萧",
+  description = "墨萧的个人期刊，记录技术、生活与值得反复咀嚼的片刻。",
+  active = "home",
+} = Astro.props;
+const pageTitle = title === "墨萧" ? "墨萧｜一处慢写的个人角落" : `${title}｜墨萧`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const socialImage = new URL("/og.png", Astro.site);
+const nav = [
+  ["home", "/", "首页"],
+  ["archives", "/archives/", "归档"],
+  ["daily", "/github-daily/", "GitHub 日报"],
+  ["research", "/japan-research/", "日本研究"],
+] as const;
+---
+
+<!doctype html>
+<html lang="zh-CN" data-theme="editorial">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#f4efe5" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title="墨萧 RSS" href="/rss.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1731" />
+    <meta property="og:image:height" content="909" />
+    <meta property="og:image:alt" content="墨萧，一处慢写的个人角落" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={socialImage} />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem("moxiao-theme");
+        const theme = ["editorial", "paper", "ink"].includes(saved) ? saved : "editorial";
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到正文</a>
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="identity">
+          <a class="wordmark" href="/" aria-label="墨萧首页">墨萧</a>
+          <p>大肚能容容天下可容之事，笑口常开笑天下可笑之人。</p>
+        </div>
+        <div class="header-tools">
+          <nav aria-label="主导航">
+            {nav.map(([key, href, label]) => (
+              <a href={href} aria-current={active === key ? "page" : undefined}>{label}</a>
+            ))}
+          </nav>
+          <label class="theme-picker">
+            <span>风格</span>
+            <select id="theme-select" aria-label="切换网站风格">
+              <option value="editorial">暖色编辑部</option>
+              <option value="paper">AstroPaper</option>
+              <option value="ink">夜间墨色</option>
+            </select>
+          </label>
+        </div>
+      </header>
+      <main id="main-content"><slot /></main>
+      <footer class="site-footer">
+        <p>© 2017–2026 墨萧</p>
+        <p>由 Obsidian、Astro 与 GitHub Pages 构成。</p>
+      </footer>
+    </div>
+    <script>
+      const select = document.querySelector<HTMLSelectElement>("#theme-select");
+      if (select) {
+        select.value = document.documentElement.dataset.theme ?? "editorial";
+        select.addEventListener("change", () => {
+          document.documentElement.dataset.theme = select.value;
+          localStorage.setItem("moxiao-theme", select.value);
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+---
+import { getCollection, render } from "astro:content";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import { dailyDate, titleFromBody } from "../../lib/content";
+
+export async function getStaticPaths() {
+  const reports = await getCollection("daily");
+  return reports.map((report) => ({ params: { date: dailyDate(report.id) }, props: { report } }));
+}
+
+const { report } = Astro.props;
+const date = dailyDate(report.id);
+const title = titleFromBody(report.body, `GitHub Trending 日报 — ${date}`);
+const { Content } = await render(report);
+---
+
+<ArticleLayout
+  {title}
+  description={`${date} GitHub Trending 技术、产品与投资趋势日报`}
+  eyebrow="GitHub Trending · Daily Brief"
+  meta={`${date} · Asia/Shanghai`}
+  active="daily"
+>
+  <Content />
+</ArticleLayout>

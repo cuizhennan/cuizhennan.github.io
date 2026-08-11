@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { dailyDate, titleFromBody } from "../../lib/content";
+
+const reports = (await getCollection("daily")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
+---
+
+<BaseLayout title="GitHub Trending 日报" description="最近一周 GitHub Trending 技术、产品与投资趋势日报" active="daily">
+  <header class="collection-hero">
+    <p class="eyebrow">GitHub Trending · Daily Brief</p>
+    <h1>从今日代码，辨认明日叙事。</h1>
+    <p>沿技术、产品与投资三条线索记录开源生态变化。日报由 Obsidian 同步，保留最近的观察窗口。</p>
+  </header>
+  <section class="report-list" aria-label="日报列表">
+    {reports.map((report, index) => {
+      const date = dailyDate(report.id);
+      return (
+        <article>
+          <time datetime={date}>{date}</time>
+          <div>
+            <p class="eyebrow">{index === 0 ? "Latest Report" : "Daily Report"}</p>
+            <h2><a href={`/github-daily/${date}/`}>{titleFromBody(report.body, `GitHub Trending 日报 — ${date}`)}</a></h2>
+            <p>技术 × 产品 × 投资</p>
+          </div>
+        </article>
+      );
+    })}
+  </section>
+</BaseLayout>
