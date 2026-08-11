@@ -11,6 +11,8 @@
 - URL 兼容：继续保留 `/2017/06/20/hello-world/`、`/github-daily/YYYY-MM-DD/` 等既有路径。
 - 三套阅读风格：暖色编辑部、AstroPaper 极简、夜间墨色。
 - 本地主题记忆：主题切换结果保存在浏览器 `localStorage` 中，刷新和跨页面访问时保持一致。
+- 长文目录：从 Markdown 的 H2/H3 自动生成桌面悬浮目录和移动端折叠目录，并高亮当前章节。
+- 系列导航：日报支持日期切换，日本研究支持 Chapter 切换以及前后篇导航。
 - 内容辅助输出：自动生成 RSS、Sitemap、404 页面和社交分享元数据。
 - GitHub Actions 发布：每次推送 `master` 后自动编译、校验、打包并部署到 GitHub Pages。
 
@@ -304,6 +306,17 @@ npm run check
 1. 添加新的 `:root[data-theme="..."]` 变量覆盖。
 2. 在 `BaseLayout.astro` 的允许列表和 `<select>` 中添加主题。
 3. 在 `scripts/check-site.mjs` 的主题数组中加入新值。
+
+## 文章目录与章节切换
+
+`render(entry)` 在生成 Markdown 正文的同时返回标题集合。`ArticleLayout.astro` 只选择 H2/H3；标题不足 3 个时不显示目录，避免短文出现多余导航。
+
+- 宽屏：目录位于正文右侧并使用 `position: sticky` 固定在阅读视口内。
+- 窄屏：同一目录显示为文章标题下的 `<details>` 折叠区域。
+- 阅读状态：原生 `IntersectionObserver` 观察正文标题，为对应目录链接设置 `aria-current="location"`。
+- 锚点：目录直接使用 Astro 为 Markdown 标题生成的 slug，因此链接可以分享和恢复到具体章节。
+
+`SectionNavigator.astro` 负责跨文章导航：日报列表按日期倒序构建，日本研究按照 `researchPages` 的 Chapter 顺序构建。顶部 `<select>` 用于快速跳转，正文结尾提供上一篇/下一篇链接。
 
 ## 目录结构
 

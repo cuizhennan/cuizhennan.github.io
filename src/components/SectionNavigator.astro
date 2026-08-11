@@ -1,0 +1,46 @@
+---
+import type { SectionNavigation } from "../lib/navigation";
+
+interface Props {
+  navigation: SectionNavigation;
+  position?: "top" | "bottom";
+}
+
+const { navigation, position = "top" } = Astro.props;
+---
+
+{position === "top" ? (
+  <div class="section-switcher">
+    <label>
+      <span>{navigation.label}</span>
+      <select class="section-select" aria-label={`切换${navigation.label}`}>
+        {navigation.items.map((item) => (
+          <option value={item.href} selected={item.current}>{item.label}</option>
+        ))}
+      </select>
+    </label>
+  </div>
+) : (
+  <nav class="section-pager" aria-label={`${navigation.label}前后导航`}>
+    {navigation.previous ? (
+      <a class="previous" href={navigation.previous.href}>
+        <span>{navigation.previous.eyebrow}</span>
+        <strong>{navigation.previous.label}</strong>
+      </a>
+    ) : <span />}
+    {navigation.next ? (
+      <a class="next" href={navigation.next.href}>
+        <span>{navigation.next.eyebrow}</span>
+        <strong>{navigation.next.label}</strong>
+      </a>
+    ) : <span />}
+  </nav>
+)}
+
+<script>
+  document.querySelectorAll<HTMLSelectElement>(".section-select").forEach((select) => {
+    select.addEventListener("change", () => {
+      if (select.value) window.location.assign(select.value);
+    });
+  });
+</script>

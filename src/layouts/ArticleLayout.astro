@@ -1,5 +1,8 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import SectionNavigator from "../components/SectionNavigator.astro";
+import TableOfContents from "../components/TableOfContents.astro";
+import type { SectionNavigation, TocHeading } from "../lib/navigation";
 
 interface Props {
   title: string;
@@ -7,18 +10,60 @@ interface Props {
   eyebrow: string;
   meta?: string;
   active: "daily" | "research" | "archives";
+  headings?: TocHeading[];
+  navigation?: SectionNavigation;
 }
 
-const { title, description, eyebrow, meta, active } = Astro.props;
+const { title, description, eyebrow, meta, active, headings = [], navigation } = Astro.props;
+const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const showToc = tocHeadings.length >= 3;
 ---
 
 <BaseLayout {title} {description} {active}>
-  <article class="article-page">
-    <header class="article-header">
-      <p class="eyebrow">{eyebrow}</p>
-      <h1>{title}</h1>
-      {meta && <p class="article-meta">{meta}</p>}
-    </header>
-    <div class="article-body"><slot /></div>
-  </article>
+  <div class:list={["reading-shell", showToc && "has-toc"]}>
+    <article class="article-page">
+      <header class="article-header">
+        <p class="eyebrow">{eyebrow}</p>
+        <h1>{title}</h1>
+        {meta && <p class="article-meta">{meta}</p>}
+        {navigation && <SectionNavigator {navigation} />}
+      </header>
+      {showToc && (
+        <details class="mobile-toc">
+          <summary>本文目录 <span>{tocHeadings.length} 节</span></summary>
+          <TableOfContents headings={tocHeadings} />
+        </details>
+      )}
+      <div class="article-body"><slot /></div>
+      {navigation && <SectionNavigator {navigation} position="bottom" />}
+    </article>
+    {showToc && (
+      <aside class="article-toc">
+        <TableOfContents headings={tocHeadings} />
+      </aside>
+    )}
+  </div>
+  {showToc && (
+    <script>
+      const articleHeadings = [...document.querySelectorAll<HTMLElement>(".article-body h2[id], .article-body h3[id]")];
+      const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>("[data-toc-slug]")];
+      const setCurrent = (slug: string) => {
+        tocLinks.forEach((link) => {
+          if (link.dataset.tocSlug === slug) link.setAttribute("aria-current", "location");
+          else link.removeAttribute("aria-current");
+        });
+      };
+
+      if (articleHeadings.length) {
+        setCurrent(articleHeadings[0].id);
+        const observer = new IntersectionObserver((entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((left, right) => left.boundingClientRect.top - right.boundingClientRect.top);
+          if (visible[0]?.target.id) setCurrent(visible[0].target.id);
+        }, { rootMargin: "-18% 0px -68% 0px", threshold: [0, 1] });
+        articleHeadings.forEach((heading) => observer.observe(heading));
+      }
+    </script>
+  )}
 </BaseLayout>

@@ -25,9 +25,25 @@ for (const [, date] of reportLinks) {
   await access(path.join(outputRoot, "github-daily", date, "index.html"));
 }
 
+const latestReport = await readFile(
+  path.join(outputRoot, "github-daily", reportLinks[0][1], "index.html"),
+  "utf8",
+);
+for (const marker of ["data-toc-slug", "日报日期", "section-pager"]) {
+  if (!latestReport.includes(marker)) throw new Error(`日报详情缺少章节导航标记：${marker}`);
+}
+
+const researchArticle = await readFile(
+  path.join(outputRoot, "japan-research/kyoto-nara-heritage/index.html"),
+  "utf8",
+);
+for (const marker of ["data-toc-slug", "研究章节", "Chapter 03"]) {
+  if (!researchArticle.includes(marker)) throw new Error(`研究详情缺少章节导航标记：${marker}`);
+}
+
 const home = await readFile(path.join(outputRoot, "index.html"), "utf8");
 for (const theme of ["editorial", "paper", "ink"]) {
   if (!home.includes(`value="${theme}"`)) throw new Error(`首页缺少 ${theme} 主题选项`);
 }
 
-console.log(`站点检查通过：${requiredFiles.length} 个入口，${reportLinks.length} 篇日报`);
+console.log(`站点检查通过：${requiredFiles.length} 个入口，${reportLinks.length} 篇日报，文章目录与章节导航完整`);

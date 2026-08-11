@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import ArticleLayout from "../../layouts/ArticleLayout.astro";
 import { dailyDate, titleFromBody } from "../../lib/content";
+import type { SectionNavigation } from "../../lib/navigation";
 
 export async function getStaticPaths() {
   const reports = await getCollection("daily");
@@ -11,7 +12,29 @@ export async function getStaticPaths() {
 const { report } = Astro.props;
 const date = dailyDate(report.id);
 const title = titleFromBody(report.body, `GitHub Trending 日报 — ${date}`);
-const { Content } = await render(report);
+const { Content, headings } = await render(report);
+const reports = (await getCollection("daily")).sort((left, right) => dailyDate(right.id).localeCompare(dailyDate(left.id)));
+const currentIndex = reports.findIndex((item) => item.id === report.id);
+const older = reports[currentIndex + 1];
+const newer = reports[currentIndex - 1];
+const navigation: SectionNavigation = {
+  label: "日报日期",
+  currentLabel: date,
+  items: reports.map((item) => {
+    const itemDate = dailyDate(item.id);
+    return { href: `/github-daily/${itemDate}/`, label: itemDate, current: item.id === report.id };
+  }),
+  previous: older ? {
+    href: `/github-daily/${dailyDate(older.id)}/`,
+    eyebrow: "← 较早日报",
+    label: dailyDate(older.id),
+  } : undefined,
+  next: newer ? {
+    href: `/github-daily/${dailyDate(newer.id)}/`,
+    eyebrow: "较新日报 →",
+    label: dailyDate(newer.id),
+  } : undefined,
+};
 ---
 
 <ArticleLayout
@@ -20,6 +43,8 @@ const { Content } = await render(report);
   eyebrow="GitHub Trending · Daily Brief"
   meta={`${date} · Asia/Shanghai`}
   active="daily"
+  {headings}
+  {navigation}
 >
   <Content />
 </ArticleLayout>

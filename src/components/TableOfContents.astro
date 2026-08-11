@@ -1,0 +1,21 @@
+---
+import type { TocHeading } from "../lib/navigation";
+
+interface Props {
+  headings: TocHeading[];
+  label?: string;
+}
+
+const { headings, label = "本文目录" } = Astro.props;
+---
+
+<nav class="toc-nav" aria-label={label}>
+  <p class="toc-title">{label}</p>
+  <ol>
+    {headings.map((heading) => (
+      <li class:list={[`toc-depth-${heading.depth}`]}>
+        <a href={`#${heading.slug}`} data-toc-slug={heading.slug}>{heading.text}</a>
+      </li>
+    ))}
+  </ol>
+</nav>

@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import ArticleLayout from "../../layouts/ArticleLayout.astro";
 import { researchPages } from "../../lib/content";
+import type { SectionNavigation } from "../../lib/navigation";
 
 export async function getStaticPaths() {
   const entries = await getCollection("research");
@@ -12,7 +13,31 @@ export async function getStaticPaths() {
 }
 
 const { entry, page } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+const entries = await getCollection("research");
+const currentIndex = researchPages.findIndex((item) => item.slug === page.slug);
+const previousPage = researchPages[currentIndex - 1];
+const nextPage = researchPages[currentIndex + 1];
+const titleFor = (id: string) => entries.find((item) => item.id === id)?.data.title ?? id;
+const navigation: SectionNavigation = {
+  label: "研究章节",
+  currentLabel: `Chapter ${page.chapter}`,
+  items: researchPages.map((item) => ({
+    href: `/japan-research/${item.slug}/`,
+    label: `Chapter ${item.chapter} · ${titleFor(item.id)}`,
+    current: item.slug === page.slug,
+  })),
+  previous: previousPage ? {
+    href: `/japan-research/${previousPage.slug}/`,
+    eyebrow: `← Chapter ${previousPage.chapter}`,
+    label: titleFor(previousPage.id),
+  } : undefined,
+  next: nextPage ? {
+    href: `/japan-research/${nextPage.slug}/`,
+    eyebrow: `Chapter ${nextPage.chapter} →`,
+    label: titleFor(nextPage.id),
+  } : undefined,
+};
 ---
 
 <ArticleLayout
@@ -21,6 +46,8 @@ const { Content } = await render(entry);
   eyebrow={`Japan Research · Chapter ${page.chapter}`}
   meta="旅行前案头研究 · 2026 年 5 月"
   active="research"
+  {headings}
+  {navigation}
 >
   <Content />
 </ArticleLayout>
