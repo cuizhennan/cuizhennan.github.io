@@ -630,6 +630,102 @@ blockquote:before,
   color: var(--muted);
 }
 
+.daily-index {
+  padding: 38px 0 42px;
+}
+
+.daily-index .editorial-intro {
+  max-width: 820px;
+}
+
+.daily-card {
+  min-height: 180px;
+}
+
+.daily-card h2 {
+  font-size: 22px;
+}
+
+.daily-card time,
+.daily-meta,
+.daily-window {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.daily-window {
+  margin-top: 24px;
+}
+
+.daily-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 240px);
+  gap: 54px;
+  padding: 38px 0 42px;
+  align-items: start;
+}
+
+.daily-article {
+  min-width: 0;
+}
+
+.daily-article .post-content {
+  max-width: none;
+  padding-top: 14px;
+  font-size: 16px;
+  line-height: 1.85;
+}
+
+.daily-article .post-content h1 {
+  margin: 0 0 18px;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(32px, 5vw, 58px);
+  line-height: 1.08;
+}
+
+.daily-article .post-content h4 {
+  margin: 1.5em 0 0.6em;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.05em;
+}
+
+.daily-article .post-content table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  margin: 1.5em 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  border-collapse: collapse;
+  background: var(--paper-soft);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.daily-article .post-content th,
+.daily-article .post-content td {
+  min-width: 140px;
+  padding: 10px 12px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.daily-article .post-content th {
+  background: var(--paper-warm);
+  color: var(--ink);
+}
+
+.daily-toc li[aria-current="page"] a {
+  color: var(--ink);
+  font-weight: 700;
+}
+
 .research-table-wrap {
   overflow-x: auto;
   margin: 1.5em 0;
@@ -786,7 +882,8 @@ pre {
   }
 
   .research-layout,
-  .research-index {
+  .research-index,
+  .daily-layout {
     display: block;
     padding: 26px 0 34px;
   }
@@ -801,6 +898,10 @@ pre {
     padding: 24px 0 0;
     border-top: 1px solid var(--line);
     border-left: 0;
+  }
+
+  .daily-index {
+    padding: 26px 0 34px;
   }
 }
 

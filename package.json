@@ -1,0 +1,19 @@
+{
+  "name": "cuizhennan-github-pages",
+  "version": "1.0.0",
+  "private": true,
+  "description": "墨萧个人 GitHub Pages 静态站点及 Obsidian 内容编译工具",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build:daily",
+    "build:daily": "node scripts/build-github-daily.mjs",
+    "check": "node scripts/check-site.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "markdown-it": "14.3.0",
+    "markdown-it-anchor": "9.2.0"
+  }
+}
