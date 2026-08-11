@@ -1,0 +1,58 @@
+<div class="mermaid-runtime" data-mermaid-runtime hidden></div>
+
+<script>
+  import mermaid from "mermaid";
+
+  const sourceBlocks = [...document.querySelectorAll<HTMLElement>(".article-body pre[data-language='mermaid'] > code, .article-body pre > code.language-mermaid")];
+  const diagrams = sourceBlocks.map((code, index) => {
+    const container = document.createElement("div");
+    container.className = "mermaid-diagram mermaid";
+    container.dataset.mermaidSource = code.textContent ?? "";
+    container.setAttribute("role", "img");
+    container.setAttribute("aria-label", `文章流程图 ${index + 1}`);
+    container.textContent = container.dataset.mermaidSource;
+    code.parentElement?.replaceWith(container);
+    return container;
+  });
+
+  const renderDiagrams = async () => {
+    if (!diagrams.length) return;
+    const style = getComputedStyle(document.documentElement);
+    const dark = document.documentElement.dataset.theme === "ink";
+    diagrams.forEach((diagram) => {
+      diagram.removeAttribute("data-processed");
+      diagram.classList.remove("mermaid-error");
+      diagram.textContent = diagram.dataset.mermaidSource ?? "";
+    });
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      suppressErrorRendering: true,
+      theme: dark ? "dark" : "base",
+      fontFamily: style.getPropertyValue("--body").trim(),
+      themeVariables: {
+        background: style.getPropertyValue("--surface").trim(),
+        primaryColor: style.getPropertyValue("--paper-soft").trim(),
+        primaryTextColor: style.getPropertyValue("--ink").trim(),
+        primaryBorderColor: style.getPropertyValue("--line").trim(),
+        lineColor: style.getPropertyValue("--accent").trim(),
+        secondaryColor: style.getPropertyValue("--surface").trim(),
+        tertiaryColor: style.getPropertyValue("--paper").trim(),
+      },
+      flowchart: { useMaxWidth: true },
+      sequence: { useMaxWidth: true },
+    });
+    try {
+      await mermaid.run({ nodes: diagrams });
+    } catch (error) {
+      console.error("Mermaid rendering failed", error);
+      diagrams.filter((diagram) => !diagram.querySelector("svg")).forEach((diagram) => {
+        diagram.classList.add("mermaid-error");
+        diagram.textContent = `图表渲染失败\n\n${diagram.dataset.mermaidSource ?? ""}`;
+      });
+    }
+  };
+
+  void renderDiagrams();
+  window.addEventListener("moxiao:theme-change", () => void renderDiagrams());
+</script>

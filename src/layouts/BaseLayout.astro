@@ -4,7 +4,7 @@ import "../styles/global.css";
 interface Props {
   title?: string;
   description?: string;
-  active?: "home" | "archives" | "daily" | "research";
+  active?: "home" | "archives" | "daily" | "research" | "tech";
 }
 
 const {
@@ -19,6 +19,7 @@ const nav = [
   ["home", "/", "首页"],
   ["archives", "/archives/", "归档"],
   ["daily", "/github-daily/", "GitHub 日报"],
+  ["tech", "/tech-knowledge/", "技术知识"],
   ["research", "/japan-research/", "日本研究"],
 ] as const;
 ---
@@ -89,6 +90,7 @@ const nav = [
         select.addEventListener("change", () => {
           document.documentElement.dataset.theme = select.value;
           localStorage.setItem("moxiao-theme", select.value);
+          window.dispatchEvent(new CustomEvent("moxiao:theme-change", { detail: { theme: select.value } }));
         });
       }
     </script>

@@ -3,6 +3,20 @@ export const dailyDate = (id: string) => id.match(/(\d{4}-\d{2}-\d{2})/)?.[1] ??
 export const titleFromBody = (body: string | undefined, fallback: string) =>
   body?.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? fallback;
 
+export const excerptFromBody = (body: string | undefined, limit = 150) => {
+  const text = (body ?? "")
+    .replace(/^---[\s\S]*?---/m, "")
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/^#{1,6}\s+.*$/gm, "")
+    .replace(/^>\s*(?:\[![^\]]+\])?\s*/gm, "")
+    .replace(/!?\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, "$2$1")
+    .replace(/[*_`~|]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return text.length > limit ? `${text.slice(0, limit).trim()}…` : text;
+};
+
 export const researchPages = [
   {
     id: "01-东京博物馆与古建研究",

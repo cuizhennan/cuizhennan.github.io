@@ -23,4 +23,11 @@ const research = defineCollection({
   }),
 });
 
-export const collections = { daily, research };
+const tech = defineCollection({
+  loader: glob({
+    pattern: "*.md",
+    base: "./docs/obsidian/tech-knowledge",
+  }),
+});
+
+export const collections = { daily, research, tech };

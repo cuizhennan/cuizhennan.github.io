@@ -1,0 +1,47 @@
+---
+import { getCollection, render } from "astro:content";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import { excerptFromBody, titleFromBody } from "../../lib/content";
+import type { SectionNavigation } from "../../lib/navigation";
+import manifest from "../../../docs/obsidian/tech-knowledge/manifest.json";
+
+export async function getStaticPaths() {
+  const articles = await getCollection("tech");
+  const articleTitle = (article: (typeof articles)[number]) => typeof article.data.title === "string" ? article.data.title : titleFromBody(article.body, article.id);
+  const byTitle = new Map(articles.map((article) => [articleTitle(article), article]));
+  return manifest.entries.flatMap((item) => {
+    const article = byTitle.get(item.title);
+    return article ? [{ params: { slug: item.slug }, props: { article, item } }] : [];
+  });
+}
+
+const { article, item } = Astro.props;
+const { Content, headings } = await render(article);
+const currentIndex = manifest.entries.findIndex((entry) => entry.id === item.id);
+const older = manifest.entries[currentIndex + 1];
+const newer = manifest.entries[currentIndex - 1];
+const navigation: SectionNavigation = {
+  label: "技术文章",
+  currentLabel: item.title,
+  items: manifest.entries.map((entry) => ({
+    href: `/tech-knowledge/${entry.slug}/`,
+    label: `${entry.date} · ${entry.title}`,
+    current: entry.id === item.id,
+  })),
+  previous: older ? { href: `/tech-knowledge/${older.slug}/`, eyebrow: "← 较早文章", label: older.title } : undefined,
+  next: newer ? { href: `/tech-knowledge/${newer.slug}/`, eyebrow: "较新文章 →", label: newer.title } : undefined,
+};
+---
+
+<ArticleLayout
+  title={item.title}
+  description={excerptFromBody(article.body, 180)}
+  eyebrow="Tech Knowledge · Field Notes"
+  meta={`${item.date} · Obsidian 同步`}
+  active="tech"
+  {headings}
+  {navigation}
+  hasMermaid={/```mermaid\s/i.test(article.body ?? "")}
+>
+  <Content />
+</ArticleLayout>

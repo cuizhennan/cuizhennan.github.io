@@ -1,6 +1,6 @@
 # 墨萧的 GitHub Pages
 
-`cuizhennan.github.io` 是一个由 Astro 构建、GitHub Pages 托管的个人静态内容站。站点以 Obsidian Markdown 为主要内容来源，包含 GitHub Trending 日报、日本旅行研究、历史归档和早期博客文章。
+`cuizhennan.github.io` 是一个由 Astro 构建、GitHub Pages 托管的个人静态内容站。站点以 Obsidian Markdown 为主要内容来源，包含 GitHub Trending 日报、技术知识、日本旅行研究、历史归档和早期博客文章。
 
 线上地址：<https://cuizhennan.github.io/>
 
@@ -13,6 +13,9 @@
 - 本地主题记忆：主题切换结果保存在浏览器 `localStorage` 中，刷新和跨页面访问时保持一致。
 - 长文目录：从 Markdown 的 H2/H3 自动生成桌面悬浮目录和移动端折叠目录，并高亮当前章节。
 - 系列导航：日报支持日期切换，日本研究支持 Chapter 切换以及前后篇导航。
+- 技术知识同步：按日期选取 Obsidian `tech-knowledge/` 的近期文章，生成稳定 URL 和同步清单。
+- Mermaid 增强：只在含 Mermaid 的文章中加载本地渲染器，图表跟随三套主题重新配色，并保留失败时的源码回退。
+- Obsidian Callout：自动识别 `note`、`tip`、`warning`、`danger` 等提示块并适配主题。
 - 内容辅助输出：自动生成 RSS、Sitemap、404 页面和社交分享元数据。
 - GitHub Actions 发布：每次推送 `master` 后自动编译、校验、打包并部署到 GitHub Pages。
 
@@ -24,6 +27,8 @@
 | `/archives/` | 按年份整理的内容归档 | Astro 页面模板 |
 | `/github-daily/` | GitHub Trending 日报索引 | `docs/obsidian/GitHub Daily/*.md` |
 | `/github-daily/YYYY-MM-DD/` | 单篇日报 | Astro 动态静态路由 |
+| `/tech-knowledge/` | 近期技术知识索引 | `docs/obsidian/tech-knowledge/*.md` |
+| `/tech-knowledge/<slug>/` | 单篇技术文章 | 同步清单 + Astro 动态静态路由 |
 | `/japan-research/` | 日本旅行研究目录 | `docs/obsidian/孤独星球/日本旅行研究素材/*.md` |
 | `/japan-research/<slug>/` | 单篇研究文章 | Astro 动态静态路由 |
 | `/rss.xml` | RSS 订阅 | `@astrojs/rss` |
@@ -34,6 +39,7 @@
 - Astro 7.2：页面路由、Markdown 渲染和静态站点生成。
 - Astro Content Collections：内容发现、加载和类型推导。
 - Zod 4：研究文章 Frontmatter 校验。
+- Mermaid 11：客户端按需渲染 Markdown 图表，使用严格安全模式。
 - Shiki：构建期代码语法高亮，亮色与暗色分别采用 GitHub Light/GitHub Dark。
 - TypeScript：页面、内容映射和构建配置的静态检查。
 - Node.js 24.14.1 / npm 11.9.0：本地与 CI 的统一工具链。
@@ -71,6 +77,7 @@ npm ci
 | `npm run preview` | 本地预览已经生成的 `dist/` | 本地预览服务器 |
 | `npm run check` | 执行 Astro/TypeScript 检查并验证生成页面 | 检查结果 |
 | `npm run build:daily` | 从本机 Obsidian Vault 同步最近日报，并更新兼容静态产物 | Markdown 镜像及旧版 HTML |
+| `npm run sync:tech` | 同步 Obsidian 中最近 20 篇技术文章 | Markdown 镜像及 `manifest.json` |
 
 Astro telemetry 在这些 npm 脚本中被关闭，避免本地、沙箱和 CI 环境产生额外配置文件或遥测请求。
 
@@ -125,6 +132,26 @@ OBSIDIAN_GITHUB_DAILY_DIR="/path/to/GitHub Daily" npm run build:daily
 
 GitHub Actions 不读取个人电脑上的 Obsidian Vault，也不会运行 `build:daily`。需要先在本机同步并提交 Markdown，CI 再从仓库中的 Markdown 完成 Astro 构建。
 
+### 技术知识库
+
+技术文章默认从以下 Obsidian 目录同步：
+
+```text
+~/Library/Mobile Documents/iCloud~md~obsidian/Documents/GavinMoFriends/tech-knowledge
+```
+
+```bash
+npm run sync:tech
+```
+
+脚本按 Frontmatter 的 `date`、`created`、`updated` 和文件修改时间依次确定日期，默认保留最近 20 篇，复制到 `docs/obsidian/tech-knowledge/`，并生成路由使用的 `manifest.json`。可通过环境变量调整来源和数量：
+
+```bash
+OBSIDIAN_TECH_KNOWLEDGE_DIR="/path/to/tech-knowledge" TECH_KNOWLEDGE_LIMIT=30 npm run sync:tech
+```
+
+同步目录是仓库镜像：脚本会清理超出窗口的旧 Markdown，但只会操作该目标目录。GitHub Actions 不访问本机 Vault，因此发布前必须在本机运行同步并提交结果。
+
 ### 日本旅行研究
 
 研究文章存放在：
@@ -167,20 +194,22 @@ aliases:
 ```text
 Obsidian Vault（本机，可选同步）
                 │
-                ▼ npm run build:daily
+                ▼ npm run build:daily / npm run sync:tech
 docs/obsidian/**/*.md
                 │
                 ▼ Astro glob loaders
 src/content.config.ts
                 │
                 ├── daily 内容集合
-                └── research 内容集合 ── Zod 校验 Frontmatter
+                ├── research 内容集合 ── Zod 校验 Frontmatter
+                └── tech 内容集合 + manifest 稳定路由
                 │
                 ▼ getCollection() / getStaticPaths()
 src/pages/**/*.astro + src/layouts/**/*.astro
                 │
                 ├── Markdown → HTML
                 ├── Shiki 代码高亮
+                ├── Mermaid 浏览器端按需渲染
                 ├── 全局 CSS 与主题切换脚本打包
                 ├── RSS / Sitemap / SEO 元数据
                 └── public/ 静态资源原样复制
@@ -205,6 +234,7 @@ dist/
 
 - `daily`：只匹配 `GitHub-Trending-日报-*.md`。
 - `research`：匹配日本研究目录下所有 Markdown，并通过 Zod 校验 Frontmatter。
+- `tech`：匹配同步后的技术文章；标题、日期和稳定 slug 由同步清单统一提供，兼容已有 Obsidian Frontmatter。
 
 内容集合在编译期同步。文件缺失、Frontmatter 类型错误或必填标题缺失时，构建或类型检查会直接失败，不会发布不完整页面。
 
@@ -214,6 +244,7 @@ dist/
 
 - `src/pages/github-daily/[date].astro` 为每个日报日期生成一个目录页面。
 - `src/pages/japan-research/[slug].astro` 根据研究映射生成稳定 slug。
+- `src/pages/tech-knowledge/[slug].astro` 根据同步清单为近期技术文章生成稳定 slug。
 
 例如：
 
@@ -231,7 +262,7 @@ Astro 在构建期将 Markdown 渲染为 HTML，并复用：
 - `ArticleLayout.astro`：文章标题、元数据和正文阅读布局。
 - `global.css`：三套颜色、字体、宽度和响应式视觉变量。
 
-页面默认不加载 React、Vue 等客户端框架。主题选择器是少量原生 JavaScript；构建后由 Astro 压缩，并只在浏览器中负责切换 `data-theme` 与更新 `localStorage`。
+页面默认不加载 React、Vue 等客户端框架。主题选择器是少量原生 JavaScript。Mermaid 只进入确实包含 `mermaid` 代码围栏的文章包，以 `securityLevel: strict` 渲染；主题变化时根据 CSS 变量重新绘制，窄屏图表可横向滚动。普通文章不会下载 Mermaid 运行时代码。
 
 ### 5. 复制资源并输出 `dist/`
 
@@ -256,8 +287,9 @@ npm run check
    - 校验 Astro 模板和 TypeScript。
    - 检查内容集合类型。
 2. `scripts/check-site.mjs`
-   - 确认首页、归档、日报目录和日本研究目录已经输出。
+   - 确认首页、归档、日报目录、日本研究目录和技术知识目录已经输出。
    - 从日报索引提取所有日期链接，并确认对应详情页存在。
+   - 确认每篇技术文章的详情页存在，并至少有一篇同时输出 Mermaid 源码与渲染器。
    - 确认首页包含 `editorial`、`paper`、`ink` 三个主题选项。
 
 当前检查脚本验证的是生成结果，而不是仓库根目录中的旧版 HTML。

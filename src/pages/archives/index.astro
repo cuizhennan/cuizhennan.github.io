@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { dailyDate } from "../../lib/content";
+import techManifest from "../../../docs/obsidian/tech-knowledge/manifest.json";
 
 const reports = (await getCollection("daily")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
 ---
@@ -15,6 +16,7 @@ const reports = (await getCollection("daily")).sort((a, b) => dailyDate(b.id).lo
   <section class="archive-year">
     <h2>2026</h2>
     <ol>
+      {techManifest.entries.map((item) => <li><time datetime={item.date}>{item.date.slice(5)}</time><a href={`/tech-knowledge/${item.slug}/`}>{item.title}</a></li>)}
       {reports.map((report) => {
         const date = dailyDate(report.id);
         return <li><time datetime={date}>{date.slice(5)}</time><a href={`/github-daily/${date}/`}>GitHub Trending 日报</a></li>;

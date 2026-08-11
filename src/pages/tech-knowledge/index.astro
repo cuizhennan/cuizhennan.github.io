@@ -1,0 +1,30 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { excerptFromBody, titleFromBody } from "../../lib/content";
+import manifest from "../../../docs/obsidian/tech-knowledge/manifest.json";
+
+const articles = await getCollection("tech");
+const articleTitle = (article: (typeof articles)[number]) => typeof article.data.title === "string" ? article.data.title : titleFromBody(article.body, article.id);
+const byTitle = new Map(articles.map((article) => [articleTitle(article), article]));
+const entries = manifest.entries.map((item) => ({ ...item, article: byTitle.get(item.title) })).filter((item) => item.article);
+---
+
+<BaseLayout title="技术知识" description="从 Obsidian 同步发布的技术原理、系统设计与工程实践文章" active="tech">
+  <header class="collection-hero compact">
+    <p class="eyebrow">Tech Knowledge · Obsidian Notes</p>
+    <h1>技术知识</h1>
+    <p>从底层原理到工程实践，把近期研究整理成可检索、可串读的长期笔记。</p>
+  </header>
+  <section class="report-list tech-list" aria-label="技术文章列表">
+    {entries.map(({ article, ...item }) => article && (
+      <article>
+        <time datetime={item.date}>{item.date}</time>
+        <div>
+          <h2><a href={`/tech-knowledge/${item.slug}/`}>{item.title}</a></h2>
+          <p>{excerptFromBody(article.body)}</p>
+        </div>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

@@ -1,0 +1,160 @@
+{
+  "generatedAt": "2026-08-11T04:53:30.694Z",
+  "source": "Obsidian tech-knowledge",
+  "limit": 20,
+  "count": 19,
+  "entries": [
+    {
+      "id": "相关性不只选文档：RARG 与 Agentic Search 执行先验",
+      "filename": "相关性不只选文档：RARG 与 Agentic Search 执行先验.md",
+      "slug": "相关性不只选文档-rarg-与-agentic-search-执行先验",
+      "title": "相关性不只选文档：RARG 与 Agentic Search 执行先验",
+      "date": "2026-07-30",
+      "modifiedAt": "2026-07-30T02:27:16.000Z"
+    },
+    {
+      "id": "前缀和与差分数组：从离散微积分到区间算法",
+      "filename": "前缀和与差分数组：从离散微积分到区间算法.md",
+      "slug": "前缀和与差分数组-从离散微积分到区间算法",
+      "title": "前缀和与差分数组：从离散微积分到区间算法",
+      "date": "2026-07-27",
+      "modifiedAt": "2026-07-29T01:51:18.000Z"
+    },
+    {
+      "id": "Linux 高性能 I-O 深度解析：从 epoll 就绪通知到 io_uring 完成模型",
+      "filename": "Linux 高性能 I-O 深度解析：从 epoll 就绪通知到 io_uring 完成模型.md",
+      "slug": "linux-高性能-i-o-深度解析-从-epoll-就绪通知到-io-uring-完成模型",
+      "title": "Linux 高性能 I/O 深度解析：从 epoll 就绪通知到 io_uring 完成模型",
+      "date": "2026-07-27",
+      "modifiedAt": "2026-07-27T03:48:38.000Z"
+    },
+    {
+      "id": "MVCC 深度解析：从版本可见性到 MySQL 与 PostgreSQL 的设计哲学",
+      "filename": "MVCC 深度解析：从版本可见性到 MySQL 与 PostgreSQL 的设计哲学.md",
+      "slug": "mvcc-深度解析-从版本可见性到-mysql-与-postgresql-的设计哲学",
+      "title": "MVCC 深度解析：从版本可见性到 MySQL 与 PostgreSQL 的设计哲学",
+      "date": "2026-07-24",
+      "modifiedAt": "2026-07-24T02:58:33.000Z"
+    },
+    {
+      "id": "一致性哈希-设计理念-算法机制与工程最佳实践-深入讲解",
+      "filename": "一致性哈希-设计理念-算法机制与工程最佳实践-深入讲解.md",
+      "slug": "一致性哈希-设计理念-算法机制与工程最佳实践-深入讲解",
+      "title": "一致性哈希：设计理念、算法机制与工程最佳实践",
+      "date": "2026-07-23",
+      "modifiedAt": "2026-07-23T03:24:14.000Z"
+    },
+    {
+      "id": "Kafka 为什么快：从追加日志、Page Cache 到 ISR 的完整机制",
+      "filename": "Kafka 为什么快：从追加日志、Page Cache 到 ISR 的完整机制.md",
+      "slug": "kafka-为什么快-从追加日志-page-cache-到-isr-的完整机制",
+      "title": "Kafka 为什么快：从追加日志、Page Cache 到 ISR 的完整机制",
+      "date": "2026-07-23",
+      "modifiedAt": "2026-07-23T03:14:56.000Z"
+    },
+    {
+      "id": "Uniswap 恒定乘积 AMM：从 x·y=k 到套利、LP 与 TWAP 深度解析",
+      "filename": "Uniswap 恒定乘积 AMM：从 x·y=k 到套利、LP 与 TWAP 深度解析.md",
+      "slug": "uniswap-恒定乘积-amm-从-x-y-k-到套利-lp-与-twap-深度解析",
+      "title": "Uniswap 恒定乘积 AMM：从 x·y=k 到套利、LP 与 TWAP 深度解析",
+      "date": "2026-07-23",
+      "modifiedAt": "2026-07-23T02:30:19.000Z"
+    },
+    {
+      "id": "JVM 类加载机制与 JDK 9-17 演进深度解析",
+      "filename": "JVM 类加载机制与 JDK 9-17 演进深度解析.md",
+      "slug": "jvm-类加载机制与-jdk-9-17-演进深度解析",
+      "title": "JVM 类加载机制与 JDK 9-17 演进深度解析",
+      "date": "2026-07-23",
+      "modifiedAt": "2026-07-23T01:47:47.000Z"
+    },
+    {
+      "id": "Go Channel 与 Goroutine：从 CSP 语义到 Runtime 实现",
+      "filename": "Go Channel 与 Goroutine：从 CSP 语义到 Runtime 实现.md",
+      "slug": "go-channel-与-goroutine-从-csp-语义到-runtime-实现",
+      "title": "Go Channel 与 Goroutine：专家级设计与实现",
+      "date": "2026-07-16",
+      "modifiedAt": "2026-07-16T02:09:48.000Z"
+    },
+    {
+      "id": "从会看到会用：软件工程、算法与论文的深度学习方法论",
+      "filename": "从会看到会用：软件工程、算法与论文的深度学习方法论.md",
+      "slug": "从会看到会用-软件工程-算法与论文的深度学习方法论",
+      "title": "从会看到会用：软件工程、算法与论文的深度学习方法论",
+      "date": "2026-07-14",
+      "modifiedAt": "2026-07-14T03:39:23.000Z"
+    },
+    {
+      "id": "Synchronized 锁升级：偏向锁、轻量级锁与重量级锁",
+      "filename": "Synchronized 锁升级：偏向锁、轻量级锁与重量级锁.md",
+      "slug": "synchronized-锁升级-偏向锁-轻量级锁与重量级锁",
+      "title": "Synchronized 锁升级：偏向锁、轻量级锁与重量级锁",
+      "date": "2026-07-14",
+      "modifiedAt": "2026-07-14T03:04:27.000Z"
+    },
+    {
+      "id": "Tailscale 不只是 VPN：身份网络的十种妙用、架构逻辑与实践边界",
+      "filename": "Tailscale 不只是 VPN：身份网络的十种妙用、架构逻辑与实践边界.md",
+      "slug": "tailscale-不只是-vpn-身份网络的十种妙用-架构逻辑与实践边界",
+      "title": "Tailscale 不只是 VPN：身份网络的十种妙用、架构逻辑与实践边界",
+      "date": "2026-07-11",
+      "modifiedAt": "2026-07-11T15:43:34.000Z"
+    },
+    {
+      "id": "开源大模型微调实操教程：从小白到 LoRA-QLoRA 最佳实践",
+      "filename": "开源大模型微调实操教程：从小白到 LoRA-QLoRA 最佳实践.md",
+      "slug": "开源大模型微调实操教程-从小白到-lora-qlora-最佳实践",
+      "title": "开源大模型微调实操教程：从小白到 LoRA-QLoRA 最佳实践",
+      "date": "2026-07-08",
+      "modifiedAt": "2026-07-09T03:27:23.000Z"
+    },
+    {
+      "id": "MVCC 多版本并发控制：事务隔离、ReadView 与版本回收",
+      "filename": "MVCC 多版本并发控制：事务隔离、ReadView 与版本回收.md",
+      "slug": "mvcc-多版本并发控制-事务隔离-readview-与版本回收",
+      "title": "MVCC 多版本并发控制：事务隔离、ReadView 与版本回收",
+      "date": "2026-07-08",
+      "modifiedAt": "2026-07-08T02:58:31.000Z"
+    },
+    {
+      "id": "ZKP 与 zk-Rollup — 从不泄密证明到 SNARK vs STARK 工程选型",
+      "filename": "ZKP 与 zk-Rollup — 从不泄密证明到 SNARK vs STARK 工程选型.md",
+      "slug": "zkp-与-zk-rollup-从不泄密证明到-snark-vs-stark-工程选型",
+      "title": "ZKP 与 zk-Rollup — 从不泄密证明到 SNARK vs STARK 工程选型",
+      "date": "2026-07-06",
+      "modifiedAt": "2026-07-06T02:24:53.000Z"
+    },
+    {
+      "id": "LSM-Tree — 把随机写变顺序写，B+Tree 在写密集场景下的竞争对手",
+      "filename": "LSM-Tree — 把随机写变顺序写，B+Tree 在写密集场景下的竞争对手.md",
+      "slug": "lsm-tree-把随机写变顺序写-b-tree-在写密集场景下的竞争对手",
+      "title": "LSM-Tree — 把随机写变顺序写，B+Tree 在写密集场景下的竞争对手",
+      "date": "2026-07-03",
+      "modifiedAt": "2026-07-03T02:51:21.000Z"
+    },
+    {
+      "id": "滑动窗口 — 把 O(n²) 暴力变 O(n) 的框架级技巧",
+      "filename": "滑动窗口 — 把 O(n²) 暴力变 O(n) 的框架级技巧.md",
+      "slug": "滑动窗口-把-o-n2-暴力变-o-n-的框架级技巧",
+      "title": "滑动窗口 — 把 O(n²) 暴力变 O(n) 的框架级技巧",
+      "date": "2026-07-03",
+      "modifiedAt": "2026-07-03T02:11:28.000Z"
+    },
+    {
+      "id": "申请并部署 username.github.io 个人主页完整指南",
+      "filename": "申请并部署 username.github.io 个人主页完整指南.md",
+      "slug": "申请并部署-username-github-io-个人主页完整指南",
+      "title": "申请并部署 username.github.io 个人主页完整指南",
+      "date": "2026-06-25",
+      "modifiedAt": "2026-06-25T08:04:56.000Z"
+    },
+    {
+      "id": "gmp-deep-dive",
+      "filename": "gmp-deep-dive.md",
+      "slug": "gmp-deep-dive",
+      "title": "Go GMP 调度模型深度解析",
+      "date": "2026-06-23",
+      "modifiedAt": "2026-06-23T03:17:06.000Z"
+    }
+  ]
+}

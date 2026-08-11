@@ -8,6 +8,7 @@ const requiredFiles = [
   "archives/index.html",
   "github-daily/index.html",
   "japan-research/index.html",
+  "tech-knowledge/index.html",
 ];
 
 for (const file of requiredFiles) {
@@ -46,4 +47,19 @@ for (const theme of ["editorial", "paper", "ink"]) {
   if (!home.includes(`value="${theme}"`)) throw new Error(`首页缺少 ${theme} 主题选项`);
 }
 
-console.log(`站点检查通过：${requiredFiles.length} 个入口，${reportLinks.length} 篇日报，文章目录与章节导航完整`);
+const techIndex = await readFile(path.join(outputRoot, "tech-knowledge/index.html"), "utf8");
+const techLinks = [...new Set([...techIndex.matchAll(/href="\/tech-knowledge\/([^"/]+)\/"/g)].map((match) => match[1]))];
+if (techLinks.length === 0) throw new Error("技术知识首页没有文章链接");
+let mermaidArticleFound = false;
+for (const slug of techLinks) {
+  const output = path.join(outputRoot, "tech-knowledge", slug, "index.html");
+  await access(output);
+  const html = await readFile(output, "utf8");
+  if (html.includes('data-language="mermaid"') || html.includes("language-mermaid")) {
+    mermaidArticleFound = true;
+    if (!html.includes("data-mermaid-runtime")) throw new Error(`Mermaid 文章缺少客户端渲染器：${slug}`);
+  }
+}
+if (!mermaidArticleFound) throw new Error("同步的技术文章中未发现 Mermaid 图表");
+
+console.log(`站点检查通过：${requiredFiles.length} 个入口，${reportLinks.length} 篇日报，${techLinks.length} 篇技术文章，Mermaid 与章节导航完整`);

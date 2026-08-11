@@ -2,6 +2,7 @@
 import BaseLayout from "./BaseLayout.astro";
 import SectionNavigator from "../components/SectionNavigator.astro";
 import TableOfContents from "../components/TableOfContents.astro";
+import MermaidRenderer from "../components/MermaidRenderer.astro";
 import type { SectionNavigation, TocHeading } from "../lib/navigation";
 
 interface Props {
@@ -9,12 +10,13 @@ interface Props {
   description: string;
   eyebrow: string;
   meta?: string;
-  active: "daily" | "research" | "archives";
+  active: "daily" | "research" | "archives" | "tech";
   headings?: TocHeading[];
   navigation?: SectionNavigation;
+  hasMermaid?: boolean;
 }
 
-const { title, description, eyebrow, meta, active, headings = [], navigation } = Astro.props;
+const { title, description, eyebrow, meta, active, headings = [], navigation, hasMermaid = false } = Astro.props;
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const showToc = tocHeadings.length >= 3;
 ---
@@ -35,6 +37,7 @@ const showToc = tocHeadings.length >= 3;
         </details>
       )}
       <div class="article-body"><slot /></div>
+      {hasMermaid && <MermaidRenderer />}
       {navigation && <SectionNavigator {navigation} position="bottom" />}
     </article>
     {showToc && (
@@ -66,4 +69,14 @@ const showToc = tocHeadings.length >= 3;
       }
     </script>
   )}
+  <script>
+    document.querySelectorAll<HTMLElement>(".article-body blockquote").forEach((callout) => {
+      const first = callout.querySelector("p:first-child");
+      const match = first?.textContent?.match(/^\[!([a-z-]+)\]\s*/i);
+      if (!first || !match) return;
+      callout.classList.add("obsidian-callout", `callout-${match[1].toLowerCase()}`);
+      const node = first.firstChild;
+      if (node?.nodeType === Node.TEXT_NODE) node.textContent = node.textContent?.replace(/^\[![a-z-]+\]\s*/i, "") ?? "";
+    });
+  </script>
 </BaseLayout>
