@@ -3,53 +3,167 @@
 <script>
   import mermaid from "mermaid";
 
+  interface DiagramItem {
+    frame: HTMLElement;
+    viewport: HTMLElement;
+    source: string;
+    index: number;
+    scale: number;
+  }
+
+  const makeButton = (label: string, title: string) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = label;
+    button.title = title;
+    button.setAttribute("aria-label", title);
+    return button;
+  };
+
   const sourceBlocks = [...document.querySelectorAll<HTMLElement>(".article-body pre[data-language='mermaid'] > code, .article-body pre > code.language-mermaid")];
-  const diagrams = sourceBlocks.map((code, index) => {
-    const container = document.createElement("div");
-    container.className = "mermaid-diagram mermaid";
-    container.dataset.mermaidSource = code.textContent ?? "";
-    container.setAttribute("role", "img");
-    container.setAttribute("aria-label", `文章流程图 ${index + 1}`);
-    container.textContent = container.dataset.mermaidSource;
-    code.parentElement?.replaceWith(container);
-    return container;
+  const diagrams: DiagramItem[] = sourceBlocks.map((code, index) => {
+    const frame = document.createElement("figure");
+    frame.className = "mermaid-figure";
+
+    const toolbar = document.createElement("figcaption");
+    toolbar.className = "mermaid-toolbar";
+    const label = document.createElement("span");
+    label.textContent = `图表 ${String(index + 1).padStart(2, "0")} · Mermaid`;
+    toolbar.append(label);
+
+    const controls = document.createElement("span");
+    controls.className = "mermaid-controls";
+    const zoomOut = makeButton("−", "缩小图表");
+    const reset = makeButton("适合", "恢复适合窗口大小");
+    const zoomIn = makeButton("+", "放大图表");
+    const fullscreen = makeButton("全屏", "全屏查看图表");
+    controls.append(zoomOut, reset, zoomIn, fullscreen);
+    toolbar.append(controls);
+
+    const viewport = document.createElement("div");
+    viewport.className = "mermaid-diagram";
+    viewport.setAttribute("role", "img");
+    viewport.setAttribute("aria-label", `文章图表 ${index + 1}`);
+    viewport.tabIndex = 0;
+
+    const source = code.textContent ?? "";
+    viewport.textContent = source;
+    frame.append(toolbar, viewport);
+    code.parentElement?.replaceWith(frame);
+
+    const item: DiagramItem = { frame, viewport, source, index, scale: 1 };
+    const applyScale = (nextScale: number) => {
+      item.scale = Math.min(2, Math.max(.7, nextScale));
+      const svg = viewport.querySelector<SVGElement>("svg");
+      if (!svg) return;
+      svg.style.width = `${item.scale * 100}%`;
+      svg.style.maxWidth = "none";
+      svg.style.height = "auto";
+      reset.textContent = item.scale === 1 ? "适合" : `${Math.round(item.scale * 100)}%`;
+    };
+    zoomOut.addEventListener("click", () => applyScale(item.scale - .15));
+    zoomIn.addEventListener("click", () => applyScale(item.scale + .15));
+    reset.addEventListener("click", () => applyScale(1));
+    fullscreen.addEventListener("click", () => {
+      if (document.fullscreenElement === frame) void document.exitFullscreen();
+      else void frame.requestFullscreen();
+    });
+    frame.addEventListener("fullscreenchange", () => {
+      const active = document.fullscreenElement === frame;
+      fullscreen.textContent = active ? "退出" : "全屏";
+      fullscreen.setAttribute("aria-label", active ? "退出全屏查看" : "全屏查看图表");
+      applyScale(active ? Math.max(1, item.scale) : 1);
+    });
+    frame.addEventListener("mermaid:rendered", () => applyScale(item.scale));
+    return item;
   });
 
+  let renderVersion = 0;
   const renderDiagrams = async () => {
     if (!diagrams.length) return;
+    const currentVersion = ++renderVersion;
     const style = getComputedStyle(document.documentElement);
+    const color = (name: string) => style.getPropertyValue(name).trim();
     const dark = document.documentElement.dataset.theme === "ink";
-    diagrams.forEach((diagram) => {
-      diagram.removeAttribute("data-processed");
-      diagram.classList.remove("mermaid-error");
-      diagram.textContent = diagram.dataset.mermaidSource ?? "";
-    });
+
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: "strict",
       suppressErrorRendering: true,
-      theme: dark ? "dark" : "base",
-      fontFamily: style.getPropertyValue("--body").trim(),
+      theme: "base",
+      fontFamily: color("--body"),
       themeVariables: {
-        background: style.getPropertyValue("--surface").trim(),
-        primaryColor: style.getPropertyValue("--paper-soft").trim(),
-        primaryTextColor: style.getPropertyValue("--ink").trim(),
-        primaryBorderColor: style.getPropertyValue("--line").trim(),
-        lineColor: style.getPropertyValue("--accent").trim(),
-        secondaryColor: style.getPropertyValue("--surface").trim(),
-        tertiaryColor: style.getPropertyValue("--paper").trim(),
+        darkMode: dark,
+        background: color("--surface"),
+        primaryColor: color("--paper-soft"),
+        primaryTextColor: color("--ink"),
+        primaryBorderColor: color("--line"),
+        secondaryColor: color("--surface"),
+        secondaryTextColor: color("--ink"),
+        secondaryBorderColor: color("--line"),
+        tertiaryColor: color("--paper"),
+        tertiaryTextColor: color("--ink"),
+        tertiaryBorderColor: color("--line"),
+        textColor: color("--ink"),
+        lineColor: color("--accent"),
+        mainBkg: color("--paper-soft"),
+        nodeBorder: color("--line"),
+        clusterBkg: color("--surface"),
+        clusterBorder: color("--line"),
+        edgeLabelBackground: color("--surface"),
+        actorBkg: color("--paper-soft"),
+        actorBorder: color("--accent"),
+        actorTextColor: color("--ink"),
+        actorLineColor: color("--line"),
+        signalColor: color("--accent"),
+        signalTextColor: color("--ink"),
+        labelBoxBkgColor: color("--surface"),
+        labelBoxBorderColor: color("--line"),
+        labelTextColor: color("--ink"),
+        loopTextColor: color("--ink"),
+        noteBkgColor: color("--paper-soft"),
+        noteBorderColor: color("--accent"),
+        noteTextColor: color("--ink"),
+        activationBkgColor: color("--surface"),
+        activationBorderColor: color("--accent"),
+        fontSize: "14px",
       },
-      flowchart: { useMaxWidth: true },
-      sequence: { useMaxWidth: true },
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: "basis",
+        nodeSpacing: 38,
+        rankSpacing: 52,
+        padding: 14,
+      },
+      sequence: {
+        useMaxWidth: true,
+        diagramMarginX: 24,
+        diagramMarginY: 18,
+        actorMargin: 56,
+        boxMargin: 12,
+        messageMargin: 36,
+        noteMargin: 14,
+      },
+      state: { useMaxWidth: true },
     });
-    try {
-      await mermaid.run({ nodes: diagrams });
-    } catch (error) {
-      console.error("Mermaid rendering failed", error);
-      diagrams.filter((diagram) => !diagram.querySelector("svg")).forEach((diagram) => {
-        diagram.classList.add("mermaid-error");
-        diagram.textContent = `图表渲染失败\n\n${diagram.dataset.mermaidSource ?? ""}`;
-      });
+
+    for (const item of diagrams) {
+      item.viewport.classList.remove("mermaid-error");
+      item.viewport.setAttribute("aria-busy", "true");
+      try {
+        const result = await mermaid.render(`mermaid-${currentVersion}-${item.index}`, item.source);
+        if (currentVersion !== renderVersion) return;
+        item.viewport.innerHTML = result.svg;
+        result.bindFunctions?.(item.viewport);
+        item.frame.dispatchEvent(new CustomEvent("mermaid:rendered"));
+      } catch (error) {
+        console.error("Mermaid rendering failed", error);
+        item.viewport.classList.add("mermaid-error");
+        item.viewport.textContent = `图表渲染失败\n\n${item.source}`;
+      } finally {
+        item.viewport.removeAttribute("aria-busy");
+      }
     }
   };
 
