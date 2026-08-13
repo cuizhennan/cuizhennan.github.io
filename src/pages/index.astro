@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ThemeNote from "../components/ThemeNote.astro";
 import { getCollection } from "astro:content";
 import { dailyDate } from "../lib/content";
+import { researchPages } from "../lib/content";
 import techManifest from "../../docs/obsidian/tech-knowledge/manifest.json";
 
 const reports = (await getCollection("daily")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
@@ -12,12 +13,50 @@ const latestTech = techManifest.entries[0];
 
 <BaseLayout active="home">
   <section class="home-hero">
-    <p class="eyebrow">Personal Journal · Since 2017</p>
-    <h1>把技术、远方与日常，<br />写成可以慢慢翻阅的纸。</h1>
-    <p class="lede">这里收纳 GitHub 开源生态的每日观察，也保存旅行之前，那些考古学式的案头研究。</p>
+    <div class="hero-copy">
+      <p class="eyebrow">Personal Journal · Since 2017</p>
+      <h1>把技术、远方与日常，写成可以慢慢翻阅的纸。</h1>
+      <p class="lede">一份持续生长的个人刊物：追踪开源世界的当下，也为技术原理与远方的历史保存上下文。</p>
+    </div>
+    <aside class="hero-edition" aria-label="本站内容概览">
+      <p>Current edition</p>
+      <strong>2026<span>／</span>08</strong>
+      <dl>
+        <div><dt>日报</dt><dd>{reports.length}</dd></div>
+        <div><dt>技术笔记</dt><dd>{techManifest.entries.length}</dd></div>
+        <div><dt>旅行研究</dt><dd>{researchPages.length}</dd></div>
+      </dl>
+    </aside>
   </section>
 
-  <ThemeNote />
+  <section class="section-directory" aria-labelledby="directory-heading">
+    <div class="section-heading">
+      <p class="eyebrow">Browse by section</p>
+      <h2 id="directory-heading">从哪里开始</h2>
+    </div>
+    <div class="directory-grid">
+      <a href="/github-daily/">
+        <span>01 / DAILY</span>
+        <strong>GitHub 日报</strong>
+        <p>用技术、产品与投资三条线索，过滤每日开源信号。</p>
+      </a>
+      <a href="/tech-knowledge/">
+        <span>02 / NOTES</span>
+        <strong>技术知识</strong>
+        <p>从系统原理到工程实践，整理值得反复查阅的知识。</p>
+      </a>
+      <a href="/japan-research/">
+        <span>03 / JOURNEY</span>
+        <strong>日本研究</strong>
+        <p>在出发前，先理解建筑、城市与历史留下的纹理。</p>
+      </a>
+      <a href="/archives/">
+        <span>04 / INDEX</span>
+        <strong>全部归档</strong>
+        <p>按时间浏览这份个人刊物一路积累的内容。</p>
+      </a>
+    </div>
+  </section>
 
   <section class="issue-list" aria-labelledby="latest-heading">
     <div class="section-heading">
@@ -52,4 +91,6 @@ const latestTech = techManifest.entries[0];
       </div>
     </article>}
   </section>
+
+  <ThemeNote />
 </BaseLayout>

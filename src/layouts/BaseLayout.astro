@@ -54,7 +54,7 @@ const nav = [
       })();
     </script>
   </head>
-  <body>
+  <body id="page-top">
     <a class="skip-link" href="#main-content">跳到正文</a>
     <div class="site-shell">
       <header class="site-header">
@@ -84,6 +84,10 @@ const nav = [
         <p>由 Obsidian、Astro 与 GitHub Pages 构成。</p>
       </footer>
     </div>
+    <a class="back-to-top" href="#page-top" aria-label="回到页面顶部" hidden>
+      <span aria-hidden="true">↑</span>
+      <span>顶部</span>
+    </a>
     <script>
       const select = document.querySelector<HTMLSelectElement>("#theme-select");
       if (select) {
@@ -93,6 +97,22 @@ const nav = [
           localStorage.setItem("moxiao-theme", select.value);
           window.dispatchEvent(new CustomEvent("moxiao:theme-change", { detail: { theme: select.value } }));
         });
+      }
+
+      const backToTop = document.querySelector<HTMLAnchorElement>(".back-to-top");
+      if (backToTop) {
+        let ticking = false;
+        const updateBackToTop = () => {
+          backToTop.hidden = window.scrollY < 480;
+          ticking = false;
+        };
+        window.addEventListener("scroll", () => {
+          if (!ticking) {
+            window.requestAnimationFrame(updateBackToTop);
+            ticking = true;
+          }
+        }, { passive: true });
+        updateBackToTop();
       }
     </script>
   </body>

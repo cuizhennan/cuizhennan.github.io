@@ -8,9 +8,19 @@ const reports = (await getCollection("daily")).sort((a, b) => dailyDate(b.id).lo
 
 <BaseLayout title="GitHub Trending 日报" description="最近一周 GitHub Trending 技术、产品与投资趋势日报" active="daily">
   <header class="collection-hero">
-    <p class="eyebrow">GitHub Trending · Daily Brief</p>
-    <h1>从今日代码，辨认明日叙事。</h1>
-    <p>沿技术、产品与投资三条线索记录开源生态变化。日报由 Obsidian 同步，保留最近的观察窗口。</p>
+    <p class="collection-kicker"><a href="/">墨萧</a><span>／</span>每日观察</p>
+    <div class="collection-title-row">
+      <div>
+        <p class="eyebrow">GitHub Trending · Daily Brief</p>
+        <h1>从今日代码，<br />辨认明日叙事。</h1>
+      </div>
+      <p>沿技术、产品与投资三条线索记录开源生态变化。日报由 Obsidian 同步，保留最近的观察窗口。</p>
+    </div>
+    <dl class="collection-stats">
+      <div><dt>收录</dt><dd>{reports.length} 期</dd></div>
+      <div><dt>更新</dt><dd>Daily</dd></div>
+      <div><dt>关注</dt><dd>Tech · Product · Capital</dd></div>
+    </dl>
   </header>
   <section class="report-list" aria-label="日报列表">
     {reports.map((report, index) => {

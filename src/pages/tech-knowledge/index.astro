@@ -12,9 +12,19 @@ const entries = manifest.entries.map((item) => ({ ...item, article: byTitle.get(
 
 <BaseLayout title="技术知识" description="从 Obsidian 同步发布的技术原理、系统设计与工程实践文章" active="tech">
   <header class="collection-hero compact">
-    <p class="eyebrow">Tech Knowledge · Obsidian Notes</p>
-    <h1>技术知识</h1>
-    <p>从底层原理到工程实践，把近期研究整理成可检索、可串读的长期笔记。</p>
+    <p class="collection-kicker"><a href="/">墨萧</a><span>／</span>长期笔记</p>
+    <div class="collection-title-row">
+      <div>
+        <p class="eyebrow">Tech Knowledge · Obsidian Notes</p>
+        <h1>技术知识</h1>
+      </div>
+      <p>从底层原理到工程实践，把近期研究整理成可检索、可串读的长期笔记。</p>
+    </div>
+    <dl class="collection-stats">
+      <div><dt>收录</dt><dd>{entries.length} 篇</dd></div>
+      <div><dt>来源</dt><dd>Obsidian</dd></div>
+      <div><dt>形式</dt><dd>原理 · 实践 · 论文</dd></div>
+    </dl>
   </header>
   <section class="report-list tech-list" aria-label="技术文章列表">
     {entries.map(({ article, ...item }) => article && (

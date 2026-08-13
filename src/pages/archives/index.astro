@@ -5,13 +5,24 @@ import { dailyDate } from "../../lib/content";
 import techManifest from "../../../docs/obsidian/tech-knowledge/manifest.json";
 
 const reports = (await getCollection("daily")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
+const archiveCount = techManifest.entries.length + reports.length + 2;
 ---
 
 <BaseLayout title="归档" description="墨萧的文章与研究归档" active="archives">
   <header class="collection-hero compact">
-    <p class="eyebrow">Archive · Since 2017</p>
-    <h1>归档</h1>
-    <p>文字按时间归拢，像书架一样保留来时的顺序。</p>
+    <p class="collection-kicker"><a href="/">墨萧</a><span>／</span>时间索引</p>
+    <div class="collection-title-row">
+      <div>
+        <p class="eyebrow">Archive · Since 2017</p>
+        <h1>归档</h1>
+      </div>
+      <p>文字按时间归拢，像书架一样保留来时的顺序；从最近的观察，回到最初的那篇文字。</p>
+    </div>
+    <dl class="collection-stats">
+      <div><dt>收录</dt><dd>{archiveCount} 篇</dd></div>
+      <div><dt>始于</dt><dd>2017</dd></div>
+      <div><dt>栏目</dt><dd>日报 · 技术 · 旅行</dd></div>
+    </dl>
   </header>
   <section class="archive-year">
     <h2>2026</h2>

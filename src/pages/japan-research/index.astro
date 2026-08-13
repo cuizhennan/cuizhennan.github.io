@@ -9,9 +9,19 @@ const byId = new Map(entries.map((entry) => [entry.id, entry]));
 
 <BaseLayout title="日本旅行研究素材" description="博物馆、古建筑、城市文化遗产与历史分层的日本旅行案头研究" active="research">
   <header class="collection-hero research-hero">
-    <p class="eyebrow">Lonely Planet Notes · Japan</p>
-    <h1>旅行开始以前，<br />先读懂时间留下的纹理。</h1>
-    <p>这不是景点清单，而是一组关于博物馆、古建筑、城市文化遗产与历史分层的案头研究。</p>
+    <p class="collection-kicker"><a href="/">墨萧</a><span>／</span>旅行研究</p>
+    <div class="collection-title-row">
+      <div>
+        <p class="eyebrow">Field Notes · Japan</p>
+        <h1>旅行开始以前，<br />先读懂时间留下的纹理。</h1>
+      </div>
+      <p>这不是景点清单，而是一组关于博物馆、古建筑、城市文化遗产与历史分层的案头研究。</p>
+    </div>
+    <dl class="collection-stats">
+      <div><dt>章节</dt><dd>{researchPages.length} 章</dd></div>
+      <div><dt>范围</dt><dd>Tokyo → Kansai</dd></div>
+      <div><dt>线索</dt><dd>建筑 · 城市 · 历史</dd></div>
+    </dl>
   </header>
   <section class="research-grid" aria-label="研究目录">
     {researchPages.map((page) => {
