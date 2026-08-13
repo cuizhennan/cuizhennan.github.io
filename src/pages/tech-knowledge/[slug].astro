@@ -42,6 +42,7 @@ const navigation: SectionNavigation = {
   {headings}
   {navigation}
   hasMermaid={/```mermaid\s/i.test(article.body ?? "")}
+  contentSource={article.body ?? ""}
 >
   <Content />
 </ArticleLayout>

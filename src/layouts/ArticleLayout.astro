@@ -14,20 +14,34 @@ interface Props {
   headings?: TocHeading[];
   navigation?: SectionNavigation;
   hasMermaid?: boolean;
+  contentSource?: string;
 }
 
-const { title, description, eyebrow, meta, active, headings = [], navigation, hasMermaid = false } = Astro.props;
+const { title, description, eyebrow, meta, active, headings = [], navigation, hasMermaid = false, contentSource = "" } = Astro.props;
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const showToc = tocHeadings.length >= 3;
+const readableText = contentSource
+  .replace(/---[\s\S]*?---/g, " ")
+  .replace(/```[\s\S]*?```/g, " ")
+  .replace(/[^\p{Script=Han}\p{Letter}\p{Number}\s]/gu, " ");
+const hanCount = readableText.match(/\p{Script=Han}/gu)?.length ?? 0;
+const latinWordCount = readableText.replace(/\p{Script=Han}/gu, " ").trim().split(/\s+/).filter(Boolean).length;
+const readingMinutes = contentSource ? Math.max(1, Math.ceil(hanCount / 400 + latinWordCount / 220)) : undefined;
 ---
 
 <BaseLayout {title} {description} {active}>
+  <div class="reading-progress" aria-hidden="true"><span></span></div>
   <div class:list={["reading-shell", showToc && "has-toc"]}>
     <article class="article-page">
       <header class="article-header">
         <p class="eyebrow">{eyebrow}</p>
         <h1>{title}</h1>
-        {meta && <p class="article-meta">{meta}</p>}
+        {(meta || readingMinutes) && (
+          <p class="article-meta">
+            {meta && <span>{meta}</span>}
+            {readingMinutes && <span>约 {readingMinutes} 分钟阅读</span>}
+          </p>
+        )}
         {navigation && <SectionNavigator {navigation} />}
       </header>
       {showToc && (
@@ -70,6 +84,28 @@ const showToc = tocHeadings.length >= 3;
     </script>
   )}
   <script>
+    const articleBody = document.querySelector<HTMLElement>(".article-body");
+    const progressBar = document.querySelector<HTMLElement>(".reading-progress span");
+    if (articleBody && progressBar) {
+      let progressTicking = false;
+      const updateProgress = () => {
+        const articleTop = articleBody.getBoundingClientRect().top + window.scrollY;
+        const readableDistance = Math.max(1, articleBody.offsetHeight - window.innerHeight * .72);
+        const progress = Math.min(1, Math.max(0, (window.scrollY - articleTop + window.innerHeight * .18) / readableDistance));
+        progressBar.style.transform = `scaleX(${progress})`;
+        progressTicking = false;
+      };
+      const requestProgressUpdate = () => {
+        if (!progressTicking) {
+          window.requestAnimationFrame(updateProgress);
+          progressTicking = true;
+        }
+      };
+      window.addEventListener("scroll", requestProgressUpdate, { passive: true });
+      window.addEventListener("resize", requestProgressUpdate);
+      updateProgress();
+    }
+
     document.querySelectorAll<HTMLElement>(".article-body blockquote").forEach((callout) => {
       const first = callout.querySelector("p:first-child");
       const match = first?.textContent?.match(/^\[!([a-z-]+)\]\s*/i);
