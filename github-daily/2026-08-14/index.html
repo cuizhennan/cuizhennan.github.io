@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="2026-08-14 GitHub Trending 技术、产品与投资趋势日报">
+  <title>GitHub Trending 日报 — 2026-08-14（周五） | 墨萧</title>
+  <link rel="stylesheet" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css">
+  <link rel="stylesheet" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css">
+  <link rel="stylesheet" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css">
+  <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/style.css?v=2026.08.11.1">
+</head>
+<body>
+  <div class="body_container">
+    
+  <div id="header">
+    <div class="site-name">
+      <h1 class="hidden">GitHub Trending 日报</h1>
+      <a id="logo" href="/.">墨萧</a>
+      <p class="description">大肚能容容天下可容之事，笑口常开笑天下可笑之人。</p>
+    </div>
+    <div id="nav-menu">
+      <a href="/."><i class="fa fa-home"> 首页</i></a>
+      <a href="/archives/"><i class="fa fa-archive"> 归档</i></a>
+      <a href="/github-daily/" class="current"><i class="fa fa-github"> GitHub 日报</i></a>
+      <a href="/japan-research/"><i class="fa fa-map-o"> 日本研究</i></a>
+    </div>
+  </div>
+    <main class="daily-layout">
+        <article class="research-article daily-article">
+          <p class="editorial-kicker">GitHub Trending / Daily Brief</p>
+          <div class="daily-meta"><time datetime="2026-08-14">2026-08-14</time> · <a href="/docs/obsidian/GitHub%20Daily/GitHub-Trending-%E6%97%A5%E6%8A%A5-2026-08-14.md">Markdown 原文</a></div>
+          <div class="post-content"><h1 id="github-trending-%E6%97%A5%E6%8A%A5-%E2%80%94-2026-08-14%EF%BC%88%E5%91%A8%E4%BA%94%EF%BC%89" tabindex="-1">GitHub Trending 日报 — 2026-08-14（周五）</h1>
+<blockquote>
+<p>三线视角：技术 × 产品 × 投资 ｜ 数据源：GitHub Trending / HN / HuggingFace / X 长文 / Java / 云原生 / Web3
+今日主题词：<strong>DeepSeek Harness「一切皆插件」下场抢 Agent 层</strong> · <strong>Gemini 3.7 Flash 价格战</strong> · <strong>本地/端侧 AI 二次开花（FluidVoice/needle/modly）</strong> · <strong>技能×个人知识（obsidian-skills）</strong> · <strong>「理解是新瓶颈」与「运行时安全契约」</strong></p>
+</blockquote>
+<hr>
+<h2 id="%F0%9F%93%B0-1.-%E4%BB%8A%E6%97%A5-hacker-news-%E7%B2%BE%E9%80%89" tabindex="-1">📰 1. 今日 Hacker News 精选</h2>
+<blockquote>
+<p>今日 HN Top 30 的题眼是「<strong>模型层厂商集体向下打</strong>」——Google 发 Gemini 3.7 Flash（560，价格腰斩）、DeepSeek 发 Harness（532，直接把 Agent 层开源）、Cerebras 推 GPT-5.6 Sol Ultrafast（388，750 tok/s），三家同日动作都指向同一件事：<strong>模型层在抢 Agent 层的执行权与成本定价权</strong>。同时 Geoffrey Litt 的「理解是新瓶颈」（160）与 Anthropic 的 Conceptual Reasoning Index（70）把「人类/模型的理解与验证」拉回聚光灯。</p>
+</blockquote>
+<h3 id="%F0%9F%A4%96-ai-%26-llm" tabindex="-1">🤖 AI &amp; LLM</h3>
+<p><strong>① Gemini 3.7 Flash：Google 的「最聪明勤务模型」，价格是最大武器（560 pts）🏆 今日榜首</strong></p>
+<ul>
+<li>链接：<a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/">https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/</a> ｜ HN：<a href="https://news.ycombinator.com/item?id=49289112">https://news.ycombinator.com/item?id=49289112</a> ｜ 模型卡：<a href="https://deepmind.google/models/model-cards/gemini-3-7-flash">https://deepmind.google/models/model-cards/gemini-3-7-flash</a></li>
+<li>背景：Google 发布 Gemini 3.7 Flash——注意它<strong>不是新基础模型，而是 3.6 Flash 的强化版</strong>（距 3.6 仅约 3 周），主打「workhorse model」（勤务/工作马模型）定位，API 与企业端专用、<strong>无开放权重</strong>。</li>
+<li>核心观点：1M 上下文、64K 输出、知识截止 2026-03。<strong>价格是真正论点</strong>：$0.75/1M 输入、$3.75/1M 输出（intro 价，2026-12-31 后翻倍到 $1.50/$7.50），约为 Claude Sonnet 5 / GPT-5.6 Terra 混合成本的 1/3。基准上 AA 智能指数 56（3.6 为 52）、FrontierCode 43.6% vs 34.4%、DeepSWE 65.3% vs 48.6%。同时它已成为 Gemini Spark（个人 agent，160+ 国家）的底座。</li>
+<li>为什么值得关注：<strong>「Flash 工作马」路线 + 价格腰斩 = Google 在抢 Agent 的 tokenomics</strong>。这与 8/12「模型路由/成本」主线（Switchyard）、8/13「开源旗舰 MoE」完全同屏：<strong>当成本成为 Agent 生产的第一变量，Google 用「半价 Flash」直接改写价格锚点</strong>。但要注意 GPT-5.6 Terra 在 terminal/computer-use 上仍领先、CharXiv 小幅回退，说明「便宜但不全强」。</li>
+</ul>
+<p><strong>② DeepSeek Harness developer preview：DeepSeek 下场自建 Agent 运行时，「一切皆插件」（532 pts）⭐ 今日最具战略信号</strong></p>
+<ul>
+<li>链接：<a href="https://deepseek.com/harness/en/">https://deepseek.com/harness/en/</a> ｜ HN：<a href="https://news.ycombinator.com/item?id=49285244">https://news.ycombinator.com/item?id=49285244</a> ｜ GitHub：<a href="https://github.com/deepseek-ai/deepseek-harness%EF%BC%8840.9K%E2%98%85%EF%BC%8C12,293">https://github.com/deepseek-ai/deepseek-harness（40.9K★，12,293</a> commits）｜ 文档：<a href="https://deepseek-harness.github.io/deepseek-harness/en/guide/quickstart">https://deepseek-harness.github.io/deepseek-harness/en/guide/quickstart</a></li>
+<li>背景：DeepSeek 发布 Harness developer preview——<strong>开源、含源码</strong>的 Agent harness。核心理念「Everything is a plugin」：models/tools/skills/sessions/sandboxes/storage/loops/scheduling/UI <strong>全部是插件</strong>，可换可重组；底层基于 <strong>Cordis 插件系统</strong>。</li>
+<li>核心观点：<strong>「Agent = Model + Harness」</strong>——模型是灵魂，harness 让 agent 在真实环境持续工作。关键工程承诺：<strong>「Every run is traceable」</strong>——模型看到的一切都进 append-only 会话日志（system prompt、reasoning、工具调用、子 agent 调度、每次上下文注入），Trajectory 视图可按来源审查，支持 resume/fork/search/replay。提供 Standard（全工具）/Code（模型生成代码编排多轮）/Minimal（仅 shell+file，用于基准）/Creator（内存内测 Cordis 插件并组合成新模式）四种运行时模式。</li>
+<li>为什么值得关注：<strong>这是 8 月「Agent harness / 工作台」主线的最重磅一击</strong>——此前我们追踪的 omnigent（meta-harness）、Claude Code、Codex、deepseek-harness 之前的各家 harness，都是「模型厂商之外的第三方」；<strong>今天一个开源旗舰模型厂商亲自下场定义 Agent 运行时</strong>。当 DeepSeek 把「模型 + harness + 可追溯会话」打包，它就从「卖模型的」变成「卖 Agent 基座的」，直插 Anthropic（Claude Code）/OpenAI（Codex）的腹地。配合 8/13「DeepSeek V4 Pro 是 Agent 负载优化」——<strong>DeepSeek 的战略从模型供给端一路打到 Agent 执行端</strong>。</li>
+</ul>
+<p><strong>③ Accelerating GPT-5.6 Sol Ultrafast：Cerebras × OpenAI，750 tok/s 的「超快模式」（388 pts）</strong></p>
+<ul>
+<li>链接：<a href="https://www.cerebras.ai/blog/accelerating-gpt-5-6-sol-ultrafast-with-openai">https://www.cerebras.ai/blog/accelerating-gpt-5-6-sol-ultrafast-with-openai</a> ｜ HN：<a href="https://news.ycombinator.com/item?id=49289844">https://news.ycombinator.com/item?id=49289844</a></li>
+<li>背景：Cerebras 与 OpenAI 联合推出 <strong>Ultrafast Mode</strong>——OpenAI API 首个由 Cerebras 供能的加速服务层，率先服务精选客户，<strong>宣称 750 output tokens/s 且无质量折损</strong>。</li>
+<li>核心观点：GPT-5.6 Sol Ultrafast 比 Fable 5 快 11x、比 Opus 4.8 Fast 快 5x。HLE（2500 道博士级题）全做完 11h11m，而 Claude Fable 5 要 78h27m（约 7x 提速）；GDP-Val 端到端 5.6x 加速。官方称 GPT-5.6 Sol 是 OpenAI 面向法律/金融/工程报告最强的模型。</li>
+<li>为什么值得关注：<strong>「速度 = 新的智能维度」</strong>——当 frontier 模型在质量上趋同，「谁先出答案」成为产品差异。这与 8/12「压缩即预测」「推理基建」主线、8/13「本地模型（Needle 500 tok/s）」形成对照：<strong>云端（Cerebras）与端侧（Needle）同时把「吞吐」当卖点</strong>，推理效率军备竞赛全面开打。</li>
+</ul>
+<p><strong>④ Mistral OCR 4.1（233 pts）</strong></p>
+<ul>
+<li>链接：<a href="https://docs.mistral.ai/models/ocr-4-1">https://docs.mistral.ai/models/ocr-4-1</a> ｜ HN：<a href="https://news.ycombinator.com/item?id=49288889">https://news.ycombinator.com/item?id=49288889</a></li>
+<li>背景：Mistral 更新 OCR 模型到 4.1。文档理解是 Agent 读取真实世界（发票/合同/PDF）的入口能力。</li>
+<li>为什么值得关注：<strong>「文档理解」是 Agent 落地的刚需前哨</strong>——与 HF 今日 InSight-doc（Agentic 长文档视觉感知）、8/13「理解是新瓶颈」呼应：<strong>Agent 要干活，第一步是把文档看对</strong>。OCR 赛道在 Agent 时代被重新估值。</li>
+</ul>
+<p><strong>⑤ Choosing an AI model: one prompt, 11 models, different results（170 pts）</strong></p>
+<ul>
+<li>链接：<a href="https://www.netlify.com/blog/one-prompt-11-models-very-different-results/">https://www.netlify.com/blog/one-prompt-11-models-very-different-results/</a> ｜ HN：<a href="https://news.ycombinator.com/item?id=49285327">https://news.ycombinator.com/item?id=49285327</a></li>
+<li>背景：Netlify 用同一个 prompt 跑 11 个模型，展示输出差异。这是「模型路由/选型」在实操层的入门科普。</li>
+<li>为什么值得关注：<strong>当「哪个模型跑哪一步」成为工程问题（8/12 Switchyard），「怎么选模型」就从玄学变成可评测流程</strong>——Netlify 这篇正好补上「选型方法论」这层，与「模型路由层」主线互为表里。</li>
+</ul>
+<blockquote>
+<p><strong>共性趋势观察</strong>：今日 AI 组是「<strong>模型层集体向下打 Agent 层</strong>」——Google 用半价 Flash 抢 token 成本、DeepSeek 用开源 Harness 抢执行层、Cerebras 用 Ultrafast 抢速度。<strong>模型厂商不再满足于「卖权重」，都在抢「Agent 怎么跑、花多少钱跑、跑多快」这三件事的定价权</strong>。这与 8/12「模型路由成新战场」完全同频，且进一步强化：8 月下半月的竞争主战场已经从「谁的模型最强」迁移到「谁掌控 Agent 的运行时与成本」。</p>
+</blockquote>
+<h3 id="%F0%9F%9B%A0-%E5%B7%A5%E7%A8%8B%E4%B8%8E%E5%BC%80%E5%8F%91" tabindex="-1">🛠 工程与开发</h3>
+<p><strong>① Spaghettifying DRAM：用 DRAM scrambling 解锁 CPU 的一切（472 pts）</strong></p>
+<ul>
+<li>链接：<a href="https://github.com/xoreaxeaxeax/skitter-creek-bath-salts">https://github.com/xoreaxeaxeax/skitter-creek-bath-salts</a> ｜ HN：<a href="https://news.ycombinator.com/item?id=49286341">https://news.ycombinator.com/item?id=49286341</a></li>
+<li>背景：硬件安全研究（xoreaxeaxeax，知名硬件黑客）发布「Unlocking <em>everything</em> on the CPU with DRAM scrambling」——围绕现代 CPU 的 DRAM 地址加扰（scrambling）机制做逆向/利用研究，约 936★。</li>
+<li>核心观点：DRAM 加扰本是为了打散物理地址、防行锤击等攻击，但作者研究的是如何逆向它、进而解锁 CPU 更深层的访问控制。</li>
+<li>为什么值得关注：<strong>「硅是战略物资」（8/8）的硬件侧镜像——连 DRAM 地址加扰都成了攻击面</strong>。与 8/13「AI 身份伪造扫描」、8/12「加密思维链可偷」共同说明：<strong>8 月的「验证/安全」主线正在从软件一路打到硬件</strong>——「底层不再可盲信」。</li>
+</ul>
+<p><strong>② Kubernetes on Oxide: How customer needs shaped our integrations（150 pts）</strong></p>
+<ul>
+<li>链接：<a href="https://oxide.computer/blog/kubernetes-on-oxide">https://oxide.computer/blog/kubernetes-on-oxide</a> ｜ HN：<a href="https://news.ycombinator.com/item?id=49286485">https://news.ycombinator.com/item?id=49286485</a></li>
+<li>背景：Oxide（开源裸金属云公司）分享在 Oxide 上跑 Kubernetes 的集成路径——<strong>从客户提交的 Rancher node driver PR 和 RFD 493 起步</strong>，最终发布 Rancher / Omni / Cluster API 三条供应路径，并按 K8s 生命周期（供应→基础设施对账→网络→存储）逐步补齐。</li>
+<li>核心观点：不做「抽象设计」，而是<strong>跟着客户在 K8s 生命周期里遇到的真实问题走</strong>——不同供应工作流分别落到 Rancher、Omni、Cluster API；运行暴露网络缺口、有状态负载暴露存储约束。</li>
+<li>为什么值得关注：<strong>云原生与「K8s-as-AI-OS」（8/11-8/12 主线）在裸金属侧的落地</strong>——Oxide 代表「可审计、自托管」的云原生派，其 K8s 集成是「反超大云」叙事的工程实证。对想把 AI/GPU 工作负载跑在自托管 K8s 上的团队，这是一份架构参考。</li>
+</ul>
+<p><strong>③ 其它工程项</strong></p>
+<ul>
+<li><strong>Single log line is 49KB+ (ext4) / 110KB+ (btrfs) of systemd-journald disk writes</strong>（134 pts，<a href="https://github.com/systemd/systemd/issues/40262%EF%BC%89%EF%BC%9A%E4%B8%80%E8%A1%8C%E6%97%A5%E5%BF%97%E5%9C%A8">https://github.com/systemd/systemd/issues/40262）：一行日志在</a> journald 下触发的惊人磁盘写放大——<strong>「可观测性也要讲效率」</strong>，与 8/13「压缩即预测」的推理效率叙事同源，只是落在系统日志侧。</li>
+<li><strong>Where did the old web go? We followed 657,607 links to find out</strong>（117 pts，<a href="https://0.mk/blog/link-rot%EF%BC%89%EF%BC%9A%E5%AF%B9">https://0.mk/blog/link-rot）：对</a> 65 万条链接的追踪揭示「链接腐烂」——<strong>「个人 vs 平台」与「记忆/档案」主线在 Web 层的历史注脚</strong>，呼应 8/13 PBS 诉 Iron Mountain（档案数据访问权）。</li>
+<li><strong>NP-Overrated</strong>（111 pts，<a href="https://gruhn.me/blog/2026-08-13/%EF%BC%89%EF%BC%9A%E5%AF%B9%E3%80%8CNP">https://gruhn.me/blog/2026-08-13/）：对「NP</a> 问题被高估」的科普/观点——<strong>算法与复杂度理论的「祛魅」</strong>，与 8/12「Gödel 证明」「数学能力边界」同属「理论平权」暗线。</li>
+<li><strong>Better Gaussian Splatting in Julia</strong>（111 pts，<a href="https://pxl-th.github.io/blog/better-gs-julia/%EF%BC%89%EF%BC%9AJulia">https://pxl-th.github.io/blog/better-gs-julia/）：Julia</a> 里更好的高斯泼溅——<strong>3D/图形与 Julia 科学计算</strong>，呼应 8/12 Woxi（开源 Mathematica）。</li>
+<li><strong>How Compaction Works in Pi</strong>（87 pts，<a href="https://earendil.com/posts/compaction-in-pi/%EF%BC%89%EF%BC%9APi%EF%BC%88earendil-works/pi%EF%BC%8C8/13">https://earendil.com/posts/compaction-in-pi/）：Pi（earendil-works/pi，8/13</a> 已深挖）的压缩机制——<strong>Agent 记忆/上下文的压缩</strong>，与 HF 今日 SkillZip、RoMeRL 的记忆主线同屏。</li>
+</ul>
+<blockquote>
+<p><strong>共性趋势观察</strong>：工程组今日的暗线是「<strong>底层不再可盲信、且处处都要效率</strong>」——DRAM 加扰可攻击（硬件）、journald 一行日志写放大（可观测性效率）、链接腐烂（Web 档案）、Oxide 自托管 K8s（反超大云）。<strong>8 月「验证文化」继续从模型层向工程全栈与硬件纵深渗透</strong>，只是今日更多聚焦在「底层基础设施的真实成本与真实风险」。</p>
+</blockquote>
+<h3 id="%F0%9F%8C%8D-%E5%BC%80%E5%8F%91%E8%80%85%E6%96%87%E5%8C%96%E4%B8%8E%E7%A7%91%E5%AD%A6" tabindex="-1">🌍 开发者文化与科学</h3>
+<p><strong>① Choose Boring Technology (2015) 再登榜（222 pts）</strong></p>
+<ul>
+<li>链接：<a href="https://mcfunley.com/choose-boring-technology">https://mcfunley.com/choose-boring-technology</a> ｜ HN：<a href="https://news.ycombinator.com/item?id=49289512">https://news.ycombinator.com/item?id=49289512</a></li>
+<li>背景：Dan McKinley 2015 年的经典长文今天仍被反复顶上热搜——核心主张「每个项目只允许有限次『创新预算』，其余全用无聊/成熟技术」。</li>
+<li>为什么值得关注：<strong>这篇 11 年老文在今天 AI 时代反而更应景</strong>——当 AI 让「炫技」变得极其便宜（人人都能堆新框架/新模型），「无聊技术」的稳定性与可运维性成为稀缺资产。与 8/12「Mojo/llama.cpp 底层运行时」形成张力：<strong>一边在抢「新运行时」，一边在提醒「选成熟技术」</strong>，这本身就是 8 月「工程本质被 AI 重估」的又一注脚。</li>
+</ul>
+<p><strong>② Nine PBS sues Iron Mountain over blocked access to archival data（216 pts）</strong></p>
+<ul>
+<li>链接：<a href="https://current.org/2026/08/nine-pbs-sues-iron-mountain-over-blocked-access-to-archival-data/">https://current.org/2026/08/nine-pbs-sues-iron-mountain-over-blocked-access-to-archival-data/</a> ｜ HN：<a href="https://news.ycombinator.com/item?id=49285418">https://news.ycombinator.com/item?id=49285418</a></li>
+<li>背景：九家 PBS 电视台起诉档案服务商 Iron Mountain，指控其封锁了对档案数据的访问。</li>
+<li>核心观点：<strong>「数据你存了，但所有权和使用权归谁」</strong>——档案/媒体机构把自己的历史数据交给第三方托管，一旦被封锁，等于历史被「扣押」。</li>
+<li>为什么值得关注：<strong>这是「记忆/档案主权」主线（8/10「Everything you do is being recorded」、8/13 车牌检索需搜查令）在媒体档案侧的爆发</strong>——当数据越来越值钱，「谁能访问、谁能删除、谁说了算」成为治理核心矛盾，与「个人 vs 平台」同源。</li>
+</ul>
+<p><strong>③ 其它</strong></p>
+<ul>
+<li><strong>Mushroom behind 'tiny people' hallucinations identified</strong>（256 pts，<a href="https://phys.org/news/2026-08-qa-mushroom-tiny-people-hallucinations.html%EF%BC%89%EF%BC%9A%E8%87%B4%E5%B9%BB%E8%98%91%E8%8F%87%E4%B8%8E%E3%80%8C%E5%B0%8F%E4%BA%BA%E5%B9%BB%E8%A7%89%E3%80%8D%E7%9A%84%E7%A7%91%E5%AD%A6%E8%A7%A3%E9%87%8A%E2%80%94%E2%80%94**%E7%A7%91%E5%AD%A6%E4%BE%A7%E7%9A%84%E3%80%8C%E5%B9%BB%E8%A7%89/%E6%84%9F%E7%9F%A5%E3%80%8D%E7%A7%91%E6%99%AE**%EF%BC%8C%E4%B8%8E">https://phys.org/news/2026-08-qa-mushroom-tiny-people-hallucinations.html）：致幻蘑菇与「小人幻觉」的科学解释——**科学侧的「幻觉/感知」科普**，与</a> AI 幻觉形成有趣的交叉隐喻。</li>
+<li><strong>Ordinary abundance</strong>（191 pts，<a href="https://ordinaryabundance.com/%EF%BC%89%EF%BC%9A%E3%80%8C%E5%B9%B3%E5%87%A1%E7%9A%84%E4%B8%B0%E9%A5%B6%E3%80%8D%E2%80%94%E2%80%94**%E5%8E%BB%E5%A2%9E%E9%95%BF/%E7%94%9F%E6%B4%BB%E6%96%B9%E5%BC%8F%E7%9A%84%E6%80%9D%E6%BD%AE**%EF%BC%8C%E4%B8%8E">https://ordinaryabundance.com/）：「平凡的丰饶」——**去增长/生活方式的思潮**，与</a> 8/13「中产消亡」论战共享「AI 时代职业/生活结构重塑」的背景。</li>
+<li><strong>Donkey.bas is 45 Years Old</strong>（175 pts，<a href="https://donkeybas.com/%EF%BC%89%EF%BC%9AMS-DOS">https://donkeybas.com/）：MS-DOS</a> 游戏 Donkey.bas 45 周年——<strong>「工具长青/个人 IP」的文化悼念</strong>（延续 8/13 Amiga 开发者离世）。</li>
+<li><strong>Heart Aerospace completes first flight of largest electric aircraft</strong>（111 pts，<a href="https://www.heartaerospace.com/newsroom/%EF%BC%89%EF%BC%9A%E5%85%A8%E7%90%83%E6%9C%80%E5%A4%A7%E7%94%B5%E5%8A%A8%E9%A3%9E%E6%9C%BA%E9%A6%96%E9%A3%9E%E2%80%94%E2%80%94**%E7%94%B5%E6%B0%94%E5%8C%96/%E6%B0%94%E5%80%99%E7%A7%91%E6%8A%80**%E7%9A%84%E7%A1%AC%E4%BF%A1%E5%8F%B7%E3%80%82">https://www.heartaerospace.com/newsroom/）：全球最大电动飞机首飞——**电气化/气候科技**的硬信号。</a></li>
+<li><strong>Launch HN: Bullet (YC S26) – A Faster Coding Agent</strong>（77 pts，<a href="https://www.codewithbullet.com">https://www.codewithbullet.com</a>）：更快 coding agent，YC S26——<strong>「coding agent 速度战」的又一玩家</strong>，与今日「速度=智能」主线呼应。</li>
+</ul>
+<blockquote>
+<p><strong>共性趋势观察</strong>：文化组的核心词是「<strong>在 AI 时代重新划定所有权与选择权</strong>」——11 年的「Boring Technology」回榜（选型权）、PBS 诉 Iron Mountain（数据所有权）、Ordinary abundance（生活方式选择权）。<strong>AI 让选择变得既更多又更贵：新东西太多要克制，老数据太重要要主权</strong>——这正是 8 月「验证/可信/主权」主线的文化层表达。</p>
+</blockquote>
+<hr>
+<h2 id="%F0%9F%A4%97-2.-huggingface-%E6%A8%A1%E5%9D%97%E4%B8%BB%E9%A2%98%E6%8E%A8%E8%8D%90" tabindex="-1">🤗 2. HuggingFace 模块主题推荐</h2>
+<blockquote>
+<p>数据源：HF Daily Papers API。说明：<code>date=2026-08-14</code> 返回 400（当日论文尚未收录），故采用<strong>最新可用批次（2026-08-13 发布，26 篇）</strong>，并标注为「今日最接近的可用数据」。今日 HF 模块聚焦「<strong>Harness 成为能力/安全的单位</strong>、<strong>自演化与持久软件演进</strong>、<strong>Agent 安全与红队规模化</strong>、<strong>世界模型的可研究化</strong>、<strong>量化效率</strong>」五个集群。</p>
+</blockquote>
+<h3 id="2.1-%E4%BB%8A%E6%97%A5%E4%B8%BB%E9%A2%98%E6%80%BB%E8%A7%88%EF%BC%88%E5%8F%99%E8%BF%B0%E6%80%A7%EF%BC%89" tabindex="-1">2.1 今日主题总览（叙述性）</h3>
+<p>今日 HF 最新论文（08-13 批次）最刺眼的是**「Harness（运行时外壳）第一次成为研究的核心对象」<strong>——AI4AI 用 harness 做 test-time 强到弱能力迁移、Agent Safety 主张「安全应是运行时契约」、Spark-to-Paper 把整篇论文写作实现为 13 个可组合 skill 塞进现有 coding assistant、Mechanist 用 agentic 系统做可解释性科学仪器——<strong>四篇不同方向却都把「模型周围的 harness」当成真正的杠杆</strong>，这与今天 HN 榜首级事件 DeepSeek Harness 完美同频。紧随其后的是</strong>「自演化/持久软件」第二热**（Persistent Recursive Worlds 让软件成为持久递归世界、Self-Evolving Embodied Agents 用 skill-harness 进化、Poor Man's Agentic Modeling 在笔记本上模拟 LLM 社会），延续 8/12 的 Co-Evolution/Mendel Gödel。第三个集群是**「Agent 安全/红队规模化」<strong>（OpenART 开放环境进化红队、ToolHazard 对抗环境合成、Agent Safety 运行时契约），把 8 月「验证/安全」主线从模型层推到环境与运行时。第四个是</strong>「世界模型的可研究化」<strong>（AutoWorldModel-Bench 让 coding agent 当自主研究员、StateFlow 3D 世界状态、AtlasVLA 世界-自我状态建模），第五个是</strong>「量化/离散扩散效率」**（ReRound 用条件扩散解量化舍入歧义、Simplex Relaxation for Discrete Diffusion）。整体看，今日 HF 在回答「<strong>Agent 的能力与安全到底住在哪一层——答案越来越指向 harness/运行时/环境，而不是模型权重本身</strong>」，与 DeepSeek Harness 的「Agent = Model + Harness」是同一判断。</p>
+<h3 id="2.2-%E9%80%90%E4%B8%BB%E9%A2%98%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3" tabindex="-1">2.2 逐主题深度拆解</h3>
+<p><strong>① Harness 成为能力与安全的单位（热度最高）</strong></p>
+<ul>
+<li><strong>🧩 拆解</strong>：这批论文的共性是「<strong>同一个痛点：模型权重不再是能力的全部，模型周围的 harness 才是</strong>」。AI4AI（arXiv 2608.12307）提出 test-time 的 strong-to-weak scaffolding：<strong>一个强 builder 模型构造推理时 harness，帮弱 target 模型不更新任何参数就提高任务成功率</strong>——把「蒸馏」从训练期搬到推理期。Agent Safety（arXiv 2608.11274）更直接：<strong>当前 RLHF/DPO/Constitutional AI 的训练期安全范式，对「会执行代码、改文件、发消息、改数据库」的自主 Agent 结构性不足</strong>——安全必须是「运行时契约」，由 harness 强制，分「预防面」（沙箱/权限门/输出过滤/轨迹监控）与「证据面」（可验证证明好行为真发生了）。Spark-to-Paper（arXiv 2608.11924）把「从想法到论文」拆成 13 个可组合 skill，塞进现有 coding assistant，<strong>不依赖独立 agent 平台</strong>。Mechanist（arXiv 2608.12036）则把 AI 当「科学仪器」，用 agentic 系统自动做机制可解释性。四篇解法切入点不同（scaffolding/安全契约/skill 化/科研自动化），但<strong>都默认「能力住在 harness 里」</strong>——它们是竞争（各有主战场）更是互补（共同承认 harness 层是杠杆）。</li>
+<li><strong>💡 思路</strong>：当 harness 成为能力的载体，「<strong>harness 的工程化、可组合化、可验证化</strong>」就是 2026 下半年 Agent 研究的中心。这与 DeepSeek Harness（一切皆插件）、8/13 omnigent（meta-harness）、8/12 Switchyard（模型路由）在<strong>产业侧</strong>完全一致——<strong>论文和产品在同一条曲线上相向而行</strong>。下一步突破最可能发生在「harness 的组合语义」：当 harness 能被任意装配（模型/工具/skill 都是插件），「如何证明组合后的 harness 安全且有效」就成为新命题——Agent Safety 的「运行时契约」正是第一块拼图。</li>
+<li><strong>🗣️ 见解</strong>：这是今天 HF 最值得深读的集群，<strong>因为它和今天 HN 第一大事件（DeepSeek Harness）撞了个满怀</strong>。我的判断很明确：<strong>「harness 即能力」「安全即运行时契约」不是论文黑话，而是正在被产业实锤的架构答案</strong>。短期（1-4 周）DeepSeek Harness 的开源会带动一波「harnness 插件生态」；中期（1-3 月）「运行时安全契约」（沙箱 + 证据面）会成为企业 Agent 上生产的硬性要求。<strong>AI4AI 的「推理期 harness 蒸馏」是最被低估的</strong>——它把「强模型教弱模型」从训练搬到推理，直接服务「本地/端侧用 harness 榨出更强能力」这一 8/11 主线。不是伪趋势，是主战场。</li>
+<li><strong>🔗 链接 + 联动</strong>：AI4AI <a href="https://arxiv.org/abs/2608.12307">https://arxiv.org/abs/2608.12307</a> ｜ Agent Safety <a href="https://arxiv.org/abs/2608.11274">https://arxiv.org/abs/2608.11274</a> ｜ Spark-to-Paper <a href="https://arxiv.org/abs/2608.11924">https://arxiv.org/abs/2608.11924</a> ｜ Mechanist <a href="https://arxiv.org/abs/2608.12036">https://arxiv.org/abs/2608.12036</a> ｜ 联动观察：与今日 HN 榜首级事件 <code>deepseek-ai/deepseek-harness</code>（<a href="https://github.com/deepseek-ai/deepseek-harness%EF%BC%8C40.9K%E2%98%85%EF%BC%89%E5%8F%8A">https://github.com/deepseek-ai/deepseek-harness，40.9K★）及</a> GitHub 的 <code>NVIDIA-NeMo/Switchyard</code>（<a href="https://github.com/NVIDIA-NeMo/Switchyard%EF%BC%8C1.2K%E2%98%85%EF%BC%89%E7%9B%B4%E6%8E%A5%E5%90%8C%E9%A2%91%E2%80%94%E2%80%94**%E8%AE%BA%E6%96%87%E6%8A%8A">https://github.com/NVIDIA-NeMo/Switchyard，1.2K★）直接同频——**论文把</a> harness 讲清楚，产品把 harness 做成开源**。</li>
+</ul>
+<p><strong>② 自演化与持久软件演进（热度第二）</strong></p>
+<ul>
+<li><strong>🧩 拆解</strong>：这一支回答「<strong>Agent 系统如何跨会话、跨代际地持续演进</strong>」。Persistent Recursive Worlds（arXiv 2608.10450，EvoX Genesis）指出：复杂软件系统演化时间尺度超过任何单个 coding agent 的生命周期——它<strong>让「软件项目」持久、而局部 agent 保持有限寿命</strong>：每个局部世界由「已接受版本 + 仓库路径」锚定，有限寿命 agent 提议局部改动，递归委派跨路径移动，只有被接受的改动进入仓库。Self-Evolving Embodied Agents（arXiv 2608.11350，SHAPER）做 train-free 的具身自演化：<strong>不更新模型权重，只进化 skill/上下文/动作接口/执行 harness</strong>，针对固定接口环境。Poor Man's Agentic Modeling（arXiv 2608.11215）则换了个玩法：<strong>用统计物理观察把每个 LLM agent 换成低参数模型（几百到几千次廉价查询拟合），就能在笔记本上跑任意 N 规模的 LLM 社会模拟</strong>，并给出 [交互序 × 记忆] 分类法。</li>
+<li><strong>💡 思路</strong>：这三篇把「自演化」从「单 Agent 自己改自己」（8/12 Co-Evolution/Mendel Gödel）推进到「<strong>系统的持久化架构</strong>」——一个项目可以比任何 agent 活得长，靠的是「持久世界 + 有限寿命 agent + 递归委派」的架构，而不是无限长寿的超级 agent。这与 8/13「GitSkills 技能度量」「对话即源码（Zed Delta）」同向：<strong>当代码生产被 Agent 接管，「谁长期持有项目状态」成为架构问题</strong>。Poor Man's Agentic Modeling 尤其聪明——它把「社会学实验」的成本打下来，让「多 Agent 社会仿真」从学术奢侈品变成桌面工具。</li>
+<li><strong>🗣️ 见解</strong>：Persistent Recursive Worlds 是这一支里最值得读的——<strong>「持久世界 + 有限寿命 agent」几乎就是未来软件工程的形态</strong>（项目永生，agent 是流水工）。它与 8/13 Zed Delta（对话即源码）互补：Delta 解决「版本记录」，Genesis 解决「长期演进」。Poor Man's Agentic Modeling 则值得所有做多 Agent 产品的人看——<strong>它能让你在上线前在笔记本上粗粒度预演「N 个 agent 一起跑会发生什么」</strong>。短期影响集中在架构思路，中期（1-3 月）「持久世界」模式会被主流 agent 工作台吸收。</li>
+<li><strong>🔗 链接 + 联动</strong>：Persistent Recursive Worlds <a href="https://arxiv.org/abs/2608.10450">https://arxiv.org/abs/2608.10450</a> ｜ SHAPER <a href="https://arxiv.org/abs/2608.11350">https://arxiv.org/abs/2608.11350</a> ｜ Poor Man's Agentic Modeling <a href="https://arxiv.org/abs/2608.11215">https://arxiv.org/abs/2608.11215</a> ｜ 联动观察：与今日 GitHub 的 <code>holaboss-ai/holaOS</code>（<a href="https://github.com/holaboss-ai/holaOS%EF%BC%8C6.6K%E2%98%85%EF%BC%8C%E5%85%B1%E4%BA%AB%E8%AE%B0%E5%BF%86%E7%9A%84">https://github.com/holaboss-ai/holaOS，6.6K★，共享记忆的</a> agent workspace）和 8/13 <code>paperclipai/paperclip</code>（管理 Agent 工作台）共振——<strong>「Agent 长期协作/演进」正在论文与产品两侧同时被架构化</strong>。</li>
+</ul>
+<p><strong>③ Agent 安全与红队规模化（热度中上）</strong></p>
+<ul>
+<li><strong>🧩 拆解</strong>：这一支是 8 月「验证/安全」主线在「环境」侧的规模化。OpenART（arXiv 2608.00677）抓住一个痛点：<strong>Agent 在持久环境里，早期状态改变会千里之外影响未来决策，而现有安全基准都是短、静态任务</strong>——它构建开放环境进化的红队竞技场，提供 10,000+ 验证过的有状态场景、覆盖 50 个域。ToolHazard（arXiv 2608.11878）则针对<strong>工具型 Agent 的间接提示注入（藏在环境状态里）</strong>——现有研究靠手工/复用环境、随机工具模拟、预定义注入位置，扩展性差；ToolHazard 用「环境模拟器 + 攻击 Agent + 」流水线<strong>合成对抗环境</strong>，按需扩展域与算力。加上 Agent Safety（运行时契约，见主题①）——三篇从「场景、工具、运行时」三个角度把安全规模化。</li>
+<li><strong>💡 思路</strong>：这三篇把「AI 安全」从「训练期对齐」（不可验证）推向「<strong>环境与运行时的持续对抗验证</strong>」——OpenART 给「红队场景」，ToolHazard 给「注入工具」，Agent Safety 给「运行时强制」。这是 8/10「AI Red-Team Eval」、8/12「加密思维链可偷」、8/13「AI 身份伪造」之后，安全主线在<strong>基建化</strong>——<strong>当 Agent 要上生产，安全必须像 CI/CD 一样可规模化、可自动执行</strong>。</li>
+<li><strong>🗣️ 见解</strong>：OpenART 的「开放环境进化」是这一支最有方法论价值的——<strong>它把红队从「手工构造」变成「环境自己进化出更难的场景」</strong>，与 8/13 GitSkills 的「技能度量」是同一逻辑：<strong>让基准/场景可进化、可规模化</strong>。ToolHazard 直接服务「工具型 Agent 的间接注入」这个当下最现实的攻击面（呼应 8/13 Known Agents 的 AI 身份伪造）。我判断**「Agent 安全 = 环境 + 运行时契约」会成为企业 Agent 采购的必答题**，短期会带动一批红队 SaaS/基建。</li>
+<li><strong>🔗 链接 + 联动</strong>：OpenART <a href="https://arxiv.org/abs/2608.00677">https://arxiv.org/abs/2608.00677</a> ｜ ToolHazard <a href="https://arxiv.org/abs/2608.11878">https://arxiv.org/abs/2608.11878</a> ｜ 联动观察：与今日 HN 的 Spaghettifying DRAM（<a href="https://github.com/xoreaxeaxeax/skitter-creek-bath-salts%EF%BC%8C%E7%A1%AC%E4%BB%B6%E6%94%BB%E5%87%BB%E9%9D%A2%EF%BC%89%E5%92%8C">https://github.com/xoreaxeaxeax/skitter-creek-bath-salts，硬件攻击面）和</a> 8/13 Known Agents（AI 身份伪造）同屏——<strong>「安全」在 Agent 时代被重新定义为「环境 + 运行时 + 身份」三层的持续验证</strong>。</li>
+</ul>
+<p><strong>④ 世界模型的可研究化（热度中）</strong></p>
+<ul>
+<li><strong>🧩 拆解</strong>：这一支延续 8/10-8/13 的「世界模型」主线，但把焦点转向「<strong>让世界模型可被自动研究</strong>」。AutoWorldModel-Bench（arXiv 2608.11216）指出世界建模是「未定型的领域」——架构/训练目标/状态表示交互复杂、没有单一配方通吃，因此<strong>是「方向未预先指定」的理想 agent 研究测试床</strong>：让前沿 coding agent 在固定算力预算下自主改进世界模型，横跨 8 个游戏环境。StateFlow（arXiv 2608.12314）构建/演化/访问 3D 世界状态用于预可视化。AtlasVLA（arXiv 2608.06729）做<strong>持久「世界-自我」状态建模</strong>用于 VLA（视觉-语言-动作）模型。Learning How the World Evolves（arXiv 2608.09926）用潜在动力学推理做外推式视频世界模型。</li>
+<li><strong>💡 思路</strong>：AutoWorldModel-Bench 把「世界模型」和「自主 Agent 研究」焊在一起——<strong>既然世界建模没有标准答案，那就让 coding agent 自己去摸索</strong>。这与主题②的「持久世界」、8/13 VIScore（世界模型可诊断性）同向：<strong>世界模型从「生成视频」走向「可规划、可交互、可被 agent 自动研究」</strong>。当世界模型成为「具身/视频生成」交叉的基建，评估与数据（Sekai2 这类）就是新瓶颈。</li>
+<li><strong>🗣️ 见解</strong>：世界模型仍是「研究前沿、商业尚远」的象限，但 AutoWorldModel-Bench 的价值在于<strong>它把「agent 自主研究」这个 8 月最热的方向（AI4AI/Mendel Gödel）落地到世界模型这个具体领域</strong>——是「自演化 agent 找真问题」的样板。短期观察即可，不必重仓。</li>
+<li><strong>🔗 链接 + 联动</strong>：AutoWorldModel-Bench <a href="https://arxiv.org/abs/2608.11216">https://arxiv.org/abs/2608.11216</a> ｜ StateFlow <a href="https://arxiv.org/abs/2608.12314">https://arxiv.org/abs/2608.12314</a> ｜ AtlasVLA <a href="https://arxiv.org/abs/2608.06729">https://arxiv.org/abs/2608.06729</a> ｜ 联动观察：与 GitHub 的 <code>Lightricks/LTX-2</code>（<a href="https://github.com/Lightricks/LTX-2%EF%BC%8C8.9K%E2%98%85%EF%BC%8C%E9%9F%B3%E8%A7%86%E9%A2%91%E7%94%9F%E6%88%90%EF%BC%89%E5%9C%A8%E3%80%8C%E7%94%9F%E6%88%90%E5%BC%8F%E4%B8%96%E7%95%8C%E3%80%8D%E4%B8%8A%E5%85%B1%E6%8C%AF%E3%80%82">https://github.com/Lightricks/LTX-2，8.9K★，音视频生成）在「生成式世界」上共振。</a></li>
+</ul>
+<p><strong>⑤ 量化与离散扩散效率（热度中低）</strong></p>
+<ul>
+<li><strong>🧩 拆解</strong>：这一支是「推理效率」的底层补刀。ReRound（arXiv 2608.11045）指出标准 round-to-nearest（RTN）量化在权重靠近量化区间中点时存在「中点歧义」——它<strong>训练一个条件扩散模型产生低比特权重的连续重建，作为引导信号消除中点歧义</strong>，并用容忍机制与 RTN 集成，实现免校准的 post-training 量化。Simplex Relaxation for Discrete Diffusion（arXiv 2608.10615）则给离散扩散做单纯形松弛。Ready Cohorts（arXiv 2608.12123）从系统层优化 LLM-Agent 控制的 GPU 机会成本、避免 host round trips。</li>
+<li><strong>💡 思路</strong>：这几篇都在「把模型压得更小、跑得更快、量化得更准」——与 8/12「压缩即预测」、8/11 Needle（14MB 端侧）、8/13「本地模型」主线直接咬合。<strong>当「本地/端侧 Agent」成为主流（8/11），量化质量与推理效率就是端侧能不能落地的胜负手</strong>。</li>
+<li><strong>🗣️ 见解</strong>：ReRound 的「用扩散模型引导量化舍入」是个聪明的巧思（把生成模型用于量化，跨域复用），值得量化工程团队读；但它偏工程优化，不构成独立趋势。作为「推理效率」主线的底层注脚看待即可。</li>
+<li><strong>🔗 链接 + 联动</strong>：ReRound <a href="https://arxiv.org/abs/2608.11045">https://arxiv.org/abs/2608.11045</a> ｜ Ready Cohorts <a href="https://arxiv.org/abs/2608.12123">https://arxiv.org/abs/2608.12123</a> ｜ 联动观察：与 GitHub 的 <code>unslothai/unsloth</code>（<a href="https://github.com/unslothai/unsloth%EF%BC%8C71K%E2%98%85%EF%BC%8C%E6%9C%AC%E5%9C%B0%E8%AE%AD%E7%BB%83/%E8%B7%91">https://github.com/unslothai/unsloth，71K★，本地训练/跑</a> LLM 与扩散模型）及 8/11 <code>cactus-compute/needle</code>（14MB 端侧）同频——<strong>「端侧能跑 + 量化准」是 8 月推理效率主线的两端</strong>。</li>
+</ul>
+<h3 id="2.3-hf-%E6%A8%A1%E5%9E%8B%2F%E6%95%B0%E6%8D%AE%E9%9B%86%E6%8E%A8%E8%8D%90" tabindex="-1">2.3 HF 模型/数据集推荐</h3>
+<ul>
+<li><strong>DeepSeek Harness（不是模型，是运行时，但值得在 HF 语境标记）</strong>：<a href="https://github.com/deepseek-ai/deepseek-harness">https://github.com/deepseek-ai/deepseek-harness</a> —— 虽是 GitHub 开源，但它定义「Agent = Model + Harness」的范式，是今日 HF「harness 主题」的产业锚点。Cordis 插件系统 + append-only 可追溯会话日志，直接回答 HF 今日 Agent Safety「运行时契约」的可追踪性诉求。</li>
+<li><strong>unsloth（HF 生态热门工具）</strong>：<a href="https://github.com/unslothai/unsloth%EF%BC%8871K%E2%98%85%EF%BC%89%E2%80%94%E2%80%94%E6%9C%AC%E5%9C%B0">https://github.com/unslothai/unsloth（71K★）——本地</a> UI 训练/跑 LLM 与扩散模型，支持 Qwen3.8 / Kimi K3 / MiniMax-H3 / Gemma 4 / DeepSeek-V4 / FLUX 等。它是「端侧/本地训练」的便捷层，与今日 ReRound（量化）、Needle（端侧）共振；对想在自己机器上微调/量化 Qwen3.8 这类新开源权重的开发者，unsloth 是 day-0 工具。</li>
+</ul>
+<hr>
+<h2 id="%F0%9F%93%A1-3.-x-%E5%9C%88%E6%B7%B1%E5%BA%A6%E9%95%BF%E6%96%87%E8%BF%BD%E8%B8%AA" tabindex="-1">📡 3. X 圈深度长文追踪</h2>
+<p><strong>① Simon Willison（@simonw, <a href="http://simonwillison.net">simonwillison.net</a>）—— DeepSeek V4 Pro 0813 + LLM 0.32</strong></p>
+<ul>
+<li>链接：<a href="https://simonwillison.net/2026/Aug/12/deepseek-v4-pro-0813/">https://simonwillison.net/2026/Aug/12/deepseek-v4-pro-0813/</a> ｜ LLM 0.32：<a href="https://simonwillison.net/2026/Aug/4/llm-032/">https://simonwillison.net/2026/Aug/4/llm-032/</a></li>
+<li>概述：Simon 记录 DeepSeek V4 Pro 0813 经 OpenRouter 上线（API only，无显眼发布页，只能链 OpenRouter）；他 8/4 发布 LLM 0.32——<strong>支持可见 reasoning traces、OpenAI Responses API、server-side provider tools、内容寻址 SQLite 日志</strong>，是他自项目发布以来最重大的一次更新。8/8 他还确认 Anthropic 把 auto mode 设为 Claude Code 默认（8/14 生效）。</li>
+<li>为什么重要：Simon 持续在做「<strong>可追踪/可回放的 Agent 运行时</strong>」——LLM 0.32 的 reasoning traces + 内容寻址日志，与 DeepSeek Harness 的「every run is traceable」、HF 的 Agent Safety「证据面」是同一个方向。<strong>「推理过程可记录、可回放」正在成为 agent 工具的标配</strong>。</li>
+</ul>
+<p><strong>② AnthropicAI（<a href="http://anthropic.com/engineering%EF%BC%89%E2%80%94%E2%80%94">anthropic.com/engineering）——</a> Conceptual Reasoning Index（8/12）</strong></p>
+<ul>
+<li>链接：<a href="https://alignment.anthropic.com/2026/conceptual-reasoning-index/">https://alignment.anthropic.com/2026/conceptual-reasoning-index/</a> ｜ 相关 skills 工程文：<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills</a></li>
+<li>概述：Anthropic 与 Redwood Research 推出 <strong>Conceptual Reasoning Index（CRI）</strong>——一组 3 个「概念推理」基准（主数据集 LMCA），在 <a href="http://conceptualreasoning.ai">conceptualreasoning.ai</a> 上公开，用于评估模型做「没有实证反馈环的推理」（哲学、AI 未来学、治理、对齐）的能力。作者的核心担忧：<strong>许多降低 AI 风险的工作（对齐、治理、避免协作失败）缺乏可验证反馈</strong>，模型在这类任务上天然更弱，因此需要专门评估。</li>
+<li>为什么重要：这是「验证文化」最深的延伸——<strong>连「没有 ground truth 的推理」也要被基准化</strong>。与 8/10「AI Red-Team Eval」、8/12「Gowers 数学能力边界」同属「给 LLM 立能力边界」，但这次针对的是最抽象的一类：AI 自我治理与对齐推理。它给「AI 安全能力」建立可度量标尺，是 alignment 圈的重要基建。</li>
+</ul>
+<p><strong>③ @kaborojevic（kasra.blog）—— 我建了个有漏洞的 app，花 $1,500 看 LLM 能不能黑掉它（6/3）</strong></p>
+<ul>
+<li>链接：<a href="https://kasra.blog">https://kasra.blog</a> （最新长文：I built a vulnerable app and spent $1,500 seeing if LLMs could hack it）｜ HN 讨论：<a href="https://news.ycombinator.com/item?id=48392343%EF%BC%88402">https://news.ycombinator.com/item?id=48392343（402</a> pts）</li>
+<li>概述：安全研究员 Kasra 故意造了一个带真实漏洞（APK 内暴露 Firebase 凭据，可绕过加固 API 直连数据库）的书评 app，给 10+ 个 AI 模型各 $10 预算 + 2 小时，总计 $1,500。<strong>GPT-5.5 是赢家：10 次跑通 7 次，每次约 $9.46</strong>，几乎都在拆包 APK 后立刻锁定 Firebase；而 Gemini 直接拒绝尝试，Anthropic 因护栏阻止而低分。他还观察到：中国模型更愿直接操作活数据库，西方模型中途更犹豫。</li>
+<li>为什么重要：这是一份「<strong>LLM 真实攻击能力 + 护栏行为</strong>」的对照实验（作者强调非严格科学）。它和今日 HF 的 OpenART/ToolHazard（Agent 红队）、8/13 Known Agents（AI 身份伪造）互为印证——<strong>安全护栏既挡攻击也挡能力，而「愿意动手的模型」在攻击上更有效</strong>，这对「Agent 安全运行时契约」是重要实证。</li>
+</ul>
+<p><strong>④ GoogleAI（blog.google/technology/ai）—— Gemini 3.7 Flash + Science One Framework</strong></p>
+<ul>
+<li>链接：Gemini 3.7 Flash：<a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/">https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/</a> ｜ Science One：<a href="https://research.google/blog/%EF%BC%88July">https://research.google/blog/（July</a> 30, 2026：A verifiable autonomous research framework via Chain-of-Evidence）</li>
+<li>概述：Google 发布 Gemini 3.7 Flash（见模块 1，价格腰斩的工作马模型）；Research Blog 7/30 发布 <strong>Science One Framework——用 Chain-of-Evidence 做「可验证的自主科研框架」</strong>。</li>
+<li>为什么重要：Google 两条线都在呼应 8 月主线——Flash 抢「Agent 成本」，Science One 抢「可验证科研」（呼应 8/10 Discovery Loop、8/13 Discovered Materials）。<strong>「自主科研 + 证据链可验证」是科学 AI 的规范化方向</strong>。</li>
+</ul>
+<hr>
+<h2 id="%E2%98%95-%2B-%F0%9F%90%B3-4.-java-%26-spring-%E7%94%9F%E6%80%81-%2B-%E4%BA%91%E5%8E%9F%E7%94%9F-infra-%E6%8E%A8%E8%8D%90" tabindex="-1">☕ + 🐳 4. Java &amp; Spring 生态 + 云原生 Infra 推荐</h2>
+<h3 id="4.1-java-%26-spring-%E7%94%9F%E6%80%81" tabindex="-1">4.1 Java &amp; Spring 生态</h3>
+<p><strong>① Spring AI 2.0.0 GA（6/12，今日语境持续有效）</strong></p>
+<ul>
+<li>链接：<a href="https://spring.io/blog/2026/06/12/spring-ai-2-0-0-GA-available-now">https://spring.io/blog/2026/06/12/spring-ai-2-0-0-GA-available-now</a> ｜ Tool Calling in Spring AI 2.0：<a href="https://spring.io/blog/2026/06/15/spring-ai-2-0-0-tool-calling">https://spring.io/blog/2026/06/15/spring-ai-2-0-0-tool-calling</a></li>
+<li>总结：Spring AI 2.0.0 GA 已发布（基于 Spring Boot 4），RC1 阶段移除了 MiniMax 专用支持（改走 Anthropic 兼容）、退役 Pixtral Large。2.0 主打「composable, agentic architecture」——<strong>工具调用（tool calling）成为核心，把 AI 应用开发做成可组合的 agentic 架构</strong>。</li>
+<li>为什么重要：<strong>Spring AI 2.0 是「Java 生态 Agent 化」的地基</strong>——配合 8/12 <code>embabel/embabel-agent</code>（JVM/Kotlin 多 Agent 框架，4.2K★）、8/9 Jakarta Agentic AI，「Java Agent 三件套」（Spring AI / Jakarta / embabel）已经成型。<strong>企业 Java 团队做 Agent 的选择，从「只有自研」变成「多框架可选」</strong>，这是 8/12 我判断的延续与确认。</li>
+</ul>
+<p><strong>② embabel-agent 持续在榜（8/12 深挖，今日确认生态位）</strong></p>
+<ul>
+<li>链接：<a href="https://github.com/embabel/embabel-agent%EF%BC%884.2K%E2%98%85%EF%BC%89">https://github.com/embabel/embabel-agent（4.2K★）</a>｜ 生态：<a href="https://hub.embabel.com">https://hub.embabel.com</a></li>
+<li>总结：Kotlin 写的 JVM 原生多 Agent 框架、集成 Spring，今日仍在 GitHub Trending 相关生态位。它与 Spring AI 2.0 互为补充：Spring AI 管「AI 应用开发」，embabel 管「JVM 多 Agent 编排」。</li>
+<li>为什么重要：<strong>Java/Kotlin 在 Agent 时代的「代码级存在感」持续</strong>——8 月第一次有 JVM 原生 Agent 框架上榜后，这个生态位开始被反复确认。</li>
+</ul>
+<h3 id="4.2-%E4%BA%91%E5%8E%9F%E7%94%9F-infra-%E6%8E%A8%E8%8D%90" tabindex="-1">4.2 云原生 Infra 推荐</h3>
+<p><strong>① CNCF Annual Cloud Native Survey：Kubernetes = AI 的「操作系统」，生产使用 82%</strong></p>
+<ul>
+<li>链接：<a href="https://www.cncf.io/announcements/2026/01/20/kubernetes-established-as-the-de-facto-operating-system-for-ai-as-production-use-hits-82-in-2025-cncf-annual-cloud-native-survey">https://www.cncf.io/announcements/2026/01/20/kubernetes-established-as-the-de-facto-operating-system-for-ai-as-production-use-hits-82-in-2025-cncf-annual-cloud-native-survey</a> ｜ 报告：<a href="https://www.cncf.io/reports/the-cncf-annual-cloud-native-survey">https://www.cncf.io/reports/the-cncf-annual-cloud-native-survey</a></li>
+<li>来源：CNCF（2026-01-20 发布，全年语境基准）</li>
+<li>核心观点：<strong>82% 的容器用户在生产跑 K8s</strong>，K8s 被确立为 AI 的 de facto「操作系统」；但「文化变革（47% 团队文化）」是最大障碍，K8s 从「实验性」走向「基础性」，下一步是「AI 平台就绪度」。</li>
+<li>为什么重要：这是 8/11「K8s-as-AI-OS」的年度数据背书——<strong>K8s 已经从「跑容器」变成「跑 AI/GPU 工作负载」的底座</strong>。配合 NVIDIA DRA/KAI 捐赠 CNCF（8/11 深挖），「GPU 调度进 K8s」的路径越来越实。</li>
+</ul>
+<p><strong>② Kubernetes on Oxide：客户需求塑造的自托管 K8s 集成（8/13）</strong></p>
+<ul>
+<li>链接：<a href="https://oxide.computer/blog/kubernetes-on-oxide">https://oxide.computer/blog/kubernetes-on-oxide</a> ｜ HN：<a href="https://news.ycombinator.com/item?id=49286485">https://news.ycombinator.com/item?id=49286485</a></li>
+<li>来源：Oxide Computer（8/13）</li>
+<li>核心观点：Oxide 从客户提交的 Rancher node driver PR 出发，最终发布 Rancher / Omni / Cluster API 三条 K8s 供应路径，并按生命周期（供应→对账→网络→存储）随客户需求补齐集成。</li>
+<li>为什么重要：<strong>「可审计、自托管」云原生派（Oxide）在 Agent/AI 时代的适配</strong>——对想「自有 K8s + GPU + AI 工作负载」的团队，这份「按需集成」的工程复盘很有参考价值；也是「反超大云」叙事在 AI 时代的落地样本。</li>
+</ul>
+<p><strong>③ 云原生 × AI 的安全与效率暗线（延续）</strong></p>
+<ul>
+<li>链接：Wasm 边缘性能：<a href="https://thenewstack.io/webassembly-is-now-outperforming-containers-at-the-edge">https://thenewstack.io/webassembly-is-now-outperforming-containers-at-the-edge</a> ｜ Wasm 与 Agent 安全：<a href="https://thenewstack.io/webassembly-could-solve-ai-agents-most-dangerous-security-gap">https://thenewstack.io/webassembly-could-solve-ai-agents-most-dangerous-security-gap</a></li>
+<li>来源：The New Stack</li>
+<li>核心观点：WebAssembly 在边缘已可超越容器性能；且 <strong>Wasm 是「AI Agent 沙箱安全」的理想执行单元</strong>（强隔离 + 可组合 + 便携）。</li>
+<li>为什么重要：与 HF 今日 Agent Safety「运行时契约」、8/12「Wasm 作为 Agent 沙箱」完全同频——<strong>Wasm 正成为「可验证、可隔离」的 Agent 运行时标准候选</strong>。这直接连接 8 月「Agent 安全」主线：<strong>要让 agent 安全地跑，需要一个强隔离的运行时，而 Wasm 是当前最像标准件的那个</strong>。</li>
+</ul>
+<hr>
+<h2 id="%F0%9F%8C%90-5.-web3-%2F-%E5%8E%BB%E4%B8%AD%E5%BF%83%E5%8C%96-infra-%E6%80%9D%E6%BD%AE%E6%8E%A8%E8%8D%90" tabindex="-1">🌐 5. Web3 / 去中心化 Infra 思潮推荐</h2>
+<p><strong>① DA 变成「市场化商品」：模块化区块链的下半场是 DA 市场（延续 8/12）</strong></p>
+<ul>
+<li>链接：<a href="https://www.cryptopolitan.com/layer-2-adoption-2026-predictions">https://www.cryptopolitan.com/layer-2-adoption-2026-predictions</a> ｜ 来源：Cryptopolitan</li>
+<li>核心观点：Rollups 从「降费工具」进化成「托管应用生态的平台」；到 2026 年底，<strong>数据可用性（DA）不再像静态服务，而是像云市场——需求驱动定价、竞争费率、不同延迟/信任/安全画像</strong>。Rollups 会像选 AWS/GCP/Cloudflare 一样选 DA 提供商。</li>
+<li>为什么重要：<strong>「模块化 + DA 市场化」把区块链基础设施推向「按需选型」的商品化</strong>——与 Web2 云原生（K8s-as-AI-OS）形成跨域对照：<strong>去中心化与中心化基础设施在同步「商品化、模块化」</strong>。延续 8/12「DA 成为 L2 竞赛焦点」的判断，DA 市场是 2026 下半年的确定叙事。</li>
+</ul>
+<p><strong>② <a href="http://ethresear.ch">ethresear.ch</a>：EIL（trust-minimized 跨 L2 互操作）+ Mechanized Proofs（跨域状态同步的形式化证明）</strong></p>
+<ul>
+<li>链接：EIL：<a href="https://ethresear.ch/t/eil-trust-minimized-cross-l2-interop/">https://ethresear.ch/t/eil-trust-minimized-cross-l2-interop/</a> ｜ Mechanized Proofs：<a href="https://ethresear.ch/t/mechanized-proofs-for-atomic-cross-domain-state-synchronization/">https://ethresear.ch/t/mechanized-proofs-for-atomic-cross-domain-state-synchronization/</a> ｜ Blob Sharing for Based Rollups：<a href="https://ethresear.ch/t/blob-sharing-for-based-rollups/">https://ethresear.ch/t/blob-sharing-for-based-rollups/</a></li>
+<li>来源：Ethereum Research</li>
+<li>核心观点：EIL 是「信任最小化的跨 L2 互操作」方案（5/22 帖子，18 replies）；Mechanized Proofs（7/12）主张用<strong>机械化/形式化证明</strong>做原子跨域状态同步；ESS（Ethereum Settlement Score，6/29）重振「rollup 中心路线图」。</li>
+<li>为什么重要：<strong>「互操作（EIL）+ 可证明（Mechanized Proofs）+ 结算度量（ESS）」三条线并行</strong>——这正是 8/10「形式化证明成为新验证层」在 Web3 侧的实证（8/13 我判断「跨域印证」，今日延续）。<strong>当 AI 侧在谈「可验证」，加密侧在谈「mechanized proofs」，同一股「验证文化」贯穿两端</strong>。</li>
+</ul>
+<p><strong>③ DePIN 与「算力该在哪跑」（延续 8/11-8/13）</strong></p>
+<ul>
+<li>链接：Akash 网络：<a href="https://akash.network/">https://akash.network/</a> ｜ 相关：8/11 日报 DePIN 分析</li>
+<li>核心观点：延续前 3 日对 DePIN 的判断——Akash 类去中心化 GPU 对「成本敏感型 AI」有真实吸引力，但 8/13 观察到「供给顺周期不稳」（供应商跌至 58、GPU 供给环比收缩 57%）。</li>
+<li>为什么重要：<strong>DePIN 与「本地/端侧 Agent」（8/11）其实同源：都在回答「算力该在哪跑」</strong>。今日「本地 AI」再升温（FluidVoice/needle/modly），DePIN 与本地化的关系值得继续跟踪——<strong>一个把算力拉回你身边（本地），一个把算力打散到网络（DePIN）</strong>，两条路线在「成本 + 主权」上竞争。</li>
+</ul>
+<p><strong>④ 治理与数据主权：PBS 诉 Iron Mountain 的链上隐喻</strong></p>
+<ul>
+<li>链接：<a href="https://current.org/2026/08/nine-pbs-sues-iron-mountain-over-blocked-access-to-archival-data/">https://current.org/2026/08/nine-pbs-sues-iron-mountain-over-blocked-access-to-archival-data/</a></li>
+<li>核心观点：传统档案托管（Iron Mountain）暴露「第三方扣押数据」的治理风险——这恰是去中心化存储（IPFS/Arweave/Filecoin）要解决的痛点：<strong>数据所有权与访问权不能被单一托管方挟持</strong>。</li>
+<li>为什么重要：<strong>Web3 去中心化存储的「存在理由」被中心化失败的案例再次验证</strong>——当媒体档案被第三方封锁，「self-custody 数据」就从口号变成刚需。这是「个人 vs 平台」「数据主权」主线在 Web3 侧的直接注脚。</li>
+</ul>
+<hr>
+<h2 id="%F0%9F%8E%AF-6.-%E4%BB%8A%E6%97%A5-ai-%E5%AD%A6%E4%B9%A0%E7%9F%A5%E8%AF%86%E7%82%B9" tabindex="-1">🎯 6. 今日 AI 学习知识点</h2>
+<p><strong>主推荐：Agent Harness（运行时外壳）——为什么 2026 年「模型」不再是能力的全部</strong></p>
+<p>今天的 HN（DeepSeek Harness「一切皆插件」）、GitHub（Switchyard 模型路由、holaOS、omnigent）、HF 论文（AI4AI / Agent Safety 运行时契约）全都在讲同一件事：<strong>一个 Agent 的能力 = 模型 + Harness（工具/技能/沙箱/记忆/调度/UI 的组合外壳）</strong>。Harness 是那个「让模型能看、能摸、能持续干活」的运行时层。</p>
+<ul>
+<li><strong>是什么</strong>：Harness 是包围在 LLM 之外的执行与编排层——它提供工具调用、会话/记忆管理、沙箱隔离、多步循环（agent loop）、调度与 UI。典型例子：Claude Code（Anthropic 的 coding harness）、Codex（OpenAI）、DeepSeek Harness、以及各种开源 meta-harness（omnigent）。</li>
+<li><strong>为什么是现在最重要</strong>：当模型权重越来越同质（开源权重遍地、各家差距缩小），<strong>能力差异正在从「模型」转移到「模型周围的 harness 怎么搭」</strong>——同样一个模型，配上不同的工具、技能、上下文管理、安全契约，能力可以差一个数量级。DeepSeek 亲自下场做 Harness，说明模型厂商也认可「harness 是护城河」。</li>
+<li><strong>趋势</strong>：Harness 正在经历「插件化」（一切皆插件）与「可追溯化」（every run is traceable）两波改造；安全也从「训练期对齐」转向「运行时契约」（沙箱 + 证据面）。未来 Harness 会像浏览器/OS 一样成为「组合层」，出现标准件与生态。</li>
+<li><strong>延伸学习</strong>：读 DeepSeek Harness 的架构文档（<a href="https://deepseek-harness.github.io/deepseek-harness/en/guide/quickstart%EF%BC%89%E3%80%81HF">https://deepseek-harness.github.io/deepseek-harness/en/guide/quickstart）、HF</a> 的 Agent Safety 论文（<a href="https://arxiv.org/abs/2608.11274%EF%BC%89%E3%80%81%E4%BB%A5%E5%8F%8A">https://arxiv.org/abs/2608.11274）、以及</a> omnigent 的 meta-harness 思路（<a href="https://github.com/omnigent-ai/omnigent%EF%BC%89%E3%80%82">https://github.com/omnigent-ai/omnigent）。</a></li>
+</ul>
+<blockquote>
+<p><strong>📖 解读说明</strong></p>
+<ul>
+<li><strong>选题理由</strong>：今日 HN 榜首级事件 DeepSeek Harness（<a href="https://github.com/deepseek-ai/deepseek-harness%EF%BC%89%E4%B8%8E">https://github.com/deepseek-ai/deepseek-harness）与</a> HF 的 AI4AI/Agent Safety 论文、GitHub 的 Switchyard/holaOS 全部指向「harness 是能力的单位」——这是读懂今日日报所有模块的钥匙。</li>
+<li><strong>知识定位</strong>：进阶 / Agent 系统方向（介于「提示工程」与「全栈 Agent 平台」之间）。</li>
+<li><strong>学习路径建议</strong>：先读 DeepSeek Harness 架构与 Agent Safety 论文（理解「运行时契约」），再用 omnigent 或 Claude Code 亲手搭一个带工具 + 沙箱 + 可追溯日志的 harness，最后对比 Switchyard（模型路由）看「harness 内部怎么调度模型」。</li>
+<li><strong>实战价值</strong>：掌握后能优化「企业 Agent 生产部署」的【可靠性 / 可审计性 / 安全边界】，尤其是让 Agent 上生产前具备可追溯的会话日志与运行时安全护栏。</li>
+</ul>
+</blockquote>
+<p><strong>次推荐：推理时「强到弱能力迁移」（scaffolding at test-time）</strong></p>
+<p>AI4AI（<a href="https://arxiv.org/abs/2608.12307%EF%BC%89%E6%8F%90%E5%87%BA%EF%BC%9A**%E4%B8%8D%E9%9C%80%E8%A6%81%E6%9B%B4%E6%96%B0%E6%9D%83%E9%87%8D%EF%BC%8C%E4%B8%80%E4%B8%AA%E5%BC%BA%E6%A8%A1%E5%9E%8B%E6%9E%84%E9%80%A0%E6%8E%A8%E7%90%86%E6%97%B6">https://arxiv.org/abs/2608.12307）提出：**不需要更新权重，一个强模型构造推理时</a> harness，就能帮弱模型（如本地/端侧小模型）显著提升任务成功率**。这与 8/11「本地 Agent」主线直接相关——<strong>本地小模型 + 云端强模型造的 harness = 便宜又能打</strong>。</p>
+<blockquote>
+<p><strong>📖 解读说明</strong></p>
+<ul>
+<li><strong>选题理由</strong>：与今日 DeepSeek Harness、8/11 Needle（14MB 端侧）、本地 Agent 主线互补——它回答了「小模型怎么变强」的一个新答案。</li>
+<li><strong>知识定位</strong>：前沿 / 推理效率与蒸馏交叉。</li>
+<li><strong>学习路径建议</strong>：先读 AI4AI 论文，再对照 8/12「Stealing Reasoning Traces」（<a href="https://arxiv.org/abs/2608.09867%EF%BC%89%E7%90%86%E8%A7%A3%E3%80%8C%E5%BC%BA%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%8E%A8%E7%90%86%E7%97%95%E8%BF%B9%E6%80%8E%E4%B9%88%E7%94%A8/%E6%80%8E%E4%B9%88%E9%98%B2%E3%80%8D%E3%80%82">https://arxiv.org/abs/2608.09867）理解「强模型的推理痕迹怎么用/怎么防」。</a></li>
+<li><strong>实战价值</strong>：掌握后可在【端侧/低成本部署】场景用 harness 而非重训来提升小模型表现，降低【推理成本】。</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="%F0%9F%93%9A-7.-%E5%85%B3%E8%81%94-paper-%E6%8E%A8%E8%8D%90" tabindex="-1">📚 7. 关联 Paper 推荐</h2>
+<blockquote>
+<p>数据源：HF Daily Papers（最新可用批次 2026-08-13）+ arXiv API 摘要。</p>
+</blockquote>
+<p><strong>① AI4AI at Test-Time: Strong-to-Weak Capability Transfer via Harnesses</strong></p>
+<ul>
+<li>链接：<a href="https://arxiv.org/abs/2608.12307">https://arxiv.org/abs/2608.12307</a></li>
+<li>核心贡献：提出<strong>推理期（test-time）的强到弱脚手架</strong>——强 builder 模型构造 harness，帮助弱 target 模型在<strong>不更新任何参数</strong>的情况下提高任务成功率；在 4 个 Theory-of-Mind 基准上用 5% 数据做验证集迭代优化 harness。</li>
+<li>为什么重要：<strong>把「蒸馏/能力迁移」从训练期搬到推理期</strong>，直接服务于「本地/端侧小模型用 harness 榨出更强能力」——是 8/11 本地 Agent 主线与今日 harness 主题的交汇点。</li>
+<li>延伸阅读：<a href="https://arxiv.org/abs/2608.09867%EF%BC%88Stealing">https://arxiv.org/abs/2608.09867（Stealing</a> Reasoning Traces，理解强模型推理痕迹的利用与防护）</li>
+</ul>
+<p><strong>② Agent Safety Should Be a Runtime Contract</strong></p>
+<ul>
+<li>链接：<a href="https://arxiv.org/abs/2608.11274">https://arxiv.org/abs/2608.11274</a></li>
+<li>核心贡献：论证<strong>训练期对齐（RLHF/DPO/Constitutional AI）对「会执行代码/改文件/发消息/改数据库」的自主 Agent 结构性不足</strong>；主张安全应是 harness 强制的运行时契约，分「预防面」（沙箱/权限门/输出过滤/轨迹监控）与「证据面」（可验证证明好行为真发生了）。</li>
+<li>为什么重要：<strong>这是 8 月「验证文化」在 Agent 安全侧最完整的框架化</strong>——它把「安全」从「训练时灌输」变成「运行时强制 + 证据可验证」，与 DeepSeek Harness 的「every run is traceable」、8/12「加密思维链可偷」形成完整闭环。</li>
+<li>延伸阅读：<a href="https://arxiv.org/abs/2608.11878%EF%BC%88ToolHazard%EF%BC%89">https://arxiv.org/abs/2608.11878（ToolHazard）</a>｜ <a href="https://arxiv.org/abs/2608.00677%EF%BC%88OpenART%EF%BC%89">https://arxiv.org/abs/2608.00677（OpenART）</a></li>
+</ul>
+<p><strong>③ OpenART: Scaling Agent Red Teaming via Open-Ended Environment Evolution</strong></p>
+<ul>
+<li>链接：<a href="https://arxiv.org/abs/2608.00677">https://arxiv.org/abs/2608.00677</a></li>
+<li>核心贡献：针对「Agent 在持久环境里早期状态改变影响远期决策」的累计风险，构建<strong>开放环境进化的红队竞技场</strong>——10,000+ 已验证的有状态场景、覆盖 50 个域。</li>
+<li>为什么重要：<strong>让红队从「手工构造」变成「环境自我进化出更难场景」</strong>——与 8/13 GitSkills（技能度量）同为「让基准/场景可进化、可规模化」的方法论，是企业 Agent 安全评估的可操作路径。</li>
+<li>延伸阅读：<a href="https://arxiv.org/abs/2608.09867%EF%BC%88Stealing">https://arxiv.org/abs/2608.09867（Stealing</a> Reasoning Traces，安全侧）｜ <a href="https://github.com/xoreaxeaxeax/skitter-creek-bath-salts%EF%BC%88%E4%BB%8A%E6%97%A5">https://github.com/xoreaxeaxeax/skitter-creek-bath-salts（今日</a> HN，硬件攻击面）</li>
+</ul>
+<p><strong>④ Persistent Recursive Worlds Enable Autonomous Software Evolution（EvoX Genesis）</strong></p>
+<ul>
+<li>链接：<a href="https://arxiv.org/abs/2608.10450">https://arxiv.org/abs/2608.10450</a></li>
+<li>核心贡献：让<strong>软件项目持久、局部 agent 有限寿命</strong>——每个局部世界由「已接受版本 + 仓库路径」锚定，有限寿命 agent 提议局部改动，递归委派跨路径，只有被接受的改动进仓库。</li>
+<li>为什么重要：<strong>这是「Agent 长期演进」的架构答案</strong>——解决「软件演化超过单个 agent 生命周期」问题，与 8/13 Zed Delta（对话即源码）互补：一个管版本记录，一个管长期演进。</li>
+<li>延伸阅读：<a href="https://arxiv.org/abs/2608.11350%EF%BC%88SHAPER%EF%BC%8Ctrain-free">https://arxiv.org/abs/2608.11350（SHAPER，train-free</a> 具身自演化）｜ <a href="https://zed.dev/blog/introducing-delta%EF%BC%888/13%EF%BC%89">https://zed.dev/blog/introducing-delta（8/13）</a></li>
+</ul>
+<p><strong>⑤ Poor Man's Agentic Modeling: Simulating Large LLM-Agent Societies on a Laptop</strong></p>
+<ul>
+<li>链接：<a href="https://arxiv.org/abs/2608.11215">https://arxiv.org/abs/2608.11215</a></li>
+<li>核心贡献：用统计物理观察，<strong>把每个 LLM agent 换成低参数模型（几百到几千次廉价查询拟合）</strong>，就能在笔记本上跑任意 N 规模的多 Agent 社会模拟，并给出 [交互序 × 记忆] 分类法。</li>
+<li>为什么重要：<strong>把「多 Agent 社会仿真」成本打下来</strong>——对做多 Agent 产品/研究的团队，能在上线前粗粒度预演「N 个 agent 一起跑会怎样」，是低成本验证工具。</li>
+<li>延伸阅读：<a href="https://arxiv.org/abs/2608.10450%EF%BC%88Persistent">https://arxiv.org/abs/2608.10450（Persistent</a> Recursive Worlds）｜ 8/12 Co-Evolution（<a href="https://arxiv.org/abs/2608.10299%EF%BC%89">https://arxiv.org/abs/2608.10299）</a></li>
+</ul>
+<p><strong>🧠 Paper 深度总结</strong></p>
+<p>今日 08-13 批次论文把 8 月的主线拧成了一根更粗的绳子：<strong>「能力与安全的单位，正在从『模型权重』迁移到『harness/运行时/环境』」</strong>。AI4AI（推理期 harness 蒸馏）、Agent Safety（安全 = 运行时契约）、Spark-to-Paper（能力 = 13 个可组合 skill 塞进 harness）、Mechanist（harness 化的可解释性研究）——四篇不同方向，共同承认「模型外面的那层壳」才是真正的杠杆。这与今天 HN 的 DeepSeek Harness（一切皆插件、every run is traceable）是<strong>论文与产品在同一判断上的相遇</strong>：2026 下半年，谁的 harness 更可组合、更可验证、更安全，谁就掌握 Agent 的生产力与信任。</p>
+<p>第二条更粗的线是**「安全/红队的规模化与运行时化」<strong>：OpenART（环境进化红队）、ToolHazard（注入对抗环境）、Agent Safety（运行时契约）把「验证文化」从模型层推到环境与运行时——呼应 8/12「加密思维链可偷」、8/13「AI 身份伪造」，安全不再是「训练时灌输」，而是「环境 + 运行时 + 身份」三层持续验证。第三条线是</strong>「持久世界/自演化」**：Persistent Recursive Worlds 让项目比 agent 活得长、SHAPER 让具身 agent train-free 自演化、Poor Man's Agentic Modeling 让社会仿真成本归零——<strong>当 Agent 接管代码生产与决策，「谁长期持有状态、谁能预演大规模协作」成为架构与成本问题</strong>。整体看，今日论文群与 GitHub/HN 高度共振，是「harness 化 + 安全运行时化 + 持久自演化」三大趋势在研究层的同频确认。</p>
+<hr>
+<h2 id="%F0%9F%94%A5-8.-%E4%BB%8A%E6%97%A5%E7%B2%BE%E9%80%89%E4%BB%93%E5%BA%93%EF%BC%887-%E4%B8%AA%EF%BC%89" tabindex="-1">🔥 8. 今日精选仓库（7 个）</h2>
+<blockquote>
+<p>数据来源：GitHub Trending（2026-08-14 采集）+ GitHub API（总★）。今日 Trending 与 8/12-8/13 高度重叠（anthropics/skills、needle、Switchyard、semantica、diagram-design、ragflow、agency-agents、LTX-2、macro 等已在 8/12-8/13 深挖），故重点深挖<strong>今日新面孔</strong>（FluidVoice / obsidian-skills / holaOS / modly / manim），并给延续仓库「快照速览」。老牌常客列入短名单。</p>
+</blockquote>
+<h3 id="1.-altic-dev%2Ffluidvoice-%E2%80%94-%E6%9C%AC%E5%9C%B0-macos-%E5%90%AC%E5%86%99%EF%BC%8Cwispr-flow-%E7%9A%84%E5%BC%80%E6%BA%90%E9%9A%90%E7%A7%81%E6%9B%BF%E4%BB%A3%EF%BC%889%2C840-%E2%AD%90%EF%BC%8C%E6%96%B0%E4%B8%8A%E6%A6%9C%EF%BC%89" tabindex="-1">1. altic-dev/FluidVoice — 本地 macOS 听写，Wispr Flow 的开源隐私替代（9,840 ⭐，新上榜）</h3>
+<ul>
+<li>一句话定位：Fastest and only macOS Dictation app with <strong>on-device STT</strong> and custom trained AI enhancement model——本地、离线、最快的 macOS 听写 app。</li>
+<li>链接：<a href="https://github.com/altic-dev/FluidVoice">https://github.com/altic-dev/FluidVoice</a> ｜ Swift ｜ 9,840 ⭐（Windows/iOS waitlist，Linux soon）</li>
+<li>为什么今天会火：8 月「本地/端侧 AI」（8/11 Needle、8/13 本地模型）持续高烧，FluidVoice 把「本地、隐私、实时」做成听写工具——正中「<strong>on-device 隐私</strong>」与「个人 vs 平台」（反订阅、反云端）双主线。对比 Wispr Flow（云端订阅），它主打「on-device STT + 自训练增强模型」。</li>
+<li>技术解读：Swift 原生 macOS app；核心是 on-device 语音转文字（STT）+ 一个自训练的 AI 增强模型（对标 Wispr Flow 的云端增强）。<strong>「本地推理 + 隐私」是它的架构卖点</strong>——音频不出设备，零延迟、零数据上传。</li>
+<li>产品解读：目标用户是「要实时听写、又不想把语音传云端」的 macOS 用户；产品形态是本地桌面 app（对标 Wispr Flow 的免费/开源替代），走「隐私 + 速度」差异化。</li>
+<li>投资解读：<strong>「本地优先的垂直 AI 工具」是被低估的赛道信号</strong>——当云端订阅引发「个人 vs 平台」反噬（8/8-8/13 主线），「on-device 隐私」工具（听写/翻译/OCR）有机会形成稳定利基。风险是单平台（macOS）天花板。</li>
+<li>判断：⭐⭐⭐⭐ 值得跟踪——本地 AI 听写的隐私差异化，是「on-device AI」主线的消费级注脚。</li>
+<li>📎 关联阅读：<a href="https://github.com/cactus-compute/needle%EF%BC%8814MB">https://github.com/cactus-compute/needle（14MB</a> 端侧，8/11）｜ <a href="https://github.com/unslothai/unsloth%EF%BC%88%E6%9C%AC%E5%9C%B0%E8%AE%AD%E7%BB%83%EF%BC%89">https://github.com/unslothai/unsloth（本地训练）</a>｜ <a href="https://wisprflow.ai">https://wisprflow.ai</a>（竞品）</li>
+</ul>
+<hr>
+<h3 id="2.-kepano%2Fobsidian-skills-%E2%80%94-%E6%95%99-agent-%E7%94%A8-obsidian%EF%BC%8C%E6%8A%80%E8%83%BD%C3%97%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%EF%BC%8845%2C715-%E2%AD%90%EF%BC%8C%E6%96%B0%E4%B8%8A%E6%A6%9C%EF%BC%89" tabindex="-1">2. kepano/obsidian-skills — 教 Agent 用 Obsidian，技能×个人知识库（45,715 ⭐，新上榜）</h3>
+<ul>
+<li>一句话定位：Agent skills for Obsidian——教你的 agent 使用 Obsidian CLI 和开放格式（Markdown / Bases / JSON Canvas）。</li>
+<li>链接：<a href="https://github.com/kepano/obsidian-skills">https://github.com/kepano/obsidian-skills</a> ｜ 45,715 ⭐（kepano 即 Obsidian CEO）</li>
+<li>为什么今天会火：8 月「技能生态」主线（8/8-8/13 anthropics/skills、diagram-design、GitSkills 论文）持续，而 <strong>kepano（Obsidian CEO）亲自下场把「技能」和「个人知识管理（PKM）」焊在一起</strong>——Agent 技能 × 开放格式（Markdown/Bases/JSON Canvas），正中「技能 = 能力资产」+「个人知识主权」双主线。</li>
+<li>技术解读：Agent Skills 集合，教 agent 通过 Obsidian CLI 读写笔记，强调<strong>开放格式（Markdown/JSON Canvas）而非私有格式</strong>——「你的笔记不能被厂商锁死」是核心哲学。与 anthropics/skills 的 <a href="http://SKILL.md">SKILL.md</a> 规范同源，但聚焦「个人知识库」这一垂直。</li>
+<li>产品解读：目标用户是「用 Obsidian 管知识、又想用 Agent 读写它」的个人/团队；产品形态是可插拔技能包 + Obsidian CLI，是「Agent × PKM」的产品化。</li>
+<li>投资解读：<strong>「技能 × 个人知识主权」是技能生态里离个人用户最近的一环</strong>——Obsidian CEO 亲自推，说明「知识数据 + Agent 访问」是刚需；开放格式（反锁定）与 8/13「PBS 诉 Iron Mountain」（数据主权）同频。<strong>这是「个人 vs 平台」主线在知识管理侧的最强信号</strong>。</li>
+<li>判断：⭐⭐⭐⭐ 值得跟踪——CEO 亲自做的技能×PKM，开放格式反锁定，是技能生态垂直化的高质量样本。</li>
+<li>📎 关联阅读：<a href="https://github.com/anthropics/skills%EF%BC%88%E5%AE%98%E6%96%B9%E6%8A%80%E8%83%BD%E8%A7%84%E8%8C%83%EF%BC%89">https://github.com/anthropics/skills（官方技能规范）</a>｜ <a href="https://arxiv.org/abs/2608.10906%EF%BC%88GitSkills%EF%BC%8C8/13%EF%BC%89">https://arxiv.org/abs/2608.10906（GitSkills，8/13）</a>｜ <a href="https://github.com/cathrynlavery/diagram-design%EF%BC%88%E5%9B%BE%E8%A1%A8%E6%8A%80%E8%83%BD%EF%BC%8C8/12%EF%BC%89">https://github.com/cathrynlavery/diagram-design（图表技能，8/12）</a></li>
+</ul>
+<hr>
+<h3 id="3.-holaboss-ai%2Fholaos-%E2%80%94-%E5%BC%80%E6%BA%90%E3%80%8Call-in-one%E3%80%8Dai-agent-%E5%B7%A5%E4%BD%9C%E5%8C%BA%EF%BC%886%2C572-%E2%AD%90%EF%BC%8C%E6%96%B0%E4%B8%8A%E6%A6%9C%EF%BC%89" tabindex="-1">3. holaboss-ai/holaOS — 开源「All-in-One」AI Agent 工作区（6,572 ⭐，新上榜）</h3>
+<ul>
+<li>一句话定位：Open-source All in One AI agent workspace——在一个工作区里跑任意 agent（Claude Code / Codex），跨 100+ 集成 + MCP、apps、browser、files，带共享记忆。</li>
+<li>链接：<a href="https://github.com/holaboss-ai/holaOS">https://github.com/holaboss-ai/holaOS</a> ｜ TypeScript ｜ 6,572 ⭐</li>
+<li>为什么今天会火：8 月「Agent 工作台」主线（8/12 paperclip/orca、8/13 omnigent/centaur）持续，holaOS 差异化在「<strong>All-in-One + 共享记忆</strong>」——把「任意 agent + 100+ 集成 + MCP + 共享记忆」打包成「你的 AI OS」。</li>
+<li>技术解读：TypeScript；「Run any agent across your tools」——跨 Claude Code/Codex 等，接 100+ 集成 + MCP，<strong>shared memory</strong> 是关键（多个 agent 共享上下文/记忆）。定位是「Agent 时代的桌面 OS / 工作区」，比单工具更「平台」。</li>
+<li>产品解读：目标用户是「同时用多个 coding/agent 工具、想要统一工作区 + 共享记忆」的开发者/团队；产品形态是 All-in-One 工作区（类似浏览器之于网页，它之于 agent）。</li>
+<li>投资解读：<strong>「Agent 工作区 / Agent OS」是 8 月「Agent 工作台」主线的上位概念</strong>——当 paperclip 管「管理 agent」、orca 管「并行 agent 开发」，holaOS 管「把所有 agent 和工作集中在一个带共享记忆的空间」。共享记忆是差异化护城河（延续 8/11 TencentDB-Agent-Memory、8/12 Agent 记忆主线）。</li>
+<li>判断：⭐⭐⭐⭐ 值得跟踪——「Agent 工作区 + 共享记忆」的 All-in-One 定位，与「Agent 工作台 + 记忆」主线强绑定。</li>
+<li>📎 关联阅读：<a href="https://github.com/paperclipai/paperclip%EF%BC%88%E7%AE%A1%E7%90%86">https://github.com/paperclipai/paperclip（管理</a> Agent，8/12）｜ <a href="https://github.com/omnigent-ai/omnigent%EF%BC%88meta-harness%EF%BC%8C8/13%EF%BC%89">https://github.com/omnigent-ai/omnigent（meta-harness，8/13）</a>｜ <a href="https://github.com/cactus-compute/needle">https://github.com/cactus-compute/needle</a></li>
+</ul>
+<hr>
+<h3 id="4.-lightningpixel%2Fmodly-%E2%80%94-%E6%9C%AC%E5%9C%B0-gpu-%E4%BB%8E%E5%9B%BE%E7%89%87%E7%94%9F%E6%88%90-3d-%E6%A8%A1%E5%9E%8B%EF%BC%885%2C394-%E2%AD%90%EF%BC%8C%E6%96%B0%E4%B8%8A%E6%A6%9C%EF%BC%89" tabindex="-1">4. lightningpixel/modly — 本地 GPU 从图片生成 3D 模型（5,394 ⭐，新上榜）</h3>
+<ul>
+<li>一句话定位：Desktop app to generate 3D models from images using <strong>local AI</strong>——完全跑在你的 GPU 上。</li>
+<li>链接：<a href="https://github.com/lightningpixel/modly">https://github.com/lightningpixel/modly</a> ｜ TypeScript ｜ 5,394 ⭐</li>
+<li>为什么今天会火：8 月「本地/端侧 AI」（8/11 本地 Agent）持续，modly 把「3D 生成」也做成<strong>本地 GPU 桌面工具</strong>——图生 3D 模型，数据不出设备，正中「on-device AI」+「3D/内容生成」双主线。</li>
+<li>技术解读：TypeScript 桌面 app，用本地 AI（本地 GPU 推理）从单张/多张图片生成 3D 模型。<strong>「本地运行」是关键差异</strong>——对比云端 3D 生成（需上传、订阅、延迟），本地跑更隐私、可离线、无按量付费。</li>
+<li>产品解读：目标用户是游戏/设计/3D 内容创作者；产品形态是本地桌面工具，是「本地 3D 生成」这一垂直赛道的代表。</li>
+<li>投资解读：<strong>「本地 3D 生成」是内容生产 + 本地 AI 的交叉点</strong>——与 3D/游戏/设计资产生产直接相关；本地跑意味着「创作者主权 + 无云端锁定」。风险是 3D 生成质量与硬件门槛。</li>
+<li>判断：⭐⭐⭐ 观察——本地 3D 生成的新面孔，与「on-device AI」主线同频。</li>
+<li>📎 关联阅读：<a href="https://github.com/Lightricks/LTX-2%EF%BC%88%E9%9F%B3%E8%A7%86%E9%A2%91%E7%94%9F%E6%88%90%EF%BC%8C8.9K%E2%98%85%EF%BC%89">https://github.com/Lightricks/LTX-2（音视频生成，8.9K★）</a>｜ <a href="https://github.com/cactus-compute/needle%EF%BC%88%E7%AB%AF%E4%BE%A7%EF%BC%89">https://github.com/cactus-compute/needle（端侧）</a>｜ <a href="https://github.com/unslothai/unsloth%EF%BC%88%E6%9C%AC%E5%9C%B0%E8%AE%AD%E7%BB%83%EF%BC%89">https://github.com/unslothai/unsloth（本地训练）</a></li>
+</ul>
+<hr>
+<h3 id="5.-3b1b%2Fmanim-%E2%80%94-%E6%95%B0%E5%AD%A6%E5%8A%A8%E7%94%BB%E5%BC%95%E6%93%8E%EF%BC%8Cgrant-sanderson-%E7%9A%84%E5%BC%80%E6%BA%90%E6%97%97%E8%88%B0%EF%BC%8890%2C845-%E2%AD%90%EF%BC%8C%E6%96%B0%E4%B8%8A%E6%A6%9C%EF%BC%89" tabindex="-1">5. 3b1b/manim — 数学动画引擎，Grant Sanderson 的开源旗舰（90,845 ⭐，新上榜）</h3>
+<ul>
+<li>一句话定位：Animation engine for explanatory math videos——制作可解释数学视频的动画引擎。</li>
+<li>链接：<a href="https://github.com/3b1b/manim">https://github.com/3b1b/manim</a> ｜ Python ｜ 90,845 ⭐（3Blue1Brown 出品）</li>
+<li>为什么今天会火：8 月「教育主线二次冲高」（8/9 预言、8/11 AI-For-Beginners +2,617）之后，教育向「可视化/解释」延伸——manim 是 3Blue1Brown 用 AI 辅助创作数学视频的核心引擎，开学季前被顶上热搜。</li>
+<li>技术解读：Python 动画引擎，用代码声明式地生成数学/科学动画（配合 3Blue1Brown 的教程）。<strong>「可编程的数学可视化」</strong>——不只是展示，而是把「解释」变成代码。</li>
+<li>产品解读：目标用户是教育者/科普创作者/任何想「把抽象讲清楚」的人；产品形态是开源动画引擎，是「AI 时代知识可视化」的基础设施。</li>
+<li>投资解读：<strong>「可解释可视化」是 AI 时代的稀缺能力</strong>——当 AI 生成内容泛滥，「谁能把概念讲清楚」成为差异化（呼应 8/13「理解是新瓶颈」Geoffrey Litt）。manim 是教育 × 可视化 × 开源的三重卡位。</li>
+<li>判断：⭐⭐⭐ 观察——教育可视化旗舰，与「教育 + 理解」双主线同频。</li>
+<li>📎 关联阅读：<a href="https://github.com/microsoft/AI-For-Beginners%EF%BC%888/11">https://github.com/microsoft/AI-For-Beginners（8/11</a> 教育）｜ <a href="https://www.geoffreylitt.com/2026/07/02/understanding-is-the-new-bottleneck%EF%BC%888/14">https://www.geoffreylitt.com/2026/07/02/understanding-is-the-new-bottleneck（8/14</a> HN）｜ <a href="https://github.com/cathrynlavery/diagram-design%EF%BC%88%E5%9B%BE%E8%A1%A8%E6%8A%80%E8%83%BD%EF%BC%89">https://github.com/cathrynlavery/diagram-design（图表技能）</a></li>
+</ul>
+<hr>
+<h3 id="6.-anthropics%2Fskills-%E2%80%94-%E5%AE%98%E6%96%B9%E6%8A%80%E8%83%BD%E4%BB%93%E5%BA%93%E6%8C%81%E7%BB%AD%E9%9C%B8%E6%A6%9C%EF%BC%8C%E3%80%8C%E6%8A%80%E8%83%BD-%3D-%E6%A0%87%E5%87%86%E8%83%BD%E5%8A%9B%E8%B5%84%E4%BA%A7%E3%80%8D%EF%BC%88169%2C002-%E2%AD%90%EF%BC%8C%E5%BB%B6%E7%BB%AD%EF%BC%89" tabindex="-1">6. anthropics/skills — 官方技能仓库持续霸榜，「技能 = 标准能力资产」（169,002 ⭐，延续）</h3>
+<ul>
+<li>一句话定位：Anthropic 官方 Agent Skills 公开仓库——「技能生态」官方化主线的锚点。</li>
+<li>链接：<a href="https://github.com/anthropics/skills">https://github.com/anthropics/skills</a> ｜ Python ｜ 169,002 ⭐（今日 +~500，持续霸榜）</li>
+<li>为什么今天会火：8 月「技能官方化」主线延续（8/8 起已多日追踪），今日叠加新面孔 <code>kepano/obsidian-skills</code>（技能×PKM）与 HF 的 SkillZip（技能压缩）——<strong>技能生态的「官方标准 + 垂直化 + 度量层」三条线同时推进</strong>，官方仓库是锚点。</li>
+<li>技术解读：官方定义 <a href="http://SKILL.md">SKILL.md</a> 规范（Anthropic 2025/10 提出、8/11 开放规范），承载官方技能集；与社区仓库（kepano/diagram-design）形成「官方标准 vs 个人垂直」双轨。</li>
+<li>产品解读：目标用户是「要用可移植技能扩展 Claude/agent」的开发者；产品形态是官方技能库，是 Anthropic 建立「技能标准」生态位的关键。</li>
+<li>投资解读：<strong>「技能标准」是 Agent 生态的协议级卡位</strong>（延续 8/10「技能=产品」、8/13 GitSkills 论文判断）——谁定义技能格式，谁掌握能力资产分发入口。</li>
+<li>判断：⭐⭐⭐⭐ 值得跟踪——技能生态官方锚点（多日追踪，今日与 obsidian-skills/SkillZip 共振）。</li>
+<li>📎 关联阅读：<a href="https://github.com/kepano/obsidian-skills">https://github.com/kepano/obsidian-skills</a> ｜ <a href="https://arxiv.org/abs/2608.05604%EF%BC%88SkillZip%EF%BC%89">https://arxiv.org/abs/2608.05604（SkillZip）</a>｜ <a href="https://github.com/cathrynlavery/diagram-design">https://github.com/cathrynlavery/diagram-design</a></li>
+</ul>
+<hr>
+<h3 id="7.-cactus-compute%2Fneedle-%E2%80%94-14mb-%E7%AB%AF%E4%BE%A7%E6%A8%A1%E5%9E%8B%EF%BC%8C%E6%9C%AC%E5%9C%B0-agent-%E7%9A%84%E3%80%8C%E6%9C%80%E5%B0%8F%E5%8F%91%E5%8A%A8%E6%9C%BA%E3%80%8D%EF%BC%884%2C938-%E2%AD%90%EF%BC%8C%E5%BB%B6%E7%BB%AD%EF%BC%89" tabindex="-1">7. cactus-compute/needle — 14MB 端侧模型，本地 Agent 的「最小发动机」（4,938 ⭐，延续）</h3>
+<ul>
+<li>一句话定位：14MB foundation model for tiny devices——手机、可穿戴、智能家居、机器人上的端侧模型。</li>
+<li>链接：<a href="https://github.com/cactus-compute/needle">https://github.com/cactus-compute/needle</a> ｜ Python ｜ 4,938 ⭐（8/11 已深挖，今日延续）</li>
+<li>为什么今天会火：8/11「本地/端侧 Agent」主线持续，needle 作为「14MB 端侧 + 本地判断云端兜底」的旗舰样本，与今日 FluidVoice（本地听写）、modly（本地 3D）形成「<strong>本地 AI 全家桶</strong>」的今日版本。</li>
+<li>技术解读：45M 参数 / 14MB，Raspberry Pi 上 500 tok/s；「本地判断 + 云端兜底」的置信度路由（Cactus Hybrid）。它证明「端侧能跑 Agent」不是概念而是可发货二进制。</li>
+<li>产品解读：面向「可穿戴/手机/机器人/OEM」的端侧模型，是「个人 Agent 硬件」的发动机。</li>
+<li>投资解读：<strong>「端侧模型」是 8/11 之后确定的主线</strong>——与 DePIN（算力打散到网络）形成「本地 vs 去中心化」两条算力路线（8/13 已标注 DePIN 供给不稳）。</li>
+<li>判断：⭐⭐⭐⭐ 值得跟踪——端侧 Agent 旗舰样本，本地 AI 主线延续。</li>
+<li>📎 关联阅读：<a href="https://github.com/altic-dev/FluidVoice%EF%BC%88%E6%9C%AC%E5%9C%B0%E5%90%AC%E5%86%99%EF%BC%89">https://github.com/altic-dev/FluidVoice（本地听写）</a>｜ <a href="https://github.com/lightningpixel/modly%EF%BC%88%E6%9C%AC%E5%9C%B0">https://github.com/lightningpixel/modly（本地</a> 3D）｜ <a href="https://github.com/unslothai/unsloth">https://github.com/unslothai/unsloth</a></li>
+</ul>
+<hr>
+<blockquote>
+<p><strong>短名单（不展开）</strong>：<code>NVIDIA-NeMo/Switchyard</code>（1,201★，模型路由，8/12 深挖，延续）、<code>semantica-agi/semantica</code>（6,616★，图式可问责 AI，8/13 深挖，延续）、<code>cathrynlavery/diagram-design</code>（14,398★，图表技能，8/12 深挖，延续）、<code>infiniflow/ragflow</code>（88,002★，RAG 引擎常客）、<code>msitarzewski/agency-agents</code>（145,177★，AI 专家角色集）、<code>macro-inc/macro</code>（2,585★，统一工作区）、<code>unslothai/unsloth</code>（71,036★，本地训练/跑 LLM）、<code>megadose/holehe</code>（12,410★，邮箱 OSINT）、<code>smicallef/spiderfoot</code>（20,662★，OSINT）、<code>Lightricks/LTX-2</code>（8,905★，音视频生成）。</p>
+</blockquote>
+<hr>
+<h2 id="%F0%9F%93%8A-9.-a.-%E4%BB%8A%E6%97%A5%E4%B8%BB%E7%BA%BF%EF%BC%884-%E6%9D%A1%EF%BC%89" tabindex="-1">📊 9. A. 今日主线（4 条）</h2>
+<h3 id="%E4%B8%BB%E7%BA%BF%E4%B8%80%EF%BC%9A%E3%80%8Cdeepseek-%E4%BB%8E%E3%80%8E%E5%8D%96%E6%A8%A1%E5%9E%8B%E7%9A%84%E3%80%8F%E6%89%93%E5%88%B0%E3%80%8E%E5%8D%96-agent-%E5%9F%BA%E5%BA%A7%E7%9A%84%E3%80%8F%E2%80%94%E2%80%94%E6%A8%A1%E5%9E%8B%E5%8E%82%E5%95%86%E9%9B%86%E4%BD%93%E6%8A%A2-agent-%E6%89%A7%E8%A1%8C%E5%B1%82%E4%B8%8E%E6%88%90%E6%9C%AC%E5%AE%9A%E4%BB%B7%E6%9D%83%E3%80%8D" tabindex="-1">主线一：「DeepSeek 从『卖模型的』打到『卖 Agent 基座的』——模型厂商集体抢 Agent 执行层与成本定价权」</h3>
+<p>把 DeepSeek Harness（一切皆插件，40.9K★，HN 532）+ Gemini 3.7 Flash（价格腰斩，HN 560）+ Cerebras GPT-5.6 Sol Ultrafast（750 tok/s，HN 388）+ HF 的 AI4AI/Agent Safety（harness 即能力/安全）放一起：<strong>8/12 我说『模型路由层成为新战场』，今天模型厂商直接下场抢 Agent 执行层</strong>——DeepSeek 开源 harness 定义「Agent = Model + Harness」，Google 用半价 Flash 抢 token 成本，Cerebras 用速度抢实时场景。<strong>8/13 我说『开源旗舰在 Agent 负载上做文章』，今天更进一步：模型层不再满足于『卖权重』，而要掌控『Agent 怎么跑、花多少钱、跑多快』的定价权</strong>。harness 化 + 成本战 = 8 月下半月最确定的主线。</p>
+<h3 id="%E4%B8%BB%E7%BA%BF%E4%BA%8C%EF%BC%9A%E3%80%8C%E6%9C%AC%E5%9C%B0%2F%E7%AB%AF%E4%BE%A7-ai-%E4%BA%8C%E6%AC%A1%E5%BC%80%E8%8A%B1%E2%80%94%E2%80%94%E3%80%8E%E6%8A%8A-ai-%E6%90%AC%E5%9B%9E%E5%AE%B6%E3%80%8F%E4%BB%8E%E6%A8%A1%E5%9E%8B%E6%89%A9%E6%95%A3%E5%88%B0%E5%BA%94%E7%94%A8%EF%BC%88%E5%90%AC%E5%86%99%2F3d%2F%E7%AB%AF%E4%BE%A7%E6%A8%A1%E5%9E%8B%EF%BC%89%E3%80%8D" tabindex="-1">主线二：「本地/端侧 AI 二次开花——『把 AI 搬回家』从模型扩散到应用（听写/3D/端侧模型）」</h3>
+<p>把 FluidVoice（本地听写，9.8K★）+ modly（本地 3D）+ needle（14MB 端侧，4.9K★）+ unsloth（本地训练，71K★）放一起：<strong>8/11 我说『本地 Agent 全家桶』，今天本地化从『模型』扩散到『应用』</strong>——本地听写（替代云端 Wispr Flow）、本地 3D 生成、端侧模型同时上榜，说明「on-device AI」已经从「能跑」变成「能做具体产品」。与 8/13「DePIN 供给不稳」对照：<strong>本地化与去中心化在『算力该在哪跑』上竞争，而今日天平明显偏向『本地/端侧』</strong>。</p>
+<h3 id="%E4%B8%BB%E7%BA%BF%E4%B8%89%EF%BC%9A%E3%80%8C%E6%8A%80%E8%83%BD%E7%94%9F%E6%80%81%C3%97%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E4%B8%BB%E6%9D%83%E2%80%94%E2%80%94%E4%BB%8E%E3%80%8E%E5%AE%98%E6%96%B9%E6%A0%87%E5%87%86%E3%80%8F%E5%88%B0%E3%80%8E%E5%9E%82%E7%9B%B4%E5%9C%BA%E6%99%AF%E3%80%8F%E4%B8%8E%E3%80%8E%E5%BC%80%E6%94%BE%E6%A0%BC%E5%BC%8F%E5%8F%8D%E9%94%81%E5%AE%9A%E3%80%8F%E3%80%8D" tabindex="-1">主线三：「技能生态×个人知识主权——从『官方标准』到『垂直场景』与『开放格式反锁定』」</h3>
+<p>把 anthropics/skills（169K★，官方标准）+ kepano/obsidian-skills（45.7K★，技能×PKM，Obsidian CEO 亲做）+ diagram-design（14.4K★，图表技能）+ HF 的 SkillZip（技能压缩）+ 8/13 GitSkills（百万 <a href="http://SKILL.md">SKILL.md</a> 数据集）放一起：<strong>8/8-8/13 我说『技能=能力资产』，今天技能生态长出两个新支点——垂直化（×个人知识库）与开放格式反锁定（kepano 强调 Markdown/JSON Canvas）</strong>。当技能成为「可研究、可压缩、可分发」的资产（8/13 已确认），「技能 × 个人数据主权」（呼应 PBS 诉 Iron Mountain）就是离个人用户最近的一环。<strong>『个人 vs 平台』主线在知识管理侧再次兑现</strong>。</p>
+<h3 id="%E4%B8%BB%E7%BA%BF%E5%9B%9B%EF%BC%9A%E3%80%8C%E9%AA%8C%E8%AF%81%E6%96%87%E5%8C%96%E7%BB%A7%E7%BB%AD%E7%BA%B5%E6%B7%B1%E2%80%94%E2%80%94%E4%BB%8E%E6%A8%A1%E5%9E%8B%2F%E8%BD%AF%E4%BB%B6%E6%89%93%E5%88%B0%E3%80%8E%E8%BF%90%E8%A1%8C%E6%97%B6%E5%A5%91%E7%BA%A6%E3%80%81%E7%8E%AF%E5%A2%83%E7%BA%A2%E9%98%9F%E3%80%81%E7%A1%AC%E4%BB%B6%E6%94%BB%E5%87%BB%E9%9D%A2%E3%80%8F%E3%80%8D" tabindex="-1">主线四：「验证文化继续纵深——从模型/软件打到『运行时契约、环境红队、硬件攻击面』」</h3>
+<p>把 HF 的 Agent Safety（安全=运行时契约）+ OpenART/ToolHazard（环境红队规模化）+ HN 的 Spaghettifying DRAM（硬件攻击面）+ Geoffrey Litt「理解是新瓶颈」+ Anthropic Conceptual Reasoning Index 放一起：<strong>8 月『验证/可证明』主线今日三重落地——运行时（安全契约）、环境（红队进化）、硬件（DRAM 加扰可攻击），同时『人类理解』（Litt）与『AI 概念推理』（CRI）也被拉进验证范畴</strong>。<strong>『AI 时代，可证明、可追溯、可验证』从模型层渗透到运行时、环境、硬件与认知层，是 8 月最完整的主线闭环，且今天达到新的深度</strong>。</p>
+<hr>
+<h2 id="%F0%9F%93%88-10.-b.-%E8%B6%8B%E5%8A%BF%E5%88%A4%E6%96%AD" tabindex="-1">📈 10. B. 趋势判断</h2>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>判断</th>
+<th>与前 3 日（8/11–8/13）对比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>短期（1–4 周）</strong></td>
+<td>DeepSeek Harness 开源会带动「harnness 插件生态」与「运行时安全契约」讨论；Gemini 3.7 Flash 半价（至年底）改写 Agent 成本锚点；本地 AI 应用（听写/3D）持续上榜；技能×PKM（obsidian-skills）引发「Agent 读你的笔记」隐私讨论。</td>
+<td>8/13「开源旗舰发布潮 + 技能度量层」→ 今日新增「模型厂商抢 Agent 执行层（DeepSeek Harness）+ 本地 AI 应用化」🔄；8/11「本地 Agent 爆发」→ 今日本地化扩散到应用层 ✅</td>
+</tr>
+<tr>
+<td><strong>中期（1–3 月）</strong></td>
+<td>「模型路由 + GPU 调度 + K8s 编排 + harness 插件」四层调度/运行时整合成为 AI 基础设施主线；「harness 即能力、安全即运行时契约」成为企业 Agent 上生产的硬性要求；技能生态出现「注册表/包管理器/度量层」标准件；本地 AI 从「跑模型」到「做产品」形成稳定利基。</td>
+<td>8/13「模型路由 + 技能度量 + 对话版本控制」→ 今日加「harness 插件化 + 运行时安全契约」✅；8/12「Java Agent 三件套」→ 今日 Spring AI 2.0 语境持续 ✅</td>
+</tr>
+<tr>
+<td><strong>长期信号</strong></td>
+<td>「验证文化」从模型层渗透到运行时/环境/硬件/认知层（安全契约/红队/DRAM/概念推理指数）；「能力资产化」（技能可度量可分发可压缩）成为基础设施；「Agent 持久世界」（项目比 agent 活得长）成为软件工程新形态；「本地 vs 去中心化」算力双轨并进。</td>
+<td>8/13「能力资产化 + 工程可证明 + AI 身份」→ 今日加「运行时契约 + 持久世界 + 硬件攻击面」三维 ✅；8/12「加密不可靠、本地可验证」→ 今日 DeepSeek Harness「every run is traceable」实证 ✅</td>
+</tr>
+<tr>
+<td><strong>谨慎关注</strong></td>
+<td>① DeepSeek Harness 40.9K★ 是发布脉冲，需观察插件生态是否真形成（避免「star 数会骗人」）；② Gemini 3.7 Flash 便宜但 CharXiv 小回退、无开放权重，「便宜但不全强」需验证；③ Cerebras Ultrafast 750 tok/s 是 Cerebras 自测，需第三方复现；④ 本地 AI 应用（FluidVoice/modly）单平台天花板与硬件门槛。</td>
+<td>8/13「Grok 缺独立验证 + DePIN 供给不稳」→ 今日转移到「DeepSeek Harness 生态 vs 星数 + Cerebras 自测速度」🔄；8/12「Agent 工作台星数 vs 真实使用落差」→ 今日 holaOS/hola 类似风险 🔄</td>
+</tr>
+<tr>
+<td><strong>意外惊喜</strong></td>
+<td>① DeepSeek Harness 若成「开源 Agent 运行时标准件」，可能重写 coding agent 竞争格局（模型厂商掌控 harness 层）；② obsidian-skills 若带动「Agent×个人知识」生态，「你的笔记被 agent 读」成为新产品品类；③ 本地 3D（modly）/听写（FluidVoice）若被创作者采用，「本地 AI 工具」成为可规模化的垂直赛道；④ Persistent Recursive Worlds 若被主流工作台吸收，「项目永生」成为软件工程新范式。</td>
+<td>8/13「个人助理 + 对话版本控制 + 技能数据集」→ 今日新增「模型厂商控 harness + 本地 AI 应用化 + 技能×PKM」三个惊喜点 🎁</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="%F0%9F%8E%AF-11.-c.-%E9%98%BF%E5%A2%A8%E7%82%B9%E8%AF%84" tabindex="-1">🎯 11. C. 阿墨点评</h2>
+<h3 id="1.-%E3%80%8C%E4%BB%8A%E5%A4%A9%E6%9C%80%E9%87%8D%E7%A3%85%E7%9A%84%E4%B8%8D%E6%98%AF%E4%BB%BB%E4%BD%95%E6%A8%A1%E5%9E%8B%EF%BC%8C%E6%98%AF-deepseek-%E6%8A%8A-agent-%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BC%80%E6%BA%90%E4%BA%86%E2%80%94%E2%80%94%E3%80%8E%E4%B8%80%E5%88%87%E7%9A%86%E6%8F%92%E4%BB%B6%E3%80%8F%EF%BC%8C%E8%BF%99%E6%98%AF%E5%AE%83%E4%BB%8E%E3%80%8E%E5%8D%96%E6%A8%A1%E5%9E%8B%E7%9A%84%E3%80%8F%E8%B7%B3%E5%88%B0%E3%80%8E%E5%8D%96-agent-%E5%9F%BA%E5%BA%A7%E7%9A%84%E3%80%8F%E3%80%8D" tabindex="-1">1. 「今天最重磅的不是任何模型，是 DeepSeek 把 Agent 运行时开源了——『一切皆插件』，这是它从『卖模型的』跳到『卖 Agent 基座的』」</h3>
+<p>我 8/12 说『模型路由层成为新战场』、8/13 说『开源旗舰在 Agent 负载上做文章』，今天 DeepSeek 直接甩出 Harness——<strong>一个开源、含源码、一切皆插件（模型/工具/技能/沙箱/存储/循环/调度/UI 全可换）的 Agent 运行时，还带『every run is traceable』的 append-only 会话日志</strong>。这不是又一个工具，这是 DeepSeek 在说：<strong>我不光给你最强的 Agent 模型，连『Agent 怎么跑、怎么被审计、怎么组合』我都定义了</strong>。40.9K★ 里有多少是真生态我打问号，但方向是真的：<strong>模型厂商已经集体意识到，护城河不在权重，在 harness 和运行时</strong>。Google 用半价 Flash 抢成本，Cerebras 用 750 tok/s 抢速度，DeepSeek 用开源 harness 抢执行层——<strong>8 月下半月，Agent 的『运行时、成本、速度』三件事，就是新战场</strong>。</p>
+<h3 id="2.-%E3%80%8Cgemini-3.7-flash-%E7%9C%9F%E6%AD%A3%E7%9A%84%E8%AE%BA%E7%82%B9%E4%B8%8D%E6%98%AF%E6%99%BA%E8%83%BD%EF%BC%8C%E6%98%AF%E4%BB%B7%E6%A0%BC%E2%80%94%E2%80%94%240.75%2F%243.75-%E5%88%B0%E5%B9%B4%E5%BA%95%EF%BC%8C%E6%8A%8A-agent-%E7%9A%84-tokenomics-%E5%8F%88%E5%8E%8B%E4%B8%8B%E4%B8%80%E6%88%AA%E3%80%8D" tabindex="-1">2. 「Gemini 3.7 Flash 真正的论点不是智能，是价格——$0.75/$3.75 到年底，把 Agent 的 tokenomics 又压下一截」</h3>
+<p>3.7 Flash 其实是 3.6 的强化版（3 周就发），智能指数 56 不算震撼，<strong>震撼的是价格</strong>：$0.75/1M 输入、$3.75/1M 输出，约是 Claude Sonnet 5 / GPT-5.6 Terra 混合成本的 1/3，而且这价格只到年底（之后翻倍）。<strong>这是 Google 在给 Agent 生产算『价格锚点』</strong>——当 Agent 消耗 token 的量级上去，谁给便宜的工作马模型，谁就握住量产 agent 的成本命脉。加上 Cerebras 的 Ultrafast（750 tok/s，HLE 2500 题 11 小时跑完 vs Fable 5 的 78 小时）——<strong>『速度 + 成本』正在成为和『智能』并列的购买标准</strong>。8/12 我说『压缩即预测给了推理效率理论底座』，今天产业直接把效率和价格打成产品卖点了。</p>
+<h3 id="3.-%E3%80%8C%E4%BB%8A%E5%A4%A9%E6%88%91%E6%9C%80%E5%96%9C%E6%AC%A2%E7%9A%84%E4%B8%80%E6%9D%A1%E6%9A%97%E7%BA%BF%EF%BC%9Akepano%EF%BC%88obsidian-ceo%EF%BC%89%E4%BA%B2%E8%87%AA%E5%8A%A8%E6%89%8B%E6%8A%8A%E3%80%8E%E6%8A%80%E8%83%BD%E3%80%8F%E5%92%8C%E3%80%8E%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E3%80%8F%E7%84%8A%E5%9C%A8%E4%B8%80%E8%B5%B7%E2%80%94%E2%80%94obsidian-skills%EF%BC%8C45.7k%E2%98%85%EF%BC%8C%E4%B8%BB%E6%89%93%E5%BC%80%E6%94%BE%E6%A0%BC%E5%BC%8F%E5%8F%8D%E9%94%81%E5%AE%9A%E3%80%8D" tabindex="-1">3. 「今天我最喜欢的一条暗线：kepano（Obsidian CEO）亲自动手把『技能』和『个人知识库』焊在一起——obsidian-skills，45.7K★，主打开放格式反锁定」</h3>
+<p>8/8 起我们一路追技能生态：官方标准（anthropics/skills）、垂直技能（diagram-design）、度量层（GitSkills 论文）、压缩（SkillZip）。今天 Obsidian CEO 亲自下场，把技能 × PKM 做成可插拔技能包，<strong>还特意强调开放格式（Markdown/Bases/JSON Canvas）——你的笔记不能被厂商锁死</strong>。这跟今天 PBS 起诉 Iron Mountain（第三方扣押档案数据）是同一件事的两面：<strong>数据主权正在成为从知识管理到媒体档案的通用焦虑</strong>。当 agent 能读你的笔记，『谁拥有、谁能访问、谁说了算』就从口号变成产品问题。<strong>『个人 vs 平台』这条主线，8 月一路从工具打到知识主权，今天在 PKM 侧又开了个新战场</strong>。</p>
+<h3 id="4.-%E5%89%8D-3-%E6%97%A5%E6%8A%A5%E9%AA%8C%E8%AF%81%2F%E4%BF%AE%E6%AD%A3" tabindex="-1">4. 前 3 日报验证/修正</h3>
+<ul>
+<li>✅ 8/13「开源旗舰在 Agent 负载做文章」→ 今日 DeepSeek Harness 直接把 Agent 运行时开源，升级为「模型厂商抢 Agent 执行层」✅</li>
+<li>✅ 8/12「模型路由成新战场」→ 今日 Switchyard 持续在榜 + Gemini 半价 + Cerebras 提速，「运行时/成本/速度」三线成真战场 ✅</li>
+<li>✅ 8/11「本地 Agent 全家桶」→ 今日本地化扩散到应用（FluidVoice/modly），升级为「本地 AI 应用化」✅</li>
+<li>✅ 8/8-8/13「技能=能力资产」→ 今日 obsidian-skills（技能×PKM）+ SkillZip（压缩）延续，并新增「开放格式反锁定」维度 ✅</li>
+<li>✅ 8/10「形式化/可证明成新验证层」→ 今日 Web3 的 Mechanized Proofs + HF 的 Agent Safety（运行时契约）跨域印证 ✅</li>
+<li>🔄 8/13「DePIN 真实落地」→ 今日本地 AI 应用持续升温（FluidVoice/modly/needle），「本地 vs 去中心化」算力天平明显偏向本地/端侧，DePIN 需持续观察供给 🔄</li>
+<li>🔄 8/13「Grok 缺独立验证」→ 今日 Cerebras 的 750 tok/s 同为厂商自测，需第三方复现，「宣称 vs 验证」风险转移 🔄</li>
+</ul>
+<p><strong>一句话收尾：当 DeepSeek 把 Agent 运行时开源成『一切皆插件』、Google 用半价 Flash 改写 Agent 成本、Cerebras 用 750 tok/s 重定义速度、Obsidian CEO 把技能焊进个人知识库——2026 年 8 月第三周，AI 的竞争已经从『谁的模型最强』，变成『谁的 harness 更可组合、谁的 token 更便宜、谁跑得更快、谁更懂你的数据主权』。权重会越来越同质，但『运行时、成本、速度、主权』这四样，才是这一轮真正被重估的资产。</strong></p>
+<hr>
+<h2 id="%F0%9F%93%8B-%E5%BD%92%E6%A1%A3%E8%AF%B4%E6%98%8E" tabindex="-1">📋 归档说明</h2>
+<ul>
+<li>数据时间：2026-08-14（周五），Asia/Shanghai</li>
+<li>数据源：GitHub Trending（curl 采集）/ HN Firebase API / HuggingFace（当日 daily_papers 未收录，用 08-13 最新批次）/ arXiv API / web_search（Simon/Anthropic/Kasra/Google/Spring/CNCF/K8s/ethresear.ch/DePIN 等）</li>
+<li>前 3 日报已纳入上下文（2026-08-11 / 08-12 / 08-13），今日标注了延续与修正</li>
+<li>所有仓库/Paper/文章均附完整 URL</li>
+</ul>
+<p><em>本日报由 Hermes Agent 自动生成。数据与观点仅用于技术／趋势研究，不构成投资建议。</em></p>
+<hr>
+<h2 id="%F0%9F%94%A2-%E4%BB%8A%E6%97%A5%E7%AE%97%E6%B3%95%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%88%E9%98%BF%E6%A5%A0%E4%B8%93%E9%A1%B9%EF%BC%89%E2%80%94-%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7%EF%BC%88circuit-breaker%EF%BC%89" tabindex="-1">🔢 今日算法知识点（阿楠专项）— 熔断降级（Circuit Breaker）</h2>
+<blockquote>
+<p>附注：由每日算法知识点 cron 自动追加（08:15）。</p>
+</blockquote>
+<p><strong>核心要点</strong></p>
+<ul>
+<li>熔断本质是「快速失败」：当下游连续失败达到阈值（如连续 5 次、或错误率 &gt; 50%），断路器进入 <strong>OPEN（打开）</strong>，后续请求不再打到下游，直接走降级兜底，给下游留出恢复时间。</li>
+<li>三态状态机：<strong>CLOSED（关闭，正常放行）→ OPEN（打开，全部拒绝）→ HALF-OPEN（半开，放少量探针请求）</strong>。半开阶段探针成功则回到 CLOSED，失败则重新 OPEN。</li>
+<li>与限流、降级的分工：<strong>限流</strong>管「自己扛不扛得住」，<strong>熔断</strong>管「下游还值不值得打」，<strong>降级</strong>管「打不动时给什么兜底」——三者常配套使用（如 Sentinel / Hystrix）。</li>
+</ul>
+<p><strong>示例</strong></p>
+<pre><code class="language-java">// Hystrix 风格伪代码：连续失败 5 次进入熔断，探针成功后恢复
+@HystrixCommand(
+    fallbackMethod = &quot;fallback&quot;,
+    commandProperties = {
+        @HystrixProperty(name = &quot;circuitBreaker.requestVolumeThreshold&quot;, value = &quot;5&quot;),
+        @HystrixProperty(name = &quot;circuitBreaker.errorThresholdPercentage&quot;, value = &quot;50&quot;),
+        @HystrixProperty(name = &quot;circuitBreaker.sleepWindowInMilliseconds&quot;, value = &quot;5000&quot;)
+    })
+public Order getOrder(Long id) {
+    return orderClient.get(id);   // 调用下游，失败率高会被熔断
+}
+
+private Order fallback(Long id) {
+    return Order.empty();          // 兜底：返回空对象 / 缓存 / 默认值
+}
+</code></pre>
+<p><strong>小建议 / 后续阅读</strong></p>
+<ul>
+<li>生产上别只盯着 Hystrix 的固定阈值，可以研究阿里 <strong>Sentinel</strong> 的滑动窗口 + 熔断降级设计（支持慢调用比例、异常比例等更细粒度统计）。</li>
+<li>进阶可看「<strong>舱壁隔离（Bulkhead）</strong>」：给不同下游分配独立线程池/信号量，避免一个慢调用拖垮整个应用。</li>
+</ul>
+<p>&lt;!-- daily-algo-tip:2026-08-14 --&gt;</p>
+</div>
+        </article>
+        <aside class="research-toc daily-toc">
+          <p class="editorial-kicker">Recent 7 Days</p>
+          <h2>日报索引</h2>
+          <ol><li aria-current="page"><a href="/github-daily/2026-08-14/">2026-08-14</a></li><li><a href="/github-daily/2026-08-13/">2026-08-13</a></li><li><a href="/github-daily/2026-08-12/">2026-08-12</a></li><li><a href="/github-daily/2026-08-11/">2026-08-11</a></li><li><a href="/github-daily/2026-08-10/">2026-08-10</a></li><li><a href="/github-daily/2026-08-09/">2026-08-09</a></li><li><a href="/github-daily/2026-08-08/">2026-08-08</a></li></ol>
+          <p class="site-note"><a href="/github-daily/">返回日报首页</a></p>
+        </aside>
+      </main>
+    <div id="footer">Copyright © 2017 <a href="/.">墨萧.</a> Built from Obsidian Markdown and published with GitHub Pages.</div>
+  </div>
+</body>
+</html>
