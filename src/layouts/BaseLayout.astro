@@ -72,8 +72,8 @@ const nav = [
             <span>风格</span>
             <select id="theme-select" aria-label="切换网站风格">
               <option value="editorial">暖色编辑部</option>
-              <option value="paper">AstroPaper</option>
-              <option value="ink">夜间墨色</option>
+              <option value="paper">Catppuccin Latte</option>
+              <option value="ink">Catppuccin Mocha</option>
             </select>
           </label>
         </div>
@@ -90,11 +90,18 @@ const nav = [
     </a>
     <script>
       const select = document.querySelector<HTMLSelectElement>("#theme-select");
+      const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+      const themeColors: Record<string, string> = { editorial: "#f4efe5", paper: "#eff1f5", ink: "#1e1e2e" };
+      const syncThemeColor = (theme: string) => {
+        themeColor?.setAttribute("content", themeColors[theme] ?? themeColors.editorial);
+      };
       if (select) {
         select.value = document.documentElement.dataset.theme ?? "editorial";
+        syncThemeColor(select.value);
         select.addEventListener("change", () => {
           document.documentElement.dataset.theme = select.value;
           localStorage.setItem("moxiao-theme", select.value);
+          syncThemeColor(select.value);
           window.dispatchEvent(new CustomEvent("moxiao:theme-change", { detail: { theme: select.value } }));
         });
       }
