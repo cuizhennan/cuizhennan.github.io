@@ -84,6 +84,73 @@ const readingMinutes = contentSource ? Math.max(1, Math.ceil(hanCount / 400 + la
     </script>
   )}
   <script>
+    const enhanceMarkdown = () => {
+      const body = document.querySelector<HTMLElement>(".article-body");
+      if (!body || body.dataset.enhanced) return;
+      body.dataset.enhanced = "true";
+
+      body.querySelectorAll<HTMLAnchorElement>('a[href^="http"]').forEach((link) => {
+        if (link.hostname === window.location.hostname) return;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.classList.add("external-link");
+      });
+
+      body.querySelectorAll<HTMLTableElement>("table").forEach((table) => {
+        if (table.parentElement?.classList.contains("table-scroll")) return;
+        const wrapper = document.createElement("div");
+        wrapper.className = "table-scroll";
+        wrapper.tabIndex = 0;
+        wrapper.setAttribute("role", "region");
+        wrapper.setAttribute("aria-label", table.querySelector("th")?.textContent?.trim() || "数据表格");
+        table.before(wrapper);
+        wrapper.append(table);
+      });
+
+      body.querySelectorAll<HTMLPreElement>("pre").forEach((pre) => {
+        if (pre.closest(".mermaid-figure") || pre.parentElement?.classList.contains("code-block")) return;
+        const code = pre.querySelector("code");
+        if (!code) return;
+        const language = pre.dataset.language
+          || [...code.classList].find((name) => name.startsWith("language-"))?.slice(9)
+          || "text";
+        const wrapper = document.createElement("div");
+        wrapper.className = "code-block";
+        const toolbar = document.createElement("div");
+        toolbar.className = "code-toolbar";
+        toolbar.innerHTML = `<span>${language}</span><button type="button" aria-label="复制代码">复制</button>`;
+        pre.before(wrapper);
+        wrapper.append(toolbar, pre);
+        toolbar.querySelector("button")?.addEventListener("click", async (event) => {
+          const button = event.currentTarget as HTMLButtonElement;
+          try {
+            await navigator.clipboard.writeText(code.textContent ?? "");
+            button.textContent = "已复制";
+            window.setTimeout(() => { button.textContent = "复制"; }, 1600);
+          } catch { button.textContent = "复制失败"; }
+        });
+      });
+
+      body.querySelectorAll<HTMLImageElement>("img[alt]").forEach((img) => {
+        if (!img.alt || img.closest("figure") || img.parentElement?.childNodes.length !== 1) return;
+        const paragraph = img.parentElement;
+        const figure = document.createElement("figure");
+        figure.className = "article-figure";
+        const caption = document.createElement("figcaption");
+        caption.textContent = img.alt;
+        paragraph.before(figure);
+        figure.append(img, caption);
+        paragraph.remove();
+      });
+
+      body.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((checkbox) => {
+        checkbox.closest("li")?.classList.add("task-item");
+        checkbox.setAttribute("aria-label", checkbox.checked ? "已完成" : "未完成");
+      });
+    };
+
+    enhanceMarkdown();
+
     const articleBody = document.querySelector<HTMLElement>(".article-body");
     const progressBar = document.querySelector<HTMLElement>(".reading-progress span");
     if (articleBody && progressBar) {
@@ -108,11 +175,25 @@ const readingMinutes = contentSource ? Math.max(1, Math.ceil(hanCount / 400 + la
 
     document.querySelectorAll<HTMLElement>(".article-body blockquote").forEach((callout) => {
       const first = callout.querySelector("p:first-child");
-      const match = first?.textContent?.match(/^\[!([a-z-]+)\]\s*/i);
+      const match = first?.textContent?.match(/^\[!([a-z-]+)\]([+-])?\s*(.*)/i);
       if (!first || !match) return;
       callout.classList.add("obsidian-callout", `callout-${match[1].toLowerCase()}`);
-      const node = first.firstChild;
-      if (node?.nodeType === Node.TEXT_NODE) node.textContent = node.textContent?.replace(/^\[![a-z-]+\]\s*/i, "") ?? "";
+      const title = match[3] || match[1].replace(/-/g, " ");
+      first.textContent = title;
+      first.classList.add("callout-title");
+      first.setAttribute("data-callout-icon", "◆");
+      if (match[2]) {
+        callout.classList.add("is-foldable");
+        const details = document.createElement("details");
+        if (match[2] === "+") details.open = true;
+        const summary = document.createElement("summary");
+        summary.append(first);
+        const content = document.createElement("div");
+        content.className = "callout-content";
+        while (callout.firstChild) content.append(callout.firstChild);
+        details.append(summary, content);
+        callout.append(details);
+      }
     });
   </script>
 </BaseLayout>
