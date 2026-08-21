@@ -33,7 +33,7 @@ const latestReport = await readFile(
 for (const marker of ["data-toc-slug", "日报日期", "section-pager"]) {
   if (!latestReport.includes(marker)) throw new Error(`日报详情缺少章节导航标记：${marker}`);
 }
-for (const marker of ["dataset.enhanced", "table-scroll", "code-toolbar", "external-link", "callout-title"]) {
+for (const marker of ["dataset.enhanced", "table-scroll", "code-toolbar", "external-link", "callout-title", "dataset.callout"]) {
   if (!latestReport.includes(marker)) throw new Error(`Markdown 增强脚本缺少标记：${marker}`);
 }
 

@@ -241,22 +241,26 @@ main { min-height: 65vh; }
 .mermaid-figure:fullscreen .mermaid-toolbar { flex: 0 0 auto; }
 .mermaid-figure:fullscreen .mermaid-diagram { display: grid; flex: 1 1 auto; min-height: 0; place-items: center; padding: clamp(1rem, 5vw, 4rem); }
 .mermaid-figure::backdrop { background: var(--paper); }
-.article-body blockquote.obsidian-callout { --callout-color: var(--accent); padding: .85rem 1.15rem; border: 1px solid color-mix(in srgb, var(--callout-color) 35%, var(--line)); border-left: 4px solid var(--callout-color); border-radius: var(--radius); color: var(--ink); background: color-mix(in srgb, var(--callout-color) 8%, var(--surface)); }
+.article-body blockquote.obsidian-callout { --callout-color: var(--accent); overflow: hidden; padding: 0; border: 1px solid color-mix(in srgb, var(--callout-color) 34%, var(--line)); border-left: 4px solid var(--callout-color); border-radius: var(--radius); color: var(--ink); background: color-mix(in srgb, var(--callout-color) 7%, var(--surface)); box-shadow: 0 .35rem 1.25rem color-mix(in srgb, var(--callout-color) 7%, transparent); }
 .article-body .obsidian-callout > p:first-child { margin-top: 0; font-weight: 700; }
-.article-body .callout-title { display: flex; align-items: center; gap: .55rem; color: var(--callout-color); font-size: .92rem; letter-spacing: .015em; }
-.article-body .callout-title::before { content: attr(data-callout-icon); font-size: .72em; }
+.article-body .callout-title { display: flex; align-items: center; gap: .62rem; margin: 0; padding: .72rem 1rem; border-bottom: 1px solid color-mix(in srgb, var(--callout-color) 20%, transparent); color: var(--callout-color); background: color-mix(in srgb, var(--callout-color) 8%, transparent); font-size: .88rem; font-weight: 750; letter-spacing: .025em; }
+.article-body .callout-title::before { display: grid; width: 1.35rem; height: 1.35rem; flex: 0 0 1.35rem; place-items: center; border-radius: 50%; color: var(--surface); background: var(--callout-color); content: attr(data-callout-icon); font-family: var(--body); font-size: .72rem; line-height: 1; }
+.article-body .obsidian-callout > p:not(.callout-title), .article-body .callout-content { margin: 0; padding: .85rem 1rem .95rem; }
+.article-body .obsidian-callout > p:not(.callout-title) { line-height: 1.82; }
 .article-body .obsidian-callout summary { cursor: pointer; list-style: none; }
 .article-body .obsidian-callout summary::-webkit-details-marker { display: none; }
 .article-body .obsidian-callout summary .callout-title::after { margin-left: auto; content: "+"; font-family: var(--body); font-weight: 500; }
 .article-body .obsidian-callout details[open] summary .callout-title::after { content: "−"; }
-.article-body .callout-content > :first-child { margin-top: .65rem; }
+.article-body .callout-content > :first-child { margin-top: 0; }
+.article-body .callout-content > :last-child { margin-bottom: 0; }
 .article-body .obsidian-callout > :last-child { margin-bottom: 0; }
-.article-body .callout-info, .article-body .callout-note, .article-body .callout-abstract, .article-body .callout-summary, .article-body .callout-tldr { --callout-color: var(--blue); }
-.article-body .callout-tip, .article-body .callout-success { --callout-color: var(--green); }
-.article-body .callout-warning, .article-body .callout-important, .article-body .callout-question { --callout-color: var(--yellow); }
-.article-body .callout-danger, .article-body .callout-error, .article-body .callout-failure, .article-body .callout-bug { --callout-color: var(--rose); }
-.article-body .callout-example { --callout-color: var(--mauve); }
-.article-body .callout-quote, .article-body .callout-cite { --callout-color: var(--muted); }
+.article-body blockquote.callout-info, .article-body blockquote.callout-note { --callout-color: var(--blue); }
+.article-body blockquote.callout-abstract, .article-body blockquote.callout-summary, .article-body blockquote.callout-tldr { --callout-color: var(--mauve); }
+.article-body blockquote.callout-tip, .article-body blockquote.callout-success, .article-body blockquote.callout-todo { --callout-color: var(--green); }
+.article-body blockquote.callout-warning, .article-body blockquote.callout-important, .article-body blockquote.callout-question { --callout-color: var(--yellow); }
+.article-body blockquote.callout-danger, .article-body blockquote.callout-error, .article-body blockquote.callout-failure, .article-body blockquote.callout-bug { --callout-color: var(--rose); }
+.article-body blockquote.callout-example { --callout-color: var(--mauve); }
+.article-body blockquote.callout-quote, .article-body blockquote.callout-cite { --callout-color: var(--muted); }
 .article-toc { position: sticky; top: 1.5rem; align-self: start; max-height: calc(100vh - 3rem); overflow-y: auto; padding: 1.15rem; border: 1px solid color-mix(in srgb, var(--line) 65%, transparent); border-radius: var(--radius); background: color-mix(in srgb, var(--surface) 32%, transparent); scrollbar-color: var(--line) transparent; scrollbar-width: thin; }
 .toc-title { margin: 0 0 .85rem; padding-bottom: .7rem; border-bottom: 1px solid var(--line); color: var(--accent); font-size: .7rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
 .toc-nav ol { margin: 0; padding: 0; list-style: none; }

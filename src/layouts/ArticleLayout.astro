@@ -175,13 +175,26 @@ const readingMinutes = contentSource ? Math.max(1, Math.ceil(hanCount / 400 + la
 
     document.querySelectorAll<HTMLElement>(".article-body blockquote").forEach((callout) => {
       const first = callout.querySelector("p:first-child");
-      const match = first?.textContent?.match(/^\[!([a-z-]+)\]([+-])?\s*(.*)/i);
+      const match = first?.innerHTML.match(/^\[!([a-z-]+)\]([+-])?[ \t]*([^\n]*)(?:\n([\s\S]*))?$/i);
       if (!first || !match) return;
-      callout.classList.add("obsidian-callout", `callout-${match[1].toLowerCase()}`);
-      const title = match[3] || match[1].replace(/-/g, " ");
+      const type = match[1].toLowerCase();
+      const icons: Record<string, string> = {
+        abstract: "≡", summary: "≡", tldr: "≡", info: "i", todo: "✓",
+        tip: "◆", success: "✓", question: "?", warning: "!", failure: "×",
+        danger: "!", error: "×", bug: "◆", example: "◇", quote: "“", cite: "“",
+      };
+      callout.classList.add("obsidian-callout", `callout-${type}`);
+      callout.dataset.callout = type;
+      const title = match[3].trim() || type.replace(/-/g, " ");
+      const inlineBody = match[4]?.trim();
+      if (inlineBody) {
+        const content = document.createElement("p");
+        content.innerHTML = inlineBody;
+        first.after(content);
+      }
       first.textContent = title;
       first.classList.add("callout-title");
-      first.setAttribute("data-callout-icon", "◆");
+      first.setAttribute("data-callout-icon", icons[type] ?? "•");
       if (match[2]) {
         callout.classList.add("is-foldable");
         const details = document.createElement("details");
