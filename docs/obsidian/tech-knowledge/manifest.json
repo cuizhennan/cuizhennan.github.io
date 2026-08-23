@@ -1,9 +1,25 @@
 {
-  "generatedAt": "2026-08-22T00:40:27.269Z",
+  "generatedAt": "2026-08-23T00:40:35.773Z",
   "source": "Obsidian tech-knowledge",
   "limit": 20,
   "count": 20,
   "entries": [
+    {
+      "id": "Codex iOS 远程控制与 OpenCode Remote Base Plugin 架构实现",
+      "filename": "Codex iOS 远程控制与 OpenCode Remote Base Plugin 架构实现.md",
+      "slug": "codex-ios-远程控制与-opencode-remote-base-plugin-架构实现",
+      "title": "从 Codex iOS 远程控制到 OpenCode Remote：架构拆解与 Base Plugin 实现方案",
+      "date": "2026-08-22",
+      "modifiedAt": "2026-08-22T13:09:12.249Z"
+    },
+    {
+      "id": "EnvHarness：唤醒静态世界——从环境装具到共同演化的设计哲学与组织管理启示",
+      "filename": "EnvHarness：唤醒静态世界——从环境装具到共同演化的设计哲学与组织管理启示.md",
+      "slug": "envharness-唤醒静态世界-从环境装具到共同演化的设计哲学与组织管理启示",
+      "title": "EnvHarness：唤醒静态世界 —— 从「环境装具」到共同演化的设计哲学与组织管理启示",
+      "date": "2026-08-22",
+      "modifiedAt": "2026-08-22T09:04:41.910Z"
+    },
     {
       "id": "构建加密钱包的技术栈：从密钥容器到可信交易代理",
       "filename": "构建加密钱包的技术栈：从密钥容器到可信交易代理.md",
@@ -147,22 +163,6 @@
       "title": "MVCC 多版本并发控制：事务隔离、ReadView 与版本回收",
       "date": "2026-07-08",
       "modifiedAt": "2026-07-08T02:58:31.000Z"
-    },
-    {
-      "id": "ZKP 与 zk-Rollup — 从不泄密证明到 SNARK vs STARK 工程选型",
-      "filename": "ZKP 与 zk-Rollup — 从不泄密证明到 SNARK vs STARK 工程选型.md",
-      "slug": "zkp-与-zk-rollup-从不泄密证明到-snark-vs-stark-工程选型",
-      "title": "ZKP 与 zk-Rollup — 从不泄密证明到 SNARK vs STARK 工程选型",
-      "date": "2026-07-06",
-      "modifiedAt": "2026-07-06T02:24:53.000Z"
-    },
-    {
-      "id": "LSM-Tree — 把随机写变顺序写，B+Tree 在写密集场景下的竞争对手",
-      "filename": "LSM-Tree — 把随机写变顺序写，B+Tree 在写密集场景下的竞争对手.md",
-      "slug": "lsm-tree-把随机写变顺序写-b-tree-在写密集场景下的竞争对手",
-      "title": "LSM-Tree — 把随机写变顺序写，B+Tree 在写密集场景下的竞争对手",
-      "date": "2026-07-03",
-      "modifiedAt": "2026-07-03T02:51:21.000Z"
     }
   ]
 }
