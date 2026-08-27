@@ -1,9 +1,17 @@
 {
-  "generatedAt": "2026-08-26T00:40:14.931Z",
+  "generatedAt": "2026-08-27T00:40:35.652Z",
   "source": "Obsidian tech-knowledge",
   "limit": 20,
   "count": 20,
   "entries": [
+    {
+      "id": "Rendezvous-Hashing-最高随机权重哈希：设计哲学、原理与工程实践",
+      "filename": "Rendezvous-Hashing-最高随机权重哈希：设计哲学、原理与工程实践.md",
+      "slug": "rendezvous-hashing-最高随机权重哈希-设计哲学-原理与工程实践",
+      "title": "Rendezvous Hashing：最高随机权重哈希的设计哲学、原理与工程实践",
+      "date": "2026-08-26",
+      "modifiedAt": "2026-08-26T03:25:32.000Z"
+    },
     {
       "id": "OpenCode iOS 远程使用全景指南：Web、原生客户端、终端、桌面与云主机",
       "filename": "OpenCode iOS 远程使用全景指南：Web、原生客户端、终端、桌面与云主机.md",
@@ -155,14 +163,6 @@
       "title": "Tailscale 不只是 VPN：身份网络的十种妙用、架构逻辑与实践边界",
       "date": "2026-07-11",
       "modifiedAt": "2026-07-11T15:43:34.000Z"
-    },
-    {
-      "id": "开源大模型微调实操教程：从小白到 LoRA-QLoRA 最佳实践",
-      "filename": "开源大模型微调实操教程：从小白到 LoRA-QLoRA 最佳实践.md",
-      "slug": "开源大模型微调实操教程-从小白到-lora-qlora-最佳实践",
-      "title": "开源大模型微调实操教程：从小白到 LoRA-QLoRA 最佳实践",
-      "date": "2026-07-08",
-      "modifiedAt": "2026-07-09T03:27:23.000Z"
     }
   ]
 }
