@@ -1,6 +1,7 @@
 import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { sha256 } from "./daily-hash.mjs";
 
 const sourceRoot = process.env.OBSIDIAN_TECH_KNOWLEDGE_DIR
   ?? path.join(os.homedir(), "Library/Mobile Documents/iCloud~md~obsidian/Documents/GavinMoFriends/tech-knowledge");
@@ -20,7 +21,7 @@ const entries = await Promise.all(names.map(async (filename) => {
   const declared = scalar(frontmatter, "date") ?? scalar(frontmatter, "created") ?? scalar(frontmatter, "updated");
   const parsed = declared ? new Date(declared) : info.mtime;
   const date = Number.isNaN(parsed.valueOf()) ? info.mtime : parsed;
-  return { id: fallback, filename, slug: slugify(fallback), title, date: date.toISOString().slice(0, 10), modifiedAt: info.mtime.toISOString(), source };
+  return { id: fallback, filename, slug: slugify(fallback), title, date: date.toISOString().slice(0, 10), modifiedAt: info.mtime.toISOString(), hash: sha256(body), source };
 }));
 const selected = entries.sort((a, b) => b.date.localeCompare(a.date) || b.modifiedAt.localeCompare(a.modifiedAt)).slice(0, limit);
 
@@ -29,9 +30,17 @@ const keep = new Set(selected.map(({ filename }) => filename));
 for (const filename of (await readdir(targetRoot)).filter((name) => name.endsWith(".md"))) {
   if (!keep.has(filename)) await rm(path.join(targetRoot, filename));
 }
-for (const entry of selected) await cp(entry.source, path.join(targetRoot, entry.filename));
+for (const entry of selected) {
+  const target = path.join(targetRoot, entry.filename);
+  let targetHash;
+  try {
+    targetHash = sha256(await readFile(target, "utf8"));
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  if (targetHash !== entry.hash) await cp(entry.source, target);
+}
 const manifest = {
-  generatedAt: new Date().toISOString(),
   source: "Obsidian tech-knowledge",
   limit,
   count: selected.length,

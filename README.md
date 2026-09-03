@@ -78,8 +78,9 @@ npm ci
 | `npm run build` | 执行正式静态构建 | `dist/` |
 | `npm run preview` | 本地预览已经生成的 `dist/` | 本地预览服务器 |
 | `npm run check` | 执行 Astro/TypeScript 检查并验证生成页面 | 检查结果 |
-| `npm run build:daily` | 从本机 Obsidian Vault 同步最近日报，并更新兼容静态产物 | Markdown 镜像及旧版 HTML |
-| `npm run sync:tech` | 同步 Obsidian 中最近 20 篇技术文章 | Markdown 镜像及 `manifest.json` |
+| `npm run test` | 运行内容同步与 hash 判定测试 | Node.js 测试结果 |
+| `npm run build:daily` | 从本机 Obsidian Vault 同步最近日报，并按文章 hash 增量更新兼容静态产物 | Markdown 镜像、hash 清单及旧版 HTML |
+| `npm run sync:tech` | 同步 Obsidian 中最近 20 篇技术文章，并记录文章 hash | Markdown 镜像及 `manifest.json` |
 
 Astro telemetry 在这些 npm 脚本中被关闭，避免本地、沙箱和 CI 环境产生额外配置文件或遥测请求。
 
@@ -101,6 +102,8 @@ npm run preview
 ```
 
 `npm run check` 中的站点文件校验依赖已经存在的 `dist/`，因此应先运行 `npm run build`。
+
+Hermes 的 `publish-github-daily-to-pages` job 在本机同步后，会根据生成目录和站点代码的工作区变化决定是否执行完整 `npm run build`：文章 hash 未变化且 `dist/` 已存在时复用现有产物，但仍执行 `npm run check`；hash 不一致、输出缺失或站点代码变化时才重新编译。
 
 ## 内容同步流程
 
@@ -129,8 +132,9 @@ OBSIDIAN_GITHUB_DAILY_DIR="/path/to/GitHub Daily" npm run build:daily
 1. 扫描名称符合 `GitHub-Trending-日报-YYYY-MM-DD.md` 的文件。
 2. 以最新日报日期为窗口终点，向前选择 6 天，即最近 7 个自然日。
 3. 忽略不符合日报命名规则的文件，因此周报不会自动进入日报集合。
-4. 将窗口内的 Markdown 复制到 `docs/obsidian/GitHub Daily/`。
-5. 同时更新仓库根目录下的旧版日报 HTML，供迁移期兼容；正式 GitHub Pages 发布只使用 Astro 生成的 `dist/`。
+4. 计算窗口内每篇文章的 SHA-256，并与 `.article-hashes.json` 和仓库镜像双重校验。
+5. 只有 hash 不一致、文章输出缺失或最近 7 日窗口变化时，才重新生成对应旧版 HTML；索引仍按内容变化更新。
+6. 同时将 Markdown 镜像写入 `docs/obsidian/GitHub Daily/`，供 Astro 内容集合使用；正式 GitHub Pages 发布只使用 Astro 生成的 `dist/`。
 
 GitHub Actions 不读取个人电脑上的 Obsidian Vault，也不会运行 `build:daily`。需要先在本机同步并提交 Markdown，CI 再从仓库中的 Markdown 完成 Astro 构建。
 
@@ -372,7 +376,10 @@ npm run check
 │   ├── GitHub Daily/                # 日报 Markdown 镜像
 │   └── 孤独星球/日本旅行研究素材/    # 研究 Markdown
 ├── scripts/
-│   ├── build-github-daily.mjs       # 本地 Obsidian 日报同步
+│   ├── build-github-daily.mjs       # 本地 Obsidian 日报同步与增量编译
+│   ├── daily-hash.mjs               # 文章 SHA-256 与增量判定
+│   ├── daily-hash.test.mjs          # hash 判定测试
+│   ├── sync-tech-knowledge.mjs      # 技术文章同步与 hash 清单
 │   └── check-site.mjs               # dist 生成结果验证
 ├── package.json                     # npm 命令与依赖版本
 ├── package-lock.json                # 可重复安装锁文件

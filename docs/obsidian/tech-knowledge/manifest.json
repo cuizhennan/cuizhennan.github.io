@@ -1,5 +1,4 @@
 {
-  "generatedAt": "2026-09-02T00:40:11.599Z",
   "source": "Obsidian tech-knowledge",
   "limit": 20,
   "count": 20,
@@ -10,7 +9,8 @@
       "slug": "tailcat-无控制平面的点对点隧道-设计实现深度解析与-opencode-serve-远程代理实践",
       "title": "Tailcat 无控制平面的点对点隧道：设计实现深度解析与 opencode serve 远程代理实践",
       "date": "2026-08-29",
-      "modifiedAt": "2026-08-31T03:37:29.000Z"
+      "modifiedAt": "2026-08-31T03:37:29.000Z",
+      "hash": "041ec29cac38326e8a85e449d2eb909f186767879faa35633221c1f5af8158b8"
     },
     {
       "id": "Rendezvous-Hashing-最高随机权重哈希：设计哲学、原理与工程实践",
@@ -18,7 +18,8 @@
       "slug": "rendezvous-hashing-最高随机权重哈希-设计哲学-原理与工程实践",
       "title": "Rendezvous Hashing：最高随机权重哈希的设计哲学、原理与工程实践",
       "date": "2026-08-26",
-      "modifiedAt": "2026-08-28T03:10:05.000Z"
+      "modifiedAt": "2026-08-28T03:10:05.000Z",
+      "hash": "524b7bec12687562b81f90a180a2998ea409e25de8cb1d107a2096b8075a3aec"
     },
     {
       "id": "OpenCode iOS 远程使用全景指南：Web、原生客户端、终端、桌面与云主机",
@@ -26,7 +27,8 @@
       "slug": "opencode-ios-远程使用全景指南-web-原生客户端-终端-桌面与云主机",
       "title": "OpenCode iOS 远程使用全景指南：Web、原生客户端、终端、桌面与云主机",
       "date": "2026-08-24",
-      "modifiedAt": "2026-08-24T04:48:47.000Z"
+      "modifiedAt": "2026-08-24T04:48:47.000Z",
+      "hash": "a7a0a58c12219cbe7f12cf2a6544335daec771c198906e4c434c5b8694293ed3"
     },
     {
       "id": "Codex iOS 远程控制与 OpenCode Remote Base Plugin 架构实现",
@@ -34,7 +36,8 @@
       "slug": "codex-ios-远程控制与-opencode-remote-base-plugin-架构实现",
       "title": "从 Codex iOS 远程控制到 OpenCode Remote：架构拆解与 Base Plugin 实现方案",
       "date": "2026-08-22",
-      "modifiedAt": "2026-08-22T13:09:12.249Z"
+      "modifiedAt": "2026-08-22T13:09:12.249Z",
+      "hash": "ed55d582790f287c8c164963f4102e68a6c671d36f714e3164d6ddde6fd2649e"
     },
     {
       "id": "EnvHarness：唤醒静态世界——从环境装具到共同演化的设计哲学与组织管理启示",
@@ -42,7 +45,8 @@
       "slug": "envharness-唤醒静态世界-从环境装具到共同演化的设计哲学与组织管理启示",
       "title": "EnvHarness：唤醒静态世界 —— 从「环境装具」到共同演化的设计哲学与组织管理启示",
       "date": "2026-08-22",
-      "modifiedAt": "2026-08-22T09:04:41.910Z"
+      "modifiedAt": "2026-08-22T09:04:41.910Z",
+      "hash": "a64a0390c899416b9689ccccf2b429541b5ea000619ed03c3053baa488a79cfd"
     },
     {
       "id": "构建加密钱包的技术栈：从密钥容器到可信交易代理",
@@ -50,7 +54,8 @@
       "slug": "构建加密钱包的技术栈-从密钥容器到可信交易代理",
       "title": "构建加密钱包的技术栈：从密钥容器到可信交易代理",
       "date": "2026-08-21",
-      "modifiedAt": "2026-08-21T05:37:14.000Z"
+      "modifiedAt": "2026-08-21T05:37:14.000Z",
+      "hash": "5524fcc0a048f90ab4a67efe52c8107198799c1b437ead630581b31f5b1eb20d"
     },
     {
       "id": "家庭网络双路由设计：光猫桥接、策略网关与 Full Cone NAT 工程实践",
@@ -58,7 +63,8 @@
       "slug": "家庭网络双路由设计-光猫桥接-策略网关与-full-cone-nat-工程实践",
       "title": "家庭网络双路由设计：光猫桥接、策略网关与 Full Cone NAT 工程实践",
       "date": "2026-08-18",
-      "modifiedAt": "2026-08-18T03:29:03.000Z"
+      "modifiedAt": "2026-08-18T03:29:03.000Z",
+      "hash": "1189dd99125ef4771c2056c107e107d99ab808f2062894a171318bb93d18bf03"
     },
     {
       "id": "缓存穿透、击穿与雪崩：Redis 高可用的三道坎与 Sentinel、Cluster 工程实践",
@@ -66,7 +72,8 @@
       "slug": "缓存穿透-击穿与雪崩-redis-高可用的三道坎与-sentinel-cluster-工程实践",
       "title": "缓存穿透、击穿与雪崩：Redis 高可用的三道坎与 Sentinel、Cluster 工程实践",
       "date": "2026-08-17",
-      "modifiedAt": "2026-08-17T03:43:47.000Z"
+      "modifiedAt": "2026-08-17T03:43:47.000Z",
+      "hash": "25aa6e8a9cae8d222e8bb8cbbcb4456bc923b55b3bc511cae45c168f5f026ef3"
     },
     {
       "id": "Gossip 与 Raft：从概率传播到多数派共识的设计哲学与工程实践",
@@ -74,7 +81,8 @@
       "slug": "gossip-与-raft-从概率传播到多数派共识的设计哲学与工程实践",
       "title": "Gossip 与 Raft：从概率传播到多数派共识的设计哲学与工程实践",
       "date": "2026-08-17",
-      "modifiedAt": "2026-08-17T03:24:18.000Z"
+      "modifiedAt": "2026-08-17T03:24:18.000Z",
+      "hash": "f367a564dbaa18cb9f016eb60be1445b921a28e1a71238e06155e7c4d247583f"
     },
     {
       "id": "相关性不只选文档：RARG 与 Agentic Search 执行先验",
@@ -82,7 +90,8 @@
       "slug": "相关性不只选文档-rarg-与-agentic-search-执行先验",
       "title": "相关性不只选文档：RARG 与 Agentic Search 执行先验",
       "date": "2026-07-30",
-      "modifiedAt": "2026-07-30T02:27:16.000Z"
+      "modifiedAt": "2026-07-30T02:27:16.000Z",
+      "hash": "13da1b469ad139ead8a9f0b9a92d0aa840a9858521d50c0666e4928ce39204dd"
     },
     {
       "id": "前缀和与差分数组：从离散微积分到区间算法",
@@ -90,7 +99,8 @@
       "slug": "前缀和与差分数组-从离散微积分到区间算法",
       "title": "前缀和与差分数组：从离散微积分到区间算法",
       "date": "2026-07-27",
-      "modifiedAt": "2026-07-29T01:51:18.000Z"
+      "modifiedAt": "2026-07-29T01:51:18.000Z",
+      "hash": "3cf176f621432d3538f7c64f9e9067db9558c8a0f107492e7ea8590d0f87bdc4"
     },
     {
       "id": "Linux 高性能 I-O 深度解析：从 epoll 就绪通知到 io_uring 完成模型",
@@ -98,7 +108,8 @@
       "slug": "linux-高性能-i-o-深度解析-从-epoll-就绪通知到-io-uring-完成模型",
       "title": "Linux 高性能 I/O 深度解析：从 epoll 就绪通知到 io_uring 完成模型",
       "date": "2026-07-27",
-      "modifiedAt": "2026-07-27T03:48:38.000Z"
+      "modifiedAt": "2026-07-27T03:48:38.000Z",
+      "hash": "72f61b9ae0f66cf23b00a8f290d41ca0f87a088aa892868af4242d43e213f3e5"
     },
     {
       "id": "MVCC 深度解析：从版本可见性到 MySQL 与 PostgreSQL 的设计哲学",
@@ -106,7 +117,8 @@
       "slug": "mvcc-深度解析-从版本可见性到-mysql-与-postgresql-的设计哲学",
       "title": "MVCC 深度解析：从版本可见性到 MySQL 与 PostgreSQL 的设计哲学",
       "date": "2026-07-24",
-      "modifiedAt": "2026-07-24T02:58:33.000Z"
+      "modifiedAt": "2026-07-24T02:58:33.000Z",
+      "hash": "4beee9a5dfa1ac4b9bba41abc7651038082652456d11fbe6971be2c0222d1a54"
     },
     {
       "id": "一致性哈希-设计理念-算法机制与工程最佳实践-深入讲解",
@@ -114,7 +126,8 @@
       "slug": "一致性哈希-设计理念-算法机制与工程最佳实践-深入讲解",
       "title": "一致性哈希：设计理念、算法机制与工程最佳实践",
       "date": "2026-07-23",
-      "modifiedAt": "2026-07-23T03:24:14.000Z"
+      "modifiedAt": "2026-07-23T03:24:14.000Z",
+      "hash": "b3de517f04c66dc6feae364916ae26661cd77fcad29fffc9ceae8d8c6d197af0"
     },
     {
       "id": "Kafka 为什么快：从追加日志、Page Cache 到 ISR 的完整机制",
@@ -122,7 +135,8 @@
       "slug": "kafka-为什么快-从追加日志-page-cache-到-isr-的完整机制",
       "title": "Kafka 为什么快：从追加日志、Page Cache 到 ISR 的完整机制",
       "date": "2026-07-23",
-      "modifiedAt": "2026-07-23T03:14:56.000Z"
+      "modifiedAt": "2026-07-23T03:14:56.000Z",
+      "hash": "5faf81ea33e717c9e67d6df27bd3abf2784587beeaf7224cb5da66ba280949bd"
     },
     {
       "id": "Uniswap 恒定乘积 AMM：从 x·y=k 到套利、LP 与 TWAP 深度解析",
@@ -130,7 +144,8 @@
       "slug": "uniswap-恒定乘积-amm-从-x-y-k-到套利-lp-与-twap-深度解析",
       "title": "Uniswap 恒定乘积 AMM：从 x·y=k 到套利、LP 与 TWAP 深度解析",
       "date": "2026-07-23",
-      "modifiedAt": "2026-07-23T02:30:19.000Z"
+      "modifiedAt": "2026-07-23T02:30:19.000Z",
+      "hash": "3ea60bb968be7042f8fbf4988bf6716a7fe1805dfcd23d4b86023465a4963cfd"
     },
     {
       "id": "JVM 类加载机制与 JDK 9-17 演进深度解析",
@@ -138,7 +153,8 @@
       "slug": "jvm-类加载机制与-jdk-9-17-演进深度解析",
       "title": "JVM 类加载机制与 JDK 9-17 演进深度解析",
       "date": "2026-07-23",
-      "modifiedAt": "2026-07-23T01:47:47.000Z"
+      "modifiedAt": "2026-07-23T01:47:47.000Z",
+      "hash": "09e7a1166ee1e2b2b110613bd355e488436eae8ccfa1def427d1953aacaa796a"
     },
     {
       "id": "Go Channel 与 Goroutine：从 CSP 语义到 Runtime 实现",
@@ -146,7 +162,8 @@
       "slug": "go-channel-与-goroutine-从-csp-语义到-runtime-实现",
       "title": "Go Channel 与 Goroutine：专家级设计与实现",
       "date": "2026-07-16",
-      "modifiedAt": "2026-07-16T02:09:48.000Z"
+      "modifiedAt": "2026-07-16T02:09:48.000Z",
+      "hash": "5344cee69e5fe944cbb48d4941a54c4bcf67865b666cbdc1e6246e68803cb86d"
     },
     {
       "id": "从会看到会用：软件工程、算法与论文的深度学习方法论",
@@ -154,7 +171,8 @@
       "slug": "从会看到会用-软件工程-算法与论文的深度学习方法论",
       "title": "从会看到会用：软件工程、算法与论文的深度学习方法论",
       "date": "2026-07-14",
-      "modifiedAt": "2026-07-14T03:39:23.000Z"
+      "modifiedAt": "2026-07-14T03:39:23.000Z",
+      "hash": "e7c9e02ac92a73bb71a16b61eb550dfc200c0bbbef6a43a2e2cb465c131001b3"
     },
     {
       "id": "Synchronized 锁升级：偏向锁、轻量级锁与重量级锁",
@@ -162,7 +180,8 @@
       "slug": "synchronized-锁升级-偏向锁-轻量级锁与重量级锁",
       "title": "Synchronized 锁升级：偏向锁、轻量级锁与重量级锁",
       "date": "2026-07-14",
-      "modifiedAt": "2026-07-14T03:04:27.000Z"
+      "modifiedAt": "2026-07-14T03:04:27.000Z",
+      "hash": "f255ece9e4aba2e14c4154b909e10b06b9431c2c7f07fed9b282bccde924d345"
     }
   ]
 }
