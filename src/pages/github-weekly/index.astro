@@ -1,0 +1,42 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { dailyDate, excerptFromBody, titleFromBody } from "../../lib/content";
+
+const reports = (await getCollection("weekly"))
+  .sort((left, right) => dailyDate(right.id).localeCompare(dailyDate(left.id)));
+---
+
+<BaseLayout title="GitHub Trending 周报" description="从一周日报中提炼技术、产品与投资的结构性变化。" active="weekly">
+  <header class="collection-hero">
+    <p class="collection-kicker"><a href="/">墨萧</a><span>／</span>周度观察</p>
+    <div class="collection-title-row">
+      <div>
+        <p class="eyebrow">GitHub Trending · Weekly Review</p>
+        <h1>从七日噪声，<br />提炼一条主线。</h1>
+      </div>
+      <p>不复述项目，不追逐热度；从日报中寻找技术、产品、资本与人的边界如何移动。</p>
+    </div>
+    <dl class="collection-stats">
+      <div><dt>收录</dt><dd>{reports.length} 期</dd></div>
+      <div><dt>更新</dt><dd>Weekly</dd></div>
+      <div><dt>关注</dt><dd>Structure · Judgment · Responsibility</dd></div>
+    </dl>
+  </header>
+  <section class="report-list" aria-label="周报列表">
+    {reports.map((report) => {
+      const date = dailyDate(report.id);
+      const title = titleFromBody(report.body, `GitHub Trending 周报 — ${date}`);
+      return (
+        <article>
+          <time datetime={date}>{date}</time>
+          <div>
+            <p class="eyebrow">Weekly Review</p>
+            <h2><a href={`/github-weekly/${date}/`}>{title}</a></h2>
+            <p>{excerptFromBody(report.body, 180)}</p>
+          </div>
+        </article>
+      );
+    })}
+  </section>
+</BaseLayout>

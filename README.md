@@ -131,7 +131,7 @@ OBSIDIAN_GITHUB_DAILY_DIR="/path/to/GitHub Daily" npm run build:daily
 
 1. 扫描名称符合 `GitHub-Trending-日报-YYYY-MM-DD.md` 的文件。
 2. 以最新日报日期为窗口终点，向前选择 6 天，即最近 7 个自然日。
-3. 忽略不符合日报命名规则的文件，因此周报不会自动进入日报集合。
+3. 周报由独立的 `npm run build:weekly` 增量同步，并进入 `weekly` 内容集合；不会混入日报集合。
 4. 计算窗口内每篇文章的 SHA-256，并与 `.article-hashes.json` 和仓库镜像双重校验。
 5. 只有 hash 不一致、文章输出缺失或最近 7 日窗口变化时，才重新生成对应旧版 HTML；索引仍按内容变化更新。
 6. 同时将 Markdown 镜像写入 `docs/obsidian/GitHub Daily/`，供 Astro 内容集合使用；正式 GitHub Pages 发布只使用 Astro 生成的 `dist/`。

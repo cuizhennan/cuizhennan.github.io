@@ -1,0 +1,52 @@
+---
+import { getCollection, render } from "astro:content";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import { dailyDate, titleFromBody } from "../../lib/content";
+import type { SectionNavigation } from "../../lib/navigation";
+
+export async function getStaticPaths() {
+  const reports = await getCollection("weekly");
+  return reports.map((report) => ({ params: { date: dailyDate(report.id) }, props: { report } }));
+}
+
+const { report } = Astro.props;
+const date = dailyDate(report.id);
+const title = titleFromBody(report.body, `GitHub Trending 周报 — ${date}`);
+const { Content, headings } = await render(report);
+const reports = (await getCollection("weekly"))
+  .sort((left, right) => dailyDate(right.id).localeCompare(dailyDate(left.id)));
+const currentIndex = reports.findIndex((item) => item.id === report.id);
+const older = reports[currentIndex + 1];
+const newer = reports[currentIndex - 1];
+const navigation: SectionNavigation = {
+  label: "周报日期",
+  currentLabel: date,
+  items: reports.map((item) => {
+    const itemDate = dailyDate(item.id);
+    return { href: `/github-weekly/${itemDate}/`, label: itemDate, current: item.id === report.id };
+  }),
+  previous: older ? {
+    href: `/github-weekly/${dailyDate(older.id)}/`,
+    eyebrow: "← 较早周报",
+    label: dailyDate(older.id),
+  } : undefined,
+  next: newer ? {
+    href: `/github-weekly/${dailyDate(newer.id)}/`,
+    eyebrow: "较新周报 →",
+    label: dailyDate(newer.id),
+  } : undefined,
+};
+---
+
+<ArticleLayout
+  {title}
+  description={`${date} GitHub Trending 技术、产品与投资趋势周报`}
+  eyebrow="GitHub Trending · Weekly Review"
+  meta={`${date} · Asia/Shanghai`}
+  active="weekly"
+  {headings}
+  {navigation}
+  contentSource={report.body ?? ""}
+>
+  <Content />
+</ArticleLayout>

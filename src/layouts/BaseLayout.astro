@@ -5,7 +5,7 @@ import "katex/dist/katex.min.css";
 interface Props {
   title?: string;
   description?: string;
-  active?: "home" | "archives" | "daily" | "research" | "tech";
+  active?: "home" | "archives" | "daily" | "weekly" | "research" | "tech";
 }
 
 const {
@@ -20,6 +20,7 @@ const nav = [
   ["home", "/", "首页"],
   ["archives", "/archives/", "归档"],
   ["daily", "/github-daily/", "GitHub 日报"],
+  ["weekly", "/github-weekly/", "GitHub 周报"],
   ["tech", "/tech-knowledge/", "技术知识"],
   ["research", "/japan-research/", "日本研究"],
 ] as const;

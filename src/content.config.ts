@@ -9,6 +9,13 @@ const daily = defineCollection({
   }),
 });
 
+const weekly = defineCollection({
+  loader: glob({
+    pattern: "GitHub-Trending-周报-*.md",
+    base: "./docs/obsidian/GitHub Daily",
+  }),
+});
+
 const research = defineCollection({
   loader: glob({
     pattern: "*.md",
@@ -30,4 +37,4 @@ const tech = defineCollection({
   }),
 });
 
-export const collections = { daily, research, tech };
+export const collections = { daily, weekly, research, tech };
