@@ -1,40 +1,75 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import { dailyDate, titleFromBody } from "../../lib/content";
+import { dailyDate, excerptFromBody, titleFromBody } from "../../lib/content";
 
-const reports = (await getCollection("daily")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
+const dailyReports = (await getCollection("daily")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
+const weeklyReports = (await getCollection("weekly")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
 ---
 
-<BaseLayout title="GitHub Trending 日报" description="最近一周 GitHub Trending 技术、产品与投资趋势日报" active="daily">
+<BaseLayout title="GitHub Trending 观察" description="GitHub Trending 日报与周报：从每日信号到每周结构性变化。" active="daily">
   <header class="collection-hero">
-    <p class="collection-kicker"><a href="/">墨萧</a><span>／</span>每日观察</p>
+    <p class="collection-kicker"><a href="/">墨萧</a><span>／</span>开源观察</p>
     <div class="collection-title-row">
       <div>
-        <p class="eyebrow">GitHub Trending · Daily Brief</p>
-        <h1>从今日代码，<br />辨认明日叙事。</h1>
+        <p class="eyebrow">GitHub Trending · Reports</p>
+        <h1>从每日信号，<br />抵达每周判断。</h1>
       </div>
-      <p>沿技术、产品与投资三条线索记录开源生态变化。日报由 Obsidian 同步，保留最近的观察窗口。</p>
+      <p>日报捕捉正在发生的变化，周报从七日噪声中提炼结构。两种时间尺度，共同记录技术、产品与资本的边界移动。</p>
     </div>
     <dl class="collection-stats">
-      <div><dt>收录</dt><dd>{reports.length} 期</dd></div>
-      <div><dt>更新</dt><dd>Daily</dd></div>
+      <div><dt>日报</dt><dd>{dailyReports.length} 期</dd></div>
+      <div><dt>周报</dt><dd>{weeklyReports.length} 期</dd></div>
       <div><dt>关注</dt><dd>Tech · Product · Capital</dd></div>
     </dl>
   </header>
-  <section class="report-list" aria-label="日报列表">
-    {reports.map((report, index) => {
+
+  <nav class="report-jump" aria-label="报告类型">
+    <a href="#weekly">周报 <span>{weeklyReports.length}</span></a>
+    <a href="#daily">日报 <span>{dailyReports.length}</span></a>
+  </nav>
+
+  <section class="report-section" id="weekly" aria-labelledby="weekly-heading">
+    <div class="list-heading">
+      <div><p class="eyebrow">Weekly Review</p><h2 id="weekly-heading">周报</h2></div>
+      <p>回看一周，提炼值得持续追踪的主线。</p>
+    </div>
+    <div class="report-list">
+      {weeklyReports.map((report, index) => {
+        const date = dailyDate(report.id);
+        return (
+          <article>
+            <time datetime={date}>{date}</time>
+            <div>
+              <p class="eyebrow">{index === 0 ? "Latest Weekly" : "Weekly Review"}</p>
+              <h3><a href={`/github-weekly/${date}/`}>{titleFromBody(report.body, `GitHub Trending 周报 — ${date}`)}</a></h3>
+              <p>{excerptFromBody(report.body, 180)}</p>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="report-section" id="daily" aria-labelledby="daily-heading">
+    <div class="list-heading">
+      <div><p class="eyebrow">Daily Brief</p><h2 id="daily-heading">日报</h2></div>
+      <p>按日保留开源生态的技术、产品与投资信号。</p>
+    </div>
+    <div class="report-list">
+    {dailyReports.map((report, index) => {
       const date = dailyDate(report.id);
       return (
         <article>
           <time datetime={date}>{date}</time>
           <div>
             <p class="eyebrow">{index === 0 ? "Latest Report" : "Daily Report"}</p>
-            <h2><a href={`/github-daily/${date}/`}>{titleFromBody(report.body, `GitHub Trending 日报 — ${date}`)}</a></h2>
+            <h3><a href={`/github-daily/${date}/`}>{titleFromBody(report.body, `GitHub Trending 日报 — ${date}`)}</a></h3>
             <p>技术 × 产品 × 投资</p>
           </div>
         </article>
       );
     })}
+    </div>
   </section>
 </BaseLayout>

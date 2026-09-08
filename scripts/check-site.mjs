@@ -35,9 +35,8 @@ for (const marker of ["data-toc-slug", "日报日期", "section-pager"]) {
   if (!latestReport.includes(marker)) throw new Error(`日报详情缺少章节导航标记：${marker}`);
 }
 
-const weeklyIndex = await readFile(path.join(outputRoot, "github-weekly/index.html"), "utf8");
-const weeklyLinks = [...new Set([...weeklyIndex.matchAll(/href="\/github-weekly\/(\d{4}-\d{2}-\d{2})\/"/g)].map((match) => match[1]))];
-if (weeklyLinks.length === 0) throw new Error("周报首页没有任何周报链接");
+const weeklyLinks = [...new Set([...dailyIndex.matchAll(/href="\/github-weekly\/(\d{4}-\d{2}-\d{2})\/"/g)].map((match) => match[1]))];
+if (weeklyLinks.length === 0) throw new Error("聚合报告页没有任何周报链接");
 
 for (const date of weeklyLinks) {
   await access(path.join(outputRoot, "github-weekly", date, "index.html"));
@@ -63,6 +62,9 @@ for (const marker of ["data-toc-slug", "研究章节", "Chapter 03"]) {
 }
 
 const home = await readFile(path.join(outputRoot, "index.html"), "utf8");
+for (const marker of ["GitHub 观察", "GitHub Trending 周报", "GitHub Trending 日报"]) {
+  if (!home.includes(marker)) throw new Error(`首页缺少内容入口：${marker}`);
+}
 for (const theme of ["editorial", "paper", "ink"]) {
   if (!home.includes(`value="${theme}"`)) throw new Error(`首页缺少 ${theme} 主题选项`);
 }

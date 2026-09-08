@@ -36,6 +36,7 @@ const readingMinutes = contentSource ? Math.max(1, Math.ceil(hanCount / 400 + la
       <header class="article-header">
         <p class="eyebrow">{eyebrow}</p>
         <h1>{title}</h1>
+        <p class="article-summary">{description}</p>
         {(meta || readingMinutes) && (
           <p class="article-meta">
             {meta && <span>{meta}</span>}
