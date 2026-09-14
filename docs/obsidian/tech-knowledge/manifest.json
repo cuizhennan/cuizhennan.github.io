@@ -4,6 +4,33 @@
   "count": 20,
   "entries": [
     {
+      "id": "CodeGraph 多项目上下文目录设计规范",
+      "filename": "CodeGraph 多项目上下文目录设计规范.md",
+      "slug": "codegraph-多项目上下文目录设计规范",
+      "title": "CodeGraph Workspace Project Context Catalog Design",
+      "date": "2026-09-11",
+      "modifiedAt": "2026-09-11T10:56:29.000Z",
+      "hash": "1b35a1212ac5655eb44837c2ee3cfe093edf1883683f2ae98339bd641e148e34"
+    },
+    {
+      "id": "OpenWiki 深度剖析：从可恢复文档生成到可验证知识生命周期",
+      "filename": "OpenWiki 深度剖析：从可恢复文档生成到可验证知识生命周期.md",
+      "slug": "openwiki-深度剖析-从可恢复文档生成到可验证知识生命周期",
+      "title": "OpenWiki 深度剖析：从可恢复文档生成到可验证知识生命周期",
+      "date": "2026-09-11",
+      "modifiedAt": "2026-09-11T02:53:06.000Z",
+      "hash": "5a55d89b0de81f7e60c5319943d70cef16b956b86cc8fa1f761de911a46e326e"
+    },
+    {
+      "id": "CodeGraph 深度剖析：从本地代码图谱到 Agent 原生检索的设计哲学与实现机制",
+      "filename": "CodeGraph 深度剖析：从本地代码图谱到 Agent 原生检索的设计哲学与实现机制.md",
+      "slug": "codegraph-深度剖析-从本地代码图谱到-agent-原生检索的设计哲学与实现机制",
+      "title": "CodeGraph 深度剖析：从本地代码图谱到 Agent 原生检索的设计哲学与实现机制",
+      "date": "2026-09-11",
+      "modifiedAt": "2026-09-11T02:09:33.000Z",
+      "hash": "c897c70af1d3b78e12607311063afb4944837c7b3897bc06b6631972dd80db41"
+    },
+    {
       "id": "Tailcat 无控制平面的点对点隧道：设计实现深度解析与 opencode serve 远程代理实践",
       "filename": "Tailcat 无控制平面的点对点隧道：设计实现深度解析与 opencode serve 远程代理实践.md",
       "slug": "tailcat-无控制平面的点对点隧道-设计实现深度解析与-opencode-serve-远程代理实践",
@@ -155,33 +182,6 @@
       "date": "2026-07-23",
       "modifiedAt": "2026-07-23T01:47:47.000Z",
       "hash": "09e7a1166ee1e2b2b110613bd355e488436eae8ccfa1def427d1953aacaa796a"
-    },
-    {
-      "id": "Go Channel 与 Goroutine：从 CSP 语义到 Runtime 实现",
-      "filename": "Go Channel 与 Goroutine：从 CSP 语义到 Runtime 实现.md",
-      "slug": "go-channel-与-goroutine-从-csp-语义到-runtime-实现",
-      "title": "Go Channel 与 Goroutine：专家级设计与实现",
-      "date": "2026-07-16",
-      "modifiedAt": "2026-07-16T02:09:48.000Z",
-      "hash": "5344cee69e5fe944cbb48d4941a54c4bcf67865b666cbdc1e6246e68803cb86d"
-    },
-    {
-      "id": "从会看到会用：软件工程、算法与论文的深度学习方法论",
-      "filename": "从会看到会用：软件工程、算法与论文的深度学习方法论.md",
-      "slug": "从会看到会用-软件工程-算法与论文的深度学习方法论",
-      "title": "从会看到会用：软件工程、算法与论文的深度学习方法论",
-      "date": "2026-07-14",
-      "modifiedAt": "2026-07-14T03:39:23.000Z",
-      "hash": "e7c9e02ac92a73bb71a16b61eb550dfc200c0bbbef6a43a2e2cb465c131001b3"
-    },
-    {
-      "id": "Synchronized 锁升级：偏向锁、轻量级锁与重量级锁",
-      "filename": "Synchronized 锁升级：偏向锁、轻量级锁与重量级锁.md",
-      "slug": "synchronized-锁升级-偏向锁-轻量级锁与重量级锁",
-      "title": "Synchronized 锁升级：偏向锁、轻量级锁与重量级锁",
-      "date": "2026-07-14",
-      "modifiedAt": "2026-07-14T03:04:27.000Z",
-      "hash": "f255ece9e4aba2e14c4154b909e10b06b9431c2c7f07fed9b282bccde924d345"
     }
   ]
 }
