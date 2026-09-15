@@ -7,10 +7,10 @@
       "id": "CodeGraph 多项目上下文目录设计规范",
       "filename": "CodeGraph 多项目上下文目录设计规范.md",
       "slug": "codegraph-多项目上下文目录设计规范",
-      "title": "CodeGraph Workspace Project Context Catalog Design",
+      "title": "本地 CodeGraph Catalog MCP Spec：Codex 与 OpenCode 目录发现适配",
       "date": "2026-09-11",
-      "modifiedAt": "2026-09-11T10:56:29.000Z",
-      "hash": "1b35a1212ac5655eb44837c2ee3cfe093edf1883683f2ae98339bd641e148e34"
+      "modifiedAt": "2026-09-14T02:22:04.000Z",
+      "hash": "a573989ae9f595e77de76a9e6efa1cc6bed604f04d5037ddb11dc71ee84a85fa"
     },
     {
       "id": "OpenWiki 深度剖析：从可恢复文档生成到可验证知识生命周期",

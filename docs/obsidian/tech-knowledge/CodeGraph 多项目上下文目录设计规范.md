@@ -1,404 +1,442 @@
 ---
-title: CodeGraph Workspace Project Context Catalog Design
+title: 本地 CodeGraph Catalog MCP Spec：Codex 与 OpenCode 目录发现适配
 date: 2026-09-11
-status: review
+updated: 2026-09-14
+revision: 4
+status: specification-not-implemented
 tags:
   - CodeGraph
   - MCP
-  - AI-Agent
-  - architecture
-  - design-spec
+  - Codex
+  - OpenCode
+  - GBrain
+  - local-first
 aliases:
   - CodeGraph 多项目上下文目录设计
   - CodeGraph Project Catalog
+  - CodeGraph Workspace Companion MCP
+  - CodeGraph Local Knowledge MCP
 related: "[[CodeGraph 深度剖析：从本地代码图谱到 Agent 原生检索的设计哲学与实现机制]]"
 ---
 
-# CodeGraph Workspace Project Context Catalog Design
+# 本地 CodeGraph Catalog MCP Spec
 
-> [!abstract] 一句话结论
-> 一个 Base CodeGraph MCP 从工作区根目录读取 `codegraph/project.json`，把用户显式登记的多个独立 `.codegraph` 项目上下文公布给 Agent Harness；Agent 每次查询显式选择一个项目上下文。系统不建立统一索引、不执行联邦查询，也不生成跨项目图边。
+> [!abstract] 最终定位
+> 为本地 Codex 与 OpenCode 独立新增一个目录发现 MCP，自动发现指定本机代码目录下已有的 CodeGraph 索引，将项目用途、状态与可直接使用的绝对 `projectPath` 共享给 Agent。Agent 选择项目后，直接调用宿主中已有的原版 CodeGraph MCP 检索。新服务不代理代码查询，不持有 CodeGraph 后端连接，不修改其源码或工具接口。
 
-## 1. 背景
+> [!info] 状态
+> 第 4 版是待实现 spec，替代第 3 版中的“新 MCP 转发 explore”设计。已核对本机 Codex CLI `0.154.0`、OpenCode `1.18.30`、OpenCode 现有 MCP 配置形状及官方配置文档；原生 CodeGraph `projectPath` 能力沿用此前源码和工具声明核对。尚未实现/安装本服务、修改宿主配置或执行双宿主端到端测试。
 
-一个 Agent 工作区经常只打开主项目，但任务可能需要理解独立目录中的 SDK、共享库、后端服务或基础设施项目。这些项目已经分别运行过 `codegraph init`，各自拥有独立的 `.codegraph/codegraph.db`。
+## 1. 目标、边界与设计变化
 
-CodeGraph 当前已经具备部分基础能力：
+用户在主工作区 A 工作，需要借助本机 B/C 项目的已有 CodeGraph 索引理解 SDK、服务、共享库或参考实现。安装时配置代码目录范围后，B/C 应自动发现，无须逐项目登记，也无须切换工作区。
 
-- MCP 会话可从 `rootUri`、`workspaceFolders`、`--path` 或惰性的 `roots/list` 获得工作目录信号；
-- `ToolHandler.getCodeGraph(projectPath)` 可以向上定位最近的 `.codegraph/`，并按解析后的项目根目录惰性打开和缓存 `CodeGraph`；
-- 同一 MCP 进程可以在不同调用中查询不同项目；
-- `ExploreSessionState` 已按项目根目录隔离 explore 调用历史。
+本规范中的 MUST / 必须为验收要求；SHOULD / 应为默认设计；MAY / 可为可选增强。
 
-当前缺口不是查询引擎能力，而是缺少一个可发现、可授权、对 Agent 友好的项目上下文目录。Agent 只能猜测绝对 `projectPath`，Harness 也不知道当前项目有哪些已登记依赖。
-
-## 2. 设计目标
-
-本设计实现以下能力：
-
-1. Base MCP 能从工作区根目录发现 `codegraph/project.json`；
-2. manifest 声明当前项目及其可访问的依赖项目上下文；
-3. Agent Harness 能获得结构化项目目录；
-4. 现有 CodeGraph 查询工具能通过稳定的逻辑项目 ID 选择一个上下文；
-5. 项目上下文按需打开，并复用现有 `.codegraph` 数据库；
-6. 授权信息按 MCP 会话隔离，数据库连接可以按规范化项目根复用；
-7. 没有 manifest 的工作区保持现有行为和兼容性。
-
-## 3. 非目标
-
-本设计明确不实现：
-
-- 不把多个项目合并为一个索引；
-- 不在一次查询中搜索多个 `.codegraph` 数据库；
-- 不聚合、排序或去重多个项目的查询结果；
-- 不推断查询应该自动转发到哪个依赖项目；
-- 不建立跨项目 `calls`、`imports`、`references` 或 impact 边；
-- 不自动运行 `codegraph init`、`codegraph index` 或 `codegraph sync`；
-- 不为每个项目启动独立 MCP 子进程；
-- 不要求 Codex、Claude Code、Cursor 或 OpenCode 提供私有插件接口。
-
-这项能力的准确名称是 **Workspace Project Context Catalog and Explicit Instance Selection**，不是 multi-index federation。
-
-## 4. 术语
-
-| 术语 | 含义 |
+| 组成 | 职责 |
 | --- | --- |
-| Workspace root | MCP 客户端或服务器配置提供的当前工作区根目录 |
-| Project manifest | `<workspace-root>/codegraph/project.json` |
-| Project ID | manifest 中稳定、对 Agent 可见的逻辑名称，例如 `app`、`sdk` |
-| Project context | 一个已经存在的、拥有独立 `.codegraph/` 的 CodeGraph 项目根目录 |
-| Current project | 当前 Agent 任务的默认项目上下文 |
-| Dependency project | 用户在 manifest 中显式登记、允许 Agent 按需查询的相关项目上下文 |
-| Project catalog | 当前 MCP 会话经过解析和校验后的 Project ID 到项目根目录映射 |
+| 新 Catalog MCP | 发现已有索引、维护元数据、筛选相关项目、复验并输出路径 |
+| Codex / OpenCode 中的 Agent | 根据当前任务选择候选，调用已有原生 CodeGraph 工具，标注来源 |
+| 原版 CodeGraph MCP | 通过现有 projectPath 选择项目，返回源码、图结构及新鲜度提示 |
+| 可选本地 GBrain | 存取目录卡片，增强元数据检索与跨会话记忆 |
 
-“多实例”在本文中始终指多个独立 Project Context，不指多个 MCP 进程。
+相较第 3 版，删除 `workspace_codegraph_explore`、CodeGraph MCP Client adapter、查询代理、后端连接池和查询结果封装。新增服务也不统一索引、不建立跨项目图边、不执行 init/index/sync、不为外部项目启动 watcher。
 
-## 5. 总体架构
+目录既要让 Agent 知道“有什么”，也要让它立即知道“如何查”。因此本版必须返回授权范围内项目的绝对 `projectPath`，只返回逻辑 ID 或隐藏路径不能完成原生 MCP 交接。
+
+## 2. 架构：由 Agent 连接两个 MCP
 
 ```mermaid
-flowchart TD
-    H["Agent Harness"] --> S["Base CodeGraph MCP Session"]
-    S --> W["Workspace Root Resolver"]
-    W --> M["codegraph/project.json"]
-    M --> C["Session ProjectCatalog"]
-    C --> T["Tool Request + project ID"]
-    T --> R["Catalog Authorization and Resolution"]
-    R --> P["Shared CodeGraphContextPool"]
-    P --> A["app/.codegraph/codegraph.db"]
-    P --> B["sdk/.codegraph/codegraph.db"]
-    P --> D["shared/.codegraph/codegraph.db"]
+sequenceDiagram
+    participant A as Codex / OpenCode Agent
+    participant C as 新 Catalog MCP
+    participant L as 本地 Catalog
+    participant G as 可选 GBrain
+    participant O as 已有原生 CodeGraph MCP
+    A->>C: local_codegraph_projects(query)
+    C->>L: 检索候选并复验本机路径
+    opt 已启用 GBrain 目录辅助
+        C->>G: 检索限定范围内的项目卡片
+        G-->>C: 候选元数据
+        C->>L: 绑定本机 ID 并复验
+    end
+    C-->>A: 项目用途 + 绝对 projectPath + 状态
+    A->>O: codegraph_explore(query, projectPath)
+    O-->>A: 该项目的源码 / 图信息 / 原生警告
 ```
 
-架构分为控制面和查询面：
+不存在 Catalog → CodeGraph 调用边。Catalog 不需要获取宿主里另一个 MCP 的连接对象，也不启动额外 CodeGraph 子进程。两个服务只需在同一 Agent 会话中可用。
 
-- **控制面**由 `WorkspaceRootResolver` 和会话级 `ProjectCatalog` 组成，负责发现、解析、授权和公布项目；
-- **查询面**复用现有 `ToolHandler` 与 `CodeGraph`，一次只对一个已解析的项目根执行原有查询。
+本地 Codex 与 OpenCode 的 Catalog stdio 进程可同时连接同一机器 Catalog 数据文件；共享的是项目目录，不是会话、权限状态或代码查询结果。各宿主仍独立管理自己的原生 CodeGraph 连接。
 
-Project Catalog 不理解符号、节点或图边；查询层也不解释项目依赖关系。两个边界保持独立。
+## 3. 独立服务与交付物
 
-## 6. Workspace root 与 manifest 发现
+建议服务别名 `codegraph-catalog`，可执行文件暂名 `codegraph-catalog-mcp`；名称和参数均为拟实现接口，当前不代表 npm 已发布包。
 
-### 6.1 保留原始 workspace root
+交付包包含：
 
-当前 MCP 初始化会把客户端目录信号进一步解析成默认 CodeGraph 项目根。新设计必须同时保留两个概念：
+- 一个标准 MCP stdio server，可在两个宿主中以本地进程启动。
+- 自己的配置 schema、本地 Catalog 存储、分片扫描器和可选 GBrain adapter。
+- Codex TOML 与当前 OpenCode JSON/JSONC 的配置模板。
+- 一段可附加的 Agent 使用说明，以及协议/宿主端到端测试。
 
-- `workspaceRoot`：用于寻找 `codegraph/project.json`；
-- `defaultProjectRoot`：用于执行未指定项目的现有查询。
+不要求编写 OpenCode JS 插件或 Codex 私有插件接口。原生插件包装可以后加；两个宿主直接注册相同 stdio server 是 v1 基线。安装不修改 CodeGraph installer、工具定义、数据库 schema 或上游 agent instructions。
 
-不能先调用 `resolveServerRoot()` 再寻找 manifest，否则单子项目自动采用可能把工作区父目录信息丢失。
+## 4. 本机目录配置
 
-### 6.2 发现顺序
-
-兼容当前实现的目录信号优先级：
-
-1. `initialize.rootUri`；
-2. `initialize.workspaceFolders[0].uri`；
-3. MCP 启动参数 `--path`；
-4. 首次工具调用期间请求 `roots/list`；
-5. 最后才使用 `process.cwd()` 作为兼容回退。
-
-Base MCP 对最终选定的 `workspaceRoot` 只检查精确位置：
-
-```text
-<workspaceRoot>/codegraph/project.json
-```
-
-它不递归扫描磁盘寻找 manifest，也不根据 package manager 文件自动推断外部依赖。
-
-### 6.3 延迟发现
-
-当 root 只能通过 `roots/list` 获得时，manifest 在 MCP `initialize` 响应之后才可用。此时：
-
-- 工具列表保持稳定；
-- 第一次工具调用触发一次有界的 root 与 manifest 初始化；
-- Project Catalog 在该调用继续执行前准备完成；
-- 第一次成功响应可以附带一次简短的“可用项目”提示；
-- Harness 可以随时显式调用 `codegraph_projects` 获取完整目录。
-
-## 7. Manifest 契约
-
-### 7.1 示例
+所有路径必须显式、绝对且在当前机器可解析。示例使用占位路径；安装时换成本机实际值，不原样执行。
 
 ```json
 {
-  "$schema": "https://codegraph.dev/schemas/project-contexts-v1.json",
   "version": 1,
-  "defaultProject": "app",
-  "projects": {
-    "app": {
-      "root": ".",
-      "description": "Primary application"
-    },
-    "sdk": {
-      "root": "../sdk",
-      "description": "Client SDK"
-    },
-    "shared": {
-      "root": "../shared",
-      "description": "Shared domain library"
-    }
+  "dataDir": "/LOCAL_DATA/codegraph-catalog",
+  "discovery": {
+    "roots": ["/CODE/projects", "/CODE/libs"],
+    "refreshIntervalSeconds": 600,
+    "maxDepth": 6,
+    "maxDirectoriesPerSlice": 2000,
+    "maxSliceMs": 1000,
+    "maxDirectoriesPerRound": 100000,
+    "maxRoundMs": 60000,
+    "excludeNames": [".git", "node_modules", "dist", "build", ".cache"]
   },
-  "dependencies": {
-    "app": ["sdk", "shared"]
+  "sharing": {
+    "roots": ["/CODE/projects", "/CODE/libs"],
+    "denyRoots": ["/CODE/projects/private-client"],
+    "exposeAbsolutePaths": true
+  },
+  "metadata": {
+    "mode": "package-manifests-and-bounded-readme",
+    "maxBytesPerFile": 16384,
+    "maxBytesPerProject": 65536
+  },
+  "gbrain": {
+    "enabled": false,
+    "connectionRef": "local-gbrain-catalog",
+    "expectedBrain": "host",
+    "expectedSource": "codegraph-catalog",
+    "slugPrefix": "catalog/codegraph",
+    "projection": "reference-only",
+    "semanticSearch": false
   }
 }
 ```
 
-### 7.2 字段语义
+`discovery.roots` 控制发现和约定的元数据读取范围；`sharing.roots` 控制可向 Agent 返回目录与路径的子树。必须同时满足二者，denyRoots 优先。参数 `exposeAbsolutePaths` 在原生交接模式必须为 true；为 false 的隐私展示模式仅可浏览目录，不得宣称能直接查询。
 
-| 字段 | 必需 | 语义 |
+这些字段只控制本服务发现和共享哪些路径，**不是原生 CodeGraph 的查询权限配置**。不要再使用会让人误解的“Catalog 已授权，所以后端访问一定获准”表述；宿主和 OS 权限另行决定是否可读。
+
+没有配置扫描范围时返回 setup_required；不自动遍历 home 或整个磁盘。首次安装批准一组代码目录即可涵盖后续新项目，无须登记每个 `.codegraph/`。
+
+可选 `--workspace /ABS/PRIMARY_PROJECT` 仅固定当前工作区的相关性提示。全局安装可以省略：工具参数 `workspacePath` 可提供当前任务位置，仅用于相关性/去重，不扩大发现或共享范围，也不授权读取范围外文件。缺少工作区信号时仍可列出共享目录。
+
+`codegraph/project.json` 不再是必需文件；可作为人工别名和关系提示。其内容不能修改 sharing policy、执行命令或连接 URL，解析失败不影响自动目录。
+
+## 5. 自动发现与状态语义
+
+服务启动后先返回 MCP 初始化，再后台分片刷新。本地缓存存在时立即可检索；缓存不存在时，在工具调用预算内运行有限扫描片段，返回已发现内容和 running/partial 状态，不等待整轮扫描。
+
+扫描必须：
+
+1. 使用 canonical path，按路径段判断范围，默认不跟随目录 symlink / junction。
+2. 查找候选根自身的 `.codegraph/` 与 `.codegraph/codegraph.db`；不把子路径向上解析为父级项目，不扫描 `.codegraph` 内部。
+3. 不打开 CodeGraph 数据库、不读取其内部表、不查询源码符号；兼容性检查由实际原生调用验证。
+4. 对已发现候选读取有界包清单和 README 元数据，不执行任何项目脚本。
+5. 分片保存队列，受深度、单片与整轮预算限制；达到限制返回覆盖缺口。
+6. 在进程存活期间周期刷新；可选文件事件只作为加速，不假定事件永不丢失。
+
+存在目录和文件只证明 `indexState: marker_present`；不能证明数据库健康、schema 兼容、索引完整或代码最新。本服务没有收到原生查询结果的通道，因此不维护虚构的 last_query_ok 或自动推导 freshness。
+
+`availability` 取 present / missing / inaccessible / unknown；`freshness` 默认 unknown。未出现在部分扫描里不能认定 missing；只有直接复验确定不存在才更新为 missing。移动硬盘离线、权限不足和扫描截断分别记录，不自动删除原索引或目录历史。
+
+项目身份使用本地生成的稳定 projectId，并绑定规范化根；同根重建索引可保留 ID，移动路径默认作为新记录。不同 worktree、同名包与同 remote 项目不得合并。
+
+## 6. MCP 协议契约
+
+### 6.1 工具面
+
+新增服务固定只暴露两个工具：
+
+| 工具名 | 用途 | 默认调用频率 |
 | --- | --- | --- |
-| `version` | 是 | manifest 格式版本；v1 只接受整数 `1` |
-| `defaultProject` | 是 | 未提供 `project` 时使用的逻辑项目 ID |
-| `projects` | 是 | Project ID 到项目声明的映射 |
-| `projects.*.root` | 是 | 相对 manifest 所在 workspace root 的路径；也可引用已经由 Harness root 或服务器 allowlist 授权的绝对路径 |
-| `projects.*.description` | 否 | 提供给 Agent 的简短用途说明，不参与路由 |
-| `dependencies` | 否 | Project ID 之间的提示关系，不参与自动查询或图构建 |
-| `$schema` | 否 | 编辑器校验提示 |
+| `local_codegraph_projects` | 发现/筛选项目，并直接给出近期复验过的 projectPath | 首次需要外部项目知识时调用 |
+| `local_codegraph_resolve` | 根据历史 ID 重新取得当前路径与状态 | 从 GBrain、旧会话或旧结果恢复项目时调用 |
 
-### 7.3 校验规则
+不增加 `explore`、`query_code` 或通用 execute 工具。名称刻意与原生 `codegraph_explore` 区分，避免 Agent 错把目录搜索当代码搜索。
 
-- Project ID 必须匹配 `^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$`；
-- `defaultProject` 必须存在于 `projects`；
-- `dependencies` 中的所有 ID 必须存在；
-- 相对路径以 `workspaceRoot` 为基准，不以 MCP 进程 cwd 为基准；
-- 每个 root 经 `resolve`、`realpath` 和现有敏感路径校验后，必须指向一个已初始化项目；
-- workspace root 之外的目标还必须匹配客户端提供的另一个 root 或服务器启动 allowlist；仓库内 manifest 本身不能为任意外部路径授予访问权；
-- 多个 ID 解析到同一规范化项目根时拒绝加载，避免权限与展示歧义；
-- v1 不展开 glob、环境变量、shell 表达式或命令替换；
-- Agent 不得自动创建或修改 manifest。
-
-`dependencies` 只是让 Agent 理解项目关系。例如查询 `app` 时发现 SDK 类型，Agent 可以决定再调用一次 `project: "sdk"`；Base MCP 不会自动执行第二次查询。
-
-## 8. 授权模型
-
-`project.json` 是显式 opt-in 配置，但不能绕过现有敏感目录和路径安全检查。manifest 对 workspace 内项目同时承担发现与选择授权；对于 workspace 外项目，它只承担发现，Harness root 或服务器 allowlist 才是额外授权依据。
-
-每次查询的授权链如下：
-
-```text
-tool arguments.project
-  -> Session ProjectCatalog lookup
-  -> canonical project root
-  -> sensitive-path and symlink checks
-  -> existing CodeGraph context lookup/open
-```
-
-关键约束：
-
-1. 工具不直接把 Agent 提交的 `project` 当文件路径使用；
-2. manifest 未登记的 Project ID 不可访问；
-3. Catalog 属于 `MCPSession`，不能放在 daemon 共享的 `MCPEngine` 或 `ToolHandler` 中；
-4. 共享连接池只缓存 `CodeGraph` 对象，不保存某个会话的授权；
-5. manifest 改变后必须重新解析和校验，不能沿用旧授权映射；
-6. 原有 `projectPath` 可为兼容性保留，但启用 manifest 后优先要求逻辑 `project`，并在后续版本评估收紧任意跨项目路径访问。
-
-## 9. Agent Harness 接口
-
-### 9.1 项目目录工具
-
-新增一个稳定、只读、无参数工具：
-
-```text
-codegraph_projects()
-```
-
-示例结果：
+### 6.2 `local_codegraph_projects` 输入
 
 ```json
 {
-  "defaultProject": "app",
+  "type": "object",
+  "properties": {
+    "query": { "type": "string", "maxLength": 1000 },
+    "workspacePath": { "type": "string", "maxLength": 4096 },
+    "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 5 },
+    "cursor": { "type": "string", "maxLength": 2048 },
+    "refresh": { "type": "boolean", "default": false }
+  },
+  "additionalProperties": false
+}
+```
+
+query 只匹配目录元数据，优先精确包名、别名、项目名，其次词法相关性和可选 GBrain 召回。无 query 时按稳定顺序列目录。结果 Top-K 不代表全部本机项目；只有明确分页穷尽且扫描覆盖完成才可描述配置范围内覆盖情况。
+
+refresh 表示安排有界刷新，不代表重建或同步任何 CodeGraph。cursor 为不透明快照游标，绑定过滤条件和调用方视图；查询条件变化或快照过期时返回 cursor_expired，不能混合不同分页结果。
+
+### 6.3 返回给 Agent 的交接数据
+
+```json
+{
+  "schemaVersion": 1,
+  "status": "ok",
+  "machineId": "machine_local_01",
+  "catalogRevision": 42,
+  "scanState": "running",
+  "coverage": "partial",
   "projects": [
     {
-      "id": "app",
-      "relation": "current",
-      "description": "Primary application",
-      "indexed": true
-    },
-    {
-      "id": "sdk",
-      "relation": "dependency",
-      "description": "Client SDK",
-      "indexed": true
+      "projectId": "cg_sdk_01",
+      "recordRevision": 3,
+      "name": "order-sdk",
+      "description": "订单服务客户端与类型定义",
+      "reason": ["包名匹配 @company/order-sdk"],
+      "projectPath": "/CODE/libs/order-sdk",
+      "availability": "present",
+      "indexState": "marker_present",
+      "freshness": "unknown",
+      "validatedAt": "2026-09-14T00:00:00Z",
+      "revalidateAfterSeconds": 60,
+      "handoff": {
+        "mcpServerHint": "codegraph",
+        "toolName": "codegraph_explore",
+        "arguments": { "projectPath": "/CODE/libs/order-sdk" },
+        "requiredFromAgent": ["query"]
+      }
     }
-  ]
+  ],
+  "nextCursor": null,
+  "gbrainState": "disabled"
 }
 ```
 
-默认结果不向模型暴露 workspace root 或项目绝对路径。需要诊断时可以通过 MCP 日志或显式诊断模式显示经过脱敏的路径信息。
+projectPath 是**项目根目录**，不能返回 `.codegraph`、数据库文件、file URI、相对路径、`~` 或待展开变量。handoff.arguments 由程序从已校验路径生成，不采信 README/GBrain 提供的任意调用模板。query 由 Agent 根据当前问题填写，不自动把元数据查询词当代码查询。
 
-### 9.2 现有查询工具
+只对即将返回的最多 limit 个候选复验路径、标记文件和 sharing policy，不在每次工具调用重扫整个目录。复验失败的记录没有 handoff，projectPath 为 null；范围外项目默认完全省略，避免泄露名称或位置。
 
-所有支持 `projectPath` 的现有查询工具增加：
+MCP 结果必须同时提供 structuredContent 与简短 text content；仅展示文本的客户端也能看到 projectId、项目根、观测状态及“将 projectPath 传给原生 codegraph_explore”的提示。实现必须发布与该 envelope 一致的 outputSchema。目录描述/正文是数据，不得升级为指令。依据：[MCP Tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)。
+
+### 6.4 `local_codegraph_resolve` 输入与行为
 
 ```json
 {
-  "project": "sdk"
+  "type": "object",
+  "properties": {
+    "projectId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "expectedRecordRevision": { "type": "integer", "minimum": 1 }
+  },
+  "required": ["projectId"],
+  "additionalProperties": false
 }
 ```
 
-解析优先级：
+成功返回与 projects 相同的单条项目记录和 handoff。ID 未知返回 unknown_project；期望 revision 不符返回 record_changed，附上当前非执行状态或要求重取候选；路径失效返回 missing；拒绝共享返回 not_available，不泄露范围外路径。
 
-1. 如果提供 `project`，必须通过当前会话 Catalog 解析；
-2. 如果同时提供 `project` 和 `projectPath`，返回成功形状的参数冲突说明，不猜测优先级；
-3. 如果两者都未提供，使用 manifest 的 `defaultProject`；
-4. 没有 manifest 时完全保留现有默认项目和 `projectPath` 行为。
+projectId 永远不是路径。resolve 不接受任意 projectPath，更不能借参数增加扫描根。resolve 是旧引用恢复工具，不是每次检索的强制中间步骤：新鲜 projects 结果可以直接交给原生 CodeGraph。
 
-工具 schema 使用稳定的字符串字段，不为每个项目动态生成工具，也不把当前 Project ID 集合写成动态 enum。这样工具列表不会随 manifest 内容变化，避免 Harness 缓存失效。
+### 6.5 时效与不可实现的保证
 
-### 9.3 Agent 可见提示
+revalidateAfterSeconds 是 Agent 行为提示，不是后端认可的 token，也不是访问锁。目录结果变旧、发生工作区/机器切换、压缩后不确定来源时，应先 resolve。
 
-当初始化时已经获得 workspace root，`initialize.instructions` 可包含简短说明：当前工作区有多个已登记 CodeGraph 项目，使用 `codegraph_projects` 查看并通过 `project` 选择。
+路径输出与后续原生调用之间存在竞争窗口；目录服务不能撤回已经展示给模型的路径，也不能拦截直连 CodeGraph 查询。若索引在这期间删除，原生 CodeGraph 的向上查找可能产生父级回退。本 spec 通过近时复验与 Agent 核对降低风险，不承诺原子交接或强制防回退；需要强保证时必须另行采用代理/沙箱架构，超出本版范围。
 
-当 root 延迟发现时，在本会话第一次 CodeGraph 响应中只提示一次。提示不得要求 Agent 使用 Read/Grep，也不得把项目目录重复附加到每个结果。
+## 7. Agent 操作合同：直接借用原版能力
 
-## 10. 查询与实例生命周期
+常规跨项目检索只需两个工具调用：
 
-```mermaid
-sequenceDiagram
-    participant A as Agent
-    participant S as MCP Session
-    participant C as ProjectCatalog
-    participant T as ToolHandler
-    participant P as ContextPool
-
-    A->>S: codegraph_explore(project="sdk", query="...")
-    S->>C: resolve("sdk")
-    C-->>S: canonical sdk root
-    S->>T: execute(query, resolvedProjectRoot)
-    T->>P: get or open(root)
-    P-->>T: CodeGraph sdk context
-    T-->>A: sdk-only result
+```text
+1. Catalog: local_codegraph_projects({query: "@company/order-sdk"})
+2. 原生: codegraph_explore({query: "OrdersClient createOrder", projectPath: "/CODE/libs/order-sdk"})
 ```
 
-- Project Catalog 在会话内缓存；
-- Catalog 缓存键包含 workspace root 和 manifest 文件状态；
-- `CodeGraph` 实例继续按规范化项目根缓存；
-- 首次查询某项目时才打开其数据库；
-- 一次调用只能解析出一个项目根；
-- 结果必须标注实际查询的 `project` ID，防止 Agent 混淆来源；
-- `ExploreSessionState` 继续使用项目根隔离预算和去重状态。
+实际调用名由宿主分配命名空间，必须从当前工具列表或宿主工具发现机制找到，不能把示意名称当作固定可调用标识符。mcpServerHint 仅用于辨认，用户可给服务换名。
 
-v1 不改变 watcher 语义。非默认项目是否自动同步属于独立生命周期问题；本功能只报告当前索引状态，不隐式写入依赖项目。
+Agent 必须：
 
-## 11. 错误处理
+- 主项目问题优先原生 CodeGraph；遇到外部依赖或参考实现需求时再查目录。
+- 根据包名、用途、版本线索和路径选择候选；同名多版本或 worktree 歧义时先辨别，不随机选。
+- 把返回的 projectPath 原样传给支持此参数的原生工具；不传 projectId，不把 `.codegraph` 拼接进去。
+- 原生工具不可用或缺少 projectPath 时报告缺口，不要求 Catalog 代查、不自动安装/索引。
+- 原生返回未索引、安全拒绝或新鲜度警告时尊重其提示；不通过另一个入口绕过拒绝，不把空结果当不存在的证明。
+- 在最终答案里注明项目名、文件、符号及重要警告；跨项目 HTTP/类型关联只是接口证据推断，不能伪称图中存在跨仓库边。
 
-CodeGraph 的既有原则是：预期内、可恢复的状态返回成功形状的指导，只有安全拒绝和真实故障使用 MCP error。
+可选附加说明（两个宿主共用文本，不注入整份目录）：
 
-| 场景 | 行为 |
+> 需要当前仓库之外的本机代码知识时，先用 local_codegraph_projects 找到相关已有索引；将其返回的绝对 projectPath 传给现有 CodeGraph MCP 的 codegraph_explore。历史 projectId 先用 local_codegraph_resolve 复验。目录工具只找项目，代码事实来自原生 CodeGraph；不要自动创建或同步索引。
+
+该说明是安装交付材料；不得覆盖现有 AGENTS.md。工具说明承担基础发现指引，技能/规则片段只增强可发现性，不是正确运行的私有前置依赖。
+
+## 8. Codex 适配
+
+本机观测：`codex --version` 为 `codex-cli 0.154.0`；CLI 提供 `codex mcp add/list/get`。Codex 支持 config.toml 的 `[mcp_servers.<name>]`、stdio command/args 及工具过滤。依据：[Codex 官方 MCP 文档](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)。
+
+以下只新增 Catalog 条目，保留已有原生 CodeGraph 配置。所有占位路径需替换为安装产物路径：
+
+```toml
+[mcp_servers.codegraph-catalog]
+command = "/ABS/bin/codegraph-catalog-mcp"
+args = ["serve", "--config", "/ABS/config/codegraph-catalog.json"]
+enabled = true
+enabled_tools = ["local_codegraph_projects", "local_codegraph_resolve"]
+startup_timeout_sec = 10
+tool_timeout_sec = 10
+```
+
+CLI 注册等价示例，执行前先确定产物存在：
+
+```sh
+codex mcp add codegraph-catalog -- /ABS/bin/codegraph-catalog-mcp serve --config /ABS/config/codegraph-catalog.json
+```
+
+模板在用户级 `~/.codex/config.toml` 合并；项目级配置仅在该安装实际支持且受信任时使用。不得用重复表覆盖用户其他 MCP 配置，已有同名服务应先检查再决定更新。
+
+验收需要在本地 Codex 实际会话看到 Catalog 两工具及原生 explore。部分运行时工具可能延迟暴露，使用宿主提供的发现机制加载即可；Catalog 不硬编码本会话的 `mcp__...` 前缀。
+
+## 9. OpenCode 适配：按本机 1.x 配置形状
+
+本机观测：OpenCode `1.18.30`，`/Users/czn/.config/opencode/opencode.json` 当前使用 `mcp.<name>`；原生 codegraph 条目为 type=local、enabled=true。官方文档同样给出该结构。依据：[OpenCode MCP servers](https://opencode.ai/docs/mcp-servers/)。
+
+向现有 JSON/JSONC 的 mcp 对象合并一个 sibling：
+
+```json
+{
+  "mcp": {
+    "codegraph-catalog": {
+      "type": "local",
+      "command": [
+        "/ABS/bin/codegraph-catalog-mcp",
+        "serve",
+        "--config",
+        "/ABS/config/codegraph-catalog.json"
+      ],
+      "enabled": true
+    }
+  }
+}
+```
+
+这是增量配置片段，不是完整配置文件。复用实际存在的 opencode.json 或 opencode.jsonc，保留 comments、其他 MCP、模型配置与权限。不另建一个可能遮蔽现有配置的同级文件。
+
+仓库 AGENTS 中出现的 OpenCode 2 `mcp.servers`、`disabled`、`codemode` 属于另一配置世代，不能直接套在本机 1.18.30。未来升级时，适配器依据已安装版本及其配置 schema 生成新格式；不得同时写两种形式，不能为完成本 spec 擅自升级宿主。
+
+OpenCode 工具可能受全局及 agent 级过滤影响；使用真实注册前缀核对可见性，不无条件开放全部工具。官方说明 MCP 工具使用服务名前缀，具体名称仍以实际会话为准。
+
+安装完成后重启 OpenCode 并创建新会话验收；不能把改完文件等同运行会话已加载。本轮未修改该配置，因此当前无需重启。
+
+## 10. 共同宿主约束与安装验证
+
+| 条件 | 必须满足 |
 | --- | --- |
-| manifest 不存在 | 完全回退现有单项目行为 |
-| manifest JSON 无效 | 成功形状警告；禁用 Catalog，不影响已有默认项目查询 |
-| manifest 版本未知 | 成功形状警告；不猜测兼容格式 |
-| `defaultProject` 或依赖 ID 无效 | 成功形状配置诊断，列出字段位置 |
-| Project ID 不存在 | 成功形状说明，并列出有效 ID |
-| 项目尚未索引 | 成功形状说明；不自动运行 init |
-| 同时提供 `project` 与 `projectPath` | 成功形状参数冲突说明 |
-| 敏感路径、symlink 逃逸或授权拒绝 | `PathRefusalError` / MCP error |
-| 数据库打开失败 | 真实故障；携带 retry-once 指引 |
+| 路径空间一致 | Catalog、Agent 调用的原生 CodeGraph 位于同机同路径命名空间；本机路径不能交给远程容器后端 |
+| 工具可见 | 两个目录工具及原生 codegraph_explore 在当前 agent 权限下可调用 |
+| 原生 schema | projectPath 被原生工具接受；否则标记 backend_incompatible，由 Agent 报告 |
+| 启动稳定 | command 使用已安装绝对路径，不依赖 GUI PATH、shell alias、npx 临时下载或交互 shell |
+| stdio | stdout 只写 MCP 消息，日志写 stderr；扫描不阻塞 initialize |
+| 工作区 | 不从任意 cwd 推导扫描范围；workspace 信号缺失不阻塞机器目录 |
+| 资源隔离 | Catalog 关闭只结束自己的扫描/可选 GBrain 连接，不终止 CodeGraph |
+| 配置保护 | 安装前备份、只修改本服务条目、语法校验、重启/重连后实际验收 |
 
-任何一个依赖项目无效都不应让默认项目的合法查询失效。Catalog 返回逐项目状态，只有被选择的无效项目阻止该次查询。
+Catalog 服务不能自行枚举宿主中其他 server 的 tools/list；原生能力检查由安装验证客户端或 Agent 执行。不为此重新引入运行时 CodeGraph adapter。
 
-## 12. 向后兼容
+MCP initialize 协商使用实现所固定 SDK 支持的协议版本；不硬编码宿主私有 rootUri/workspaceFolders，也不要求 MCP resources/prompts UI。v1 只依赖稳定 tools/list 与 tools/call，目录变化不改变工具 schema，不为每个项目生成一个工具。
 
-没有 `codegraph/project.json` 时：
+## 11. GBrain：可选目录存取
 
-- MCP 初始化逻辑不变；
-- 默认项目解析不变；
-- `projectPath` 行为不变；
-- 工具输出不增加多项目噪音；
-- 不产生额外磁盘扫描。
+保留上一版 GBrain 集成目标，但将其定位为 Catalog 的可选存储/召回 adapter，绝不成为源码查询代理。
 
-存在 manifest 时，`project` 是推荐接口，`projectPath` 是兼容接口。首版不移除或改变 `projectPath`，避免破坏已有客户端和测试。
+本地 Catalog 保存真实 projectId→canonicalRoot 绑定、扫描状态和 sharing policy；GBrain 保存 projectId、machineId、用途、标签、包名、记录版本与 locator。默认 locator 为 `local-codegraph://<machineId>/<projectId>`，是内部引用而非可传给原生 CodeGraph 的 projectPath。
 
-## 13. 测试策略
+Agent 从 GBrain 命中历史卡片时，调用 local_codegraph_resolve 取得当前真实路径，再调用原生 explore。不同机器卡片不能直接复用路径；GBrain 页不存在于本地 Catalog 的 ID 只是历史候选，不自动授予共享权限。
 
-### 13.1 Manifest 单元测试
+若要在确认全链路本地的 GBrain 中保存绝对路径，可显式启用 local-paths 投影；使用前仍应 resolve。向本地 Agent 返回路径和向 GBrain 持久化路径是两个独立配置决策。
 
-- 有效的相对路径和绝对路径；
-- 无效 JSON、未知版本和缺失字段；
-- 非法 Project ID；
-- 未定义依赖、重复规范化根和循环依赖；
-- `..`、symlink 和敏感目录；
-- manifest mtime/内容变化后的重载。
+GBrain 接口限制沿用本机核对：
 
-循环依赖可以作为元数据报告，但不能导致递归查询，因为 v1 从不自动遍历依赖。
+- `get_page(include_content=true)` 读取完整原页；`put_page` 整页覆盖，当前参数没有 source_id/CAS。
+- adapter 必须以固定 brain/source 的专属连接写入，不能自动把本机默认 default source 当目录目标。
+- 生成页使用专属 slug/tag，人工说明分开存；读后核对所有权与 hash，再完整写入。
+- 本地 outbox 合并过时版本，单写者投影；写入超时先读取确认 hash，不盲目重试。
+- `list_pages` 分页用于目录枚举，search/query Top-K 不是全量目录；并发更新时需去重/重扫。
+- local-first 默认用本地词法检索。GBrain search/put_page 的 embedding 和 query expansion 是否联网必须单独确认；本地 PostgreSQL 不证明整个链路离线。
 
-### 13.2 MCP 会话测试
+GBrain 故障时，目录发现、resolve 和 Agent 直连原生查询继续工作。无 GBrain 配置即无连接；启用时服务自己持有明确配置的 GBrain MCP Client，不假设能复用宿主里的 GBrain 连接。无需为每次目录发现写入 GBrain，只有稳定元数据变化才排队投影。
 
-- `rootUri`、`workspaceFolders`、`--path` 和惰性 `roots/list` 都能发现 manifest；
-- workspace root 与自动采用的 default project root 保持区分；
-- 两个会话共享 daemon 时拥有不同 Catalog；
-- 某会话不能使用另一会话授权的 Project ID；
-- manifest 缺失时现有初始化与工具列表测试保持不变。
+## 12. 隐私、缓存和错误
 
-### 13.3 查询路由测试
+把绝对目录共享给 Agent 意味着路径可能进入模型上下文；local-first 描述发现、存储和代码访问的位置，不代表本地 Codex/OpenCode 一定使用本机模型。扫描/共享范围的配置需考虑这一事实，不能声称内容绝不离机。
 
-- `project: "app"` 只访问 app 数据库；
-- `project: "sdk"` 只访问 sdk 数据库；
-- 一次调用不会打开或查询其他依赖数据库；
-- 相同项目的后续调用复用已有 CodeGraph 实例；
-- `project` 与 `projectPath` 冲突得到稳定诊断；
-- 返回内容标注正确 Project ID；
-- explore 的跨调用去重仍按项目隔离。
+共享 Catalog 按机器持久化；两个宿主相同 dataDir 使用同一项目 ID。每个前端按其 sharing 配置过滤，不共享可变 activeProject。扫描与 GBrain 投影用本地租约选单写者，崩溃后可接管；网络调用不占数据库写锁。
 
-### 13.4 安全与回归测试
+输出路径前按实时共享策略过滤。路径已经返回后，Catalog 无法撤回 Agent 记忆，也不能保证撤销后的原生调用被拒绝；严格访问控制交由宿主/OS。目录与源码内容永远不改变策略。
 
-- 恶意 manifest 不能访问敏感系统目录；
-- 预先布置的 symlink 不能逃逸校验后的根；
-- 无 manifest 的单项目、小型 monorepo 和多候选 workspace 无行为回归；
-- 项目目录工具不会输出配置秘密或默认暴露绝对路径；
-- 未索引项目不会触发任何写操作。
+| 状态 | 结果 |
+| --- | --- |
+| 未配置根 | setup_required，无任意磁盘扫描 |
+| 扫描进行中/到上限 | ok + running/partial + 覆盖信息 |
+| 无匹配项目 | no_matches，并保留覆盖状态，不推断源码不存在 |
+| 老 ID 或缺失路径 | unknown_project / missing，无 handoff |
+| 当前视图不能共享 | not_available，无路径泄露 |
+| 页游标过期 | cursor_expired，要求重新检索 |
+| GBrain 不可用 | 本地结果正常 + gbrainState=degraded |
+| 服务内部异常 | 明确工具执行错误，避免无止境重试 |
 
-## 14. 实施边界
+发现和 resolve 可更新自身缓存/目录，因此不能仅凭“不改源码”就无条件声明绝对无副作用。实现应基于实际行为选择 MCP annotations；annotations 不是授权机制。原版检索的磁盘副作用、新鲜度、权限与同步语义由其自身决定，目录服务不重新包装承诺。
 
-建议实现拆成三个可独立审查的阶段：
+## 13. 验收标准与实施顺序
 
-1. **Project Catalog**：manifest schema、解析、校验和会话级状态；
-2. **Harness Discovery**：`codegraph_projects` 与初始化/首次响应提示；
-3. **Explicit Selection**：现有工具的 `project` 参数和 Catalog 授权路由。
+### 13.1 协议及目录测试
 
-三个阶段都不修改数据库 schema、extractor、resolver、GraphTraverser 或 ContextBuilder。
+- 无 manifest 时可自动发现 B/C；后续新增索引可在刷新与扫描预算内发现。
+- spaces、中文路径、嵌套索引、同名包、同 remote 的 worktree 均返回精确独立根。
+- 返回前确认根自身有标记；没有标记的候选不得生成 handoff，不打开所有数据库验证。
+- 文本结果与 structuredContent 的 projectPath 完全一致；实际交接只携带标准原生参数。
+- 缺失、权限不足、扫描中断不等同全部不存在；游标和 lease 恢复符合规范。
+- GBrain 离线、历史卡片及篡改 locator 不改变本地绑定和共享策略。
 
-## 15. 与上游问题的关系
+### 13.2 双宿主端到端验收
 
-- [#1822](https://github.com/colbymchenry/codegraph/issues/1822) 描述从父工作区使用多个子项目索引的用户场景；
-- [#769](https://github.com/colbymchenry/codegraph/issues/769) 提议项目 registry，但偏向全局项目发现；
-- [#1367](https://github.com/colbymchenry/codegraph/issues/1367) 指出任意 `projectPath` 的跨工作区授权风险；
-- [#1835](https://github.com/colbymchenry/codegraph/issues/1835) 讨论非默认项目的同步生命周期；
-- [#214](https://github.com/colbymchenry/codegraph/pull/214)、[#966](https://github.com/colbymchenry/codegraph/pull/966)、[#1007](https://github.com/colbymchenry/codegraph/pull/1007) 和 [#1614](https://github.com/colbymchenry/codegraph/pull/1614) 已提供 root 发现、无默认根工具暴露、显式项目选择和子项目候选等基础能力。
+在 Codex 与 OpenCode 分别执行同一任务：A 为主工作区，B/C 是已经存在、可读取的独立索引。
 
-本设计补齐的是“工作区授权项目目录与逻辑 ID 选择”，不会替代或扩大上述问题的索引与同步范围。
+| 步骤 | 验收证据 |
+| --- | --- |
+| 服务注册 | 当前宿主实际列出 Catalog 工具与原生 explore，记录宿主版本 |
+| 项目发现 | 调用 local_codegraph_projects 能看到 B/C，路径和用途正确 |
+| 原生查询 | 将 B 的 projectPath 直接交给原生 CodeGraph，得到 B 的符号/源码 |
+| 第二项目 | 连续查询 C，不切 cwd/工作区，不修改原生 MCP 配置 |
+| 来源区分 | B/C 同名符号不会混淆，回答标注来源 |
+| 历史恢复 | 从 GBrain 或保存的 projectId 经 resolve 重新取得 B 路径 |
+| 无代理证明 | Catalog 没有 CodeGraph 客户端连接、子进程或代码查询日志 |
+| 回归 | 主工作区原生查询无新增目录前置调用，关闭 Catalog 不破坏原生服务 |
 
-## 16. 验收标准
+`codex mcp list` / `opencode mcp list` 只证明配置/连接观测，不能替代以上真实工具调用。基础使用目标为“目录一次 + 原生查询一次”；复杂歧义可增加调用，不设伪造硬配额。
 
-实现完成需要同时满足：
+本机 CLI 版本与配置已核对不等于上述端到端通过。Codex GUI/IDE 是否与 CLI 使用相同环境必须另测，不能由 CLI 结果自动推定。
 
-1. 打开主项目工作区后，Base MCP 能发现 manifest 中所有有效独立项目上下文；
-2. `codegraph_projects` 返回当前项目和依赖项目的结构化目录；
-3. Agent 能通过 `project` 在连续调用中分别查询不同项目；
-4. 每次调用只访问被选择的一个 `.codegraph` 数据库；
-5. 未登记的项目不能通过逻辑 ID 访问；
-6. 两个 MCP 会话之间不存在授权泄漏；
-7. 无 manifest 用户的行为、性能和工具面保持兼容；
-8. 系统不创建新索引、不合并结果、不生成跨项目图边。
+### 13.3 实施顺序
+
+1. 新仓库实现自动发现、本地 Catalog 和两个工具，完成纯协议测试。
+2. 生成针对本机版本的 Codex / OpenCode 配置增量，完成双宿主原生交接验收。
+3. 加入增量刷新、多进程租约、历史 ID 恢复与规模基准。
+4. 按需实现 GBrain adapter、专属页面与离线回退测试。
+
+本 spec 的核心完成条件是第二步的真实交接闭环；GBrain 不应阻塞无依赖的基础版本。性能测量包含发现延迟、目录热查询、扫描资源、Agent 选库正确率和调用数，不再测不存在的代码查询代理开销。
+
+## 14. 证据与版本记录
+
+- 本轮本机只读观测：Codex CLI `0.154.0`，OpenCode `1.18.30`；检查 OpenCode MCP 键结构时未输出凭证或修改配置。
+- [Codex MCP 官方文档](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)：stdio/TOML 配置与工具过滤。
+- [OpenCode MCP 官方文档](https://opencode.ai/docs/mcp-servers/)：mcp.<name> 本地配置与工具可见性。
+- 原版能力：此前对本地 CodeGraph `3ed73bc` 的 ToolHandler.getCodeGraph、CodeGraph.openSync 及当前工具 schema 核对；新 spec 不改变该能力。
+- GBrain：沿用第 3 版 CLI `0.48.4.0` 和工具声明证据；本轮未执行目录写入或模型数据去向测试。
+
+本版的最终分工：Catalog 发现并把真实项目路径交给 Agent；Codex/OpenCode Agent 选择并调用；原版 CodeGraph 检索；GBrain 可选保存目录。四者职责独立，基础方案无需查询代理或上游源码改动。
