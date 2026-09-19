@@ -1,7 +1,11 @@
 {
   "version": 1,
-  "windowKey": "2026-09-17:GitHub-Trending-日报-2026-09-17.md\n2026-09-15:GitHub-Trending-日报-2026-09-15.md\n2026-09-14:GitHub-Trending-日报-2026-09-14.md\n2026-09-11:GitHub-Trending-日报-2026-09-11.md",
+  "windowKey": "2026-09-19:GitHub-Trending-日报-2026-09-19.md\n2026-09-17:GitHub-Trending-日报-2026-09-17.md\n2026-09-15:GitHub-Trending-日报-2026-09-15.md\n2026-09-14:GitHub-Trending-日报-2026-09-14.md",
   "entries": {
+    "GitHub-Trending-日报-2026-09-19.md": {
+      "date": "2026-09-19",
+      "hash": "b84095b44dd96a9c3eff0f01b304e028bf6f6a416addf9bc39b9a4391611ed49"
+    },
     "GitHub-Trending-日报-2026-09-17.md": {
       "date": "2026-09-17",
       "hash": "41c88c035787c1a006a8231c6cf43570809bd9644ae85f2442957948b17446d0"
@@ -13,10 +17,6 @@
     "GitHub-Trending-日报-2026-09-14.md": {
       "date": "2026-09-14",
       "hash": "bd9f0276da54cd2371d1907e0a49c4e53a69c29e4d18b6ad4d15e719e20993c5"
-    },
-    "GitHub-Trending-日报-2026-09-11.md": {
-      "date": "2026-09-11",
-      "hash": "7861f609a13b02e8f75e4645a8753fadbb82e9e78ed188967407e9e7ff4e76bd"
     }
   }
 }
