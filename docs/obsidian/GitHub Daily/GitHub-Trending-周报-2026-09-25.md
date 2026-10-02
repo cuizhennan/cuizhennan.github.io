@@ -5,16 +5,16 @@
 ## 📊 1. 本周主线：从现象到结构
 
 ### 1.1 Harness 正从研究变量变成供应链与上游标准
-从 harness 消融、递归改进，到运行时、技能包、CLI 注册表和 K8s Agent Sandbox，竞争从模型能力转向默认值、分发渠道和工作负载原语。长程编码的 CI 复盘说明，agent 产能上升后瓶颈会迁移到测试与验证；没有配套管道，自动化只是推迟排队和责任。
+从 harness 消融、递归改进，到运行时、技能包、CLI 注册表和 K8s Agent Sandbox，竞争从模型能力转向默认值与工作负载原语。长程编码的 CI 复盘说明，agent 产能上升后瓶颈会迁移到测试与验证；没有配套管道，自动化只是推迟排队和责任。
 
 ### 1.2 信任从结果分数下钻到行为、评测装置与事故通报
-自述一致性、引擎指纹、断点重放、攻击重放、checker 审计和校准实验连续出现，周末又出现 Medicare 事故与公开遥测考古。一个“成功”必须能回答走了哪条路径、评委是否可靠、出事后谁先知道；这要求独立锚点和完整轨迹，否则审计也会被污染。
+自述一致性、引擎指纹、断点重放、攻击重放、checker 审计和校准实验连续出现，周末又出现 Medicare 事故与遥测考古。一个“成功”必须能回答走了哪条路径、评委是否可靠、出事后谁先知道；这要求独立锚点和完整轨迹。
 
 ### 1.3 记忆从功能升级为独立系统层
-跨 CLI handoff、跨模型状态、代码库索引与办公文档持续状态，和读时策展、记忆基准一起说明：记忆是保真存储、身份归属、查询合成与迁移的组合。读时合成避免未知查询下的不可逆丢失，但增加读取成本，也放大错误记忆的传播。
+跨 CLI handoff、跨模型状态、代码库索引与办公文档持续状态，和读时策展、记忆基准一起说明：记忆是保真存储、身份归属、查询合成与迁移的组合。读时合成避免未知查询下的不可逆丢失，但增加读取成本，也传播错误记忆。
 
 ### 1.4 决策接口正在替代一部分生成接口
-概率直读、端侧反射、廉价评委初筛和强模型兜底，把选择、路由、守门和评分从生成中拆出。Java/Spring 已把结构化判断写进企业范式：接口被默认引用后，网络效应超过模型品牌；但失准也会规模化错误。
+概率直读、端侧反射、廉价评委初筛和强模型兜底，把选择、路由、守门和评分从生成中拆出。Java/Spring 已把结构化判断写进企业范式：接口被默认引用后，网络效应超过模型品牌；失准也会规模化错误。
 
 ### 1.5 物理底座与主权边界同时显形
 世界模型开始用长程一致性、空间执行和真实动作评测冷却 demo；本地推理、照片搜索和扩散运行时把“能否退出云端”变成产品属性。后量子默认值、K8s 存储生命周期和 Web3 形式化共识指向同一条件：能力必须嵌入可迁移、可验证、可定价的基础设施。
@@ -36,29 +36,29 @@
 
 ## 🔗 4. 代表性证据：少而硬
 
-- **[google/ax](https://github.com/google/ax)** —— 声明式工作区、网关和模型把 agent 提升为可调度工作负载，并与 K8s 上游争夺同一原语。
-- **[Agentic coding 正在挤压 CI](https://claude.com/blog/agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic)** —— 自动化的真实瓶颈迁移到测试选择、缓存和验证吞吐。
-- **[Hindsight](https://github.com/vectorize-io/hindsight) × [Just-in-Time Memory](https://arxiv.org/abs/2609.27334)** —— 产品化记忆与读时策展共同证明记忆已形成独立赛道。
-- **[Schrödinger's Code Repository](https://arxiv.org/abs/2609.27891) × [JEV-as-a-Judge](https://arxiv.org/abs/2609.26550)** —— 评测同时追求记忆税、可信度与分层成本，而不再只追最终分数。
-- **[Transluce agent activity](https://transluce.org/agent-activity) × [Medicare 事故报道](https://www.smh.com.au/politics/federal/openai-breaches-medicare-albanese-reveals-20260924-p6100u.html)** —— 行为绕路与延迟通报把安全推向行为考古和组织责任。
-- **[Spring AI × TypeSafe Jev](https://spring.io/blog/2026/09/21/spring-ai-typesafe-structured-judgment)** —— 结构化判断进入 Java 企业框架，网络效应开始超过模型品牌。
-- **[HappyWorld-Bench](https://arxiv.org/abs/2609.24308)** —— 长 rollout、空间执行和具身多步状态被拆开量化，区分“会生成”与“能工作”。
-- **[Etheorem](https://ethresear.ch/t/etheorem-update-the-complete-executable-consensus-specs-written-in-lean-4/26063) × [Lattice Jolt](https://a16zcrypto.com/posts/article/lattice-snarks-jolt-post-quantum-faster/)** —— Web3 把开放协议的价值推进到可机械检查、可迁移和后量子可持续运行。
+- **[google/ax](https://github.com/google/ax)** —— 声明式工作区、网关和模型把 agent 提升为可调度工作负载。
+- **[Agentic coding 正在挤压 CI](https://claude.com/blog/agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic)** —— 自动化瓶颈迁移到测试选择、缓存和验证吞吐。
+- **[Hindsight](https://github.com/vectorize-io/hindsight) × [Just-in-Time Memory](https://arxiv.org/abs/2609.27334)** —— 产品化记忆与读时策展证明记忆已成独立赛道。
+- **[Schrödinger's Code Repository](https://arxiv.org/abs/2609.27891) × [JEV-as-a-Judge](https://arxiv.org/abs/2609.26550)** —— 评测同时追求记忆税、可信度与分层成本。
+- **[Transluce agent activity](https://transluce.org/agent-activity) × [Medicare 事故报道](https://www.smh.com.au/politics/federal/openai-breaches-medicare-albanese-reveals-20260924-p6100u.html)** —— 行为绕路与延迟通报把安全推向组织责任。
+- **[Spring AI × TypeSafe Jev](https://spring.io/blog/2026/09/21/spring-ai-typesafe-structured-judgment)** —— 结构化判断进入 Java 框架，网络效应超过模型品牌。
+- **[HappyWorld-Bench](https://arxiv.org/abs/2609.24308)** —— 长 rollout、空间执行和具身状态被拆开量化。
+- **[Etheorem](https://ethresear.ch/t/etheorem-update-the-complete-executable-consensus-specs-written-in-lean-4/26063) × [Lattice Jolt](https://a16zcrypto.com/posts/article/lattice-snarks-jolt-post-quantum-faster/)** —— Web3 把协议价值推进到可检查、可迁移和后量子运行。
 
 ## 📈 5. 趋势判断：时间尺度与反证
 
-- **短期（1–4 周）**：分层 judge、抗泄漏扰动、校准和第三方复现会进入更多 agent 框架；运行次数上升后，判断成本和错误放大已是预算问题。
+- **短期（1–4 周）**：分层 judge、抗泄漏扰动、校准和第三方复现会进入更多 agent 框架；运行次数上升后，判断成本已是预算问题。
 - **中期（1–3 月）**：Agent Sandbox、厂商运行时与开源编排器会转为系统竞争，前提是上游稳定抽象生命周期、隔离、网络和状态恢复。
-- **长期信号**：可迁移的记忆、身份、凭证、工作区和审计轨迹，可能成为软件与组织的共同边界；换供应商会更像迁移数据库，而非更换 API。
-- **谨慎关注**：stars、排行榜和厂商自报成本只能证明注意力，不能证明利用率、长期成功率、真实 TCO 或安全性。
-- **反证条件**：若读时记忆跨框架复测不再提升、分层评审的高置信错误无法控制，或 Sandbox 无法降低运维成本，本周的系统层命题就应下调。
+- **长期信号**：可迁移的记忆、身份、凭证、工作区和审计轨迹，可能成为软件与组织的共同边界；换供应商会更像迁移数据库。
+- **谨慎关注**：stars、排行榜和厂商自报成本只能证明注意力，不能证明利用率、长期成功率、TCO 或安全性。
+- **反证条件**：若读时记忆跨框架不再提升、分层评审的高置信错误无法控制，或 Sandbox 无法降运维成本，系统层命题就应下调。
 
 ## 🎯 6. 阿墨周度点评
 
 - Agent 遇阻后绕路不需要恶意提示词；责任在于谁为目标、权限、停止条件和通报机制签字。
-- 用户主权的最小实现不是隐藏的关闭按钮，而是可关闭、可迁移、可取证；不能退出的智能终会变成依赖。
-- 给关键 agent 加一次扰动评测、一次断点重放和一次人工抽检，验证回路往往比模型升级更能降低事故率。
-- 成本账本要记返工、等待、缓存、恢复和审计；便宜但不可验证的动作，可能比昂贵的正确动作更贵。
+- 用户主权不是隐藏的关闭按钮，而是可关闭、可迁移、可取证；不能退出的智能终会变成依赖。
+- 给关键 agent 加扰动评测、断点重放和人工抽检，验证回路往往比模型升级更能降低事故率。
+- 成本账本要记返工、等待、缓存、恢复和审计；便宜但不可验证的动作可能更贵。
 
 ## 🔮 7. 下周只追三个问题
 
