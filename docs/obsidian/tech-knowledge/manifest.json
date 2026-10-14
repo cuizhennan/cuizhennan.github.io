@@ -4,6 +4,24 @@
   "count": 20,
   "entries": [
     {
+      "id": "download_omarchy_下载策略设计与实现",
+      "filename": "download_omarchy_下载策略设计与实现.md",
+      "slug": "download-omarchy-下载策略设计与实现",
+      "title": "download_omarchy.py：大文件分段下载、断点续传与完整性校验",
+      "date": "2026-10-10",
+      "modifiedAt": "2026-10-10T06:27:51.000Z",
+      "hash": "4dabb0fd14ad1eb98bc95cf390f3ed6c6bb64c90d8e696ffcb7d21f3a90a4f9c"
+    },
+    {
+      "id": "Windows 10 与 Omarchy 双系统：MSI MS-1759 安装 U 盘、分区与启动指南",
+      "filename": "Windows 10 与 Omarchy 双系统：MSI MS-1759 安装 U 盘、分区与启动指南.md",
+      "slug": "windows-10-与-omarchy-双系统-msi-ms-1759-安装-u-盘-分区与启动指南",
+      "title": "Windows 10 与 Omarchy 双系统：MSI MS-1759 安装 U 盘、分区与启动指南",
+      "date": "2026-10-10",
+      "modifiedAt": "2026-10-10T03:03:06.000Z",
+      "hash": "2ac3017e7a36bc8fdd1ecf89f40fa47900ec953801cd69c973fbb67742dbfe31"
+    },
+    {
       "id": "Omarchy Linux：架构亮点、安装要求与最佳实践",
       "filename": "Omarchy Linux：架构亮点、安装要求与最佳实践.md",
       "slug": "omarchy-linux-架构亮点-安装要求与最佳实践",
@@ -164,24 +182,6 @@
       "date": "2026-07-24",
       "modifiedAt": "2026-07-24T02:58:33.000Z",
       "hash": "4beee9a5dfa1ac4b9bba41abc7651038082652456d11fbe6971be2c0222d1a54"
-    },
-    {
-      "id": "一致性哈希-设计理念-算法机制与工程最佳实践-深入讲解",
-      "filename": "一致性哈希-设计理念-算法机制与工程最佳实践-深入讲解.md",
-      "slug": "一致性哈希-设计理念-算法机制与工程最佳实践-深入讲解",
-      "title": "一致性哈希：设计理念、算法机制与工程最佳实践",
-      "date": "2026-07-23",
-      "modifiedAt": "2026-07-23T03:24:14.000Z",
-      "hash": "b3de517f04c66dc6feae364916ae26661cd77fcad29fffc9ceae8d8c6d197af0"
-    },
-    {
-      "id": "Kafka 为什么快：从追加日志、Page Cache 到 ISR 的完整机制",
-      "filename": "Kafka 为什么快：从追加日志、Page Cache 到 ISR 的完整机制.md",
-      "slug": "kafka-为什么快-从追加日志-page-cache-到-isr-的完整机制",
-      "title": "Kafka 为什么快：从追加日志、Page Cache 到 ISR 的完整机制",
-      "date": "2026-07-23",
-      "modifiedAt": "2026-07-23T03:14:56.000Z",
-      "hash": "5faf81ea33e717c9e67d6df27bd3abf2784587beeaf7224cb5da66ba280949bd"
     }
   ]
 }
