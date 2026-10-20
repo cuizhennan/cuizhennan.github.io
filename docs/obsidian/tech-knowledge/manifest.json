@@ -4,6 +4,33 @@
   "count": 20,
   "entries": [
     {
+      "id": "并发执行、失败传播与容量判断：五项机制的深度讲解",
+      "filename": "并发执行、失败传播与容量判断：五项机制的深度讲解.md",
+      "slug": "并发执行-失败传播与容量判断-五项机制的深度讲解",
+      "title": "并发执行、失败传播与容量判断：五项机制的深度讲解",
+      "date": "2026-10-19",
+      "modifiedAt": "2026-10-19T06:21:58.000Z",
+      "hash": "7a704a8cd0b94e7861dc22e964f49226da798894684876949cf5670cea45cded"
+    },
+    {
+      "id": "算法小报-2026-09-19至2026-10-19",
+      "filename": "算法小报-2026-09-19至2026-10-19.md",
+      "slug": "算法小报-2026-09-19至2026-10-19",
+      "title": "算法小报｜从并发正确性到数据效率",
+      "date": "2026-10-19",
+      "modifiedAt": "2026-10-19T06:20:34.000Z",
+      "hash": "a584b7910f32f70754b9c6ae496eeec1365203a99ba3fb4a2ff96112f343a048"
+    },
+    {
+      "id": "Roaring Bitmap 深入讲解：从压缩布局到精确集合运算",
+      "filename": "Roaring Bitmap 深入讲解：从压缩布局到精确集合运算.md",
+      "slug": "roaring-bitmap-深入讲解-从压缩布局到精确集合运算",
+      "title": "Roaring Bitmap 深入讲解：从压缩布局到精确集合运算",
+      "date": "2026-10-19",
+      "modifiedAt": "2026-10-19T03:10:53.000Z",
+      "hash": "8be20a82604fa7e5e05c0b44370155bccbae2ccbe46e01d1a5b0bde200df5912"
+    },
+    {
       "id": "download_omarchy_下载策略设计与实现",
       "filename": "download_omarchy_下载策略设计与实现.md",
       "slug": "download-omarchy-下载策略设计与实现",
@@ -155,33 +182,6 @@
       "date": "2026-07-30",
       "modifiedAt": "2026-07-30T02:27:16.000Z",
       "hash": "13da1b469ad139ead8a9f0b9a92d0aa840a9858521d50c0666e4928ce39204dd"
-    },
-    {
-      "id": "前缀和与差分数组：从离散微积分到区间算法",
-      "filename": "前缀和与差分数组：从离散微积分到区间算法.md",
-      "slug": "前缀和与差分数组-从离散微积分到区间算法",
-      "title": "前缀和与差分数组：从离散微积分到区间算法",
-      "date": "2026-07-27",
-      "modifiedAt": "2026-07-29T01:51:18.000Z",
-      "hash": "3cf176f621432d3538f7c64f9e9067db9558c8a0f107492e7ea8590d0f87bdc4"
-    },
-    {
-      "id": "Linux 高性能 I-O 深度解析：从 epoll 就绪通知到 io_uring 完成模型",
-      "filename": "Linux 高性能 I-O 深度解析：从 epoll 就绪通知到 io_uring 完成模型.md",
-      "slug": "linux-高性能-i-o-深度解析-从-epoll-就绪通知到-io-uring-完成模型",
-      "title": "Linux 高性能 I/O 深度解析：从 epoll 就绪通知到 io_uring 完成模型",
-      "date": "2026-07-27",
-      "modifiedAt": "2026-07-27T03:48:38.000Z",
-      "hash": "72f61b9ae0f66cf23b00a8f290d41ca0f87a088aa892868af4242d43e213f3e5"
-    },
-    {
-      "id": "MVCC 深度解析：从版本可见性到 MySQL 与 PostgreSQL 的设计哲学",
-      "filename": "MVCC 深度解析：从版本可见性到 MySQL 与 PostgreSQL 的设计哲学.md",
-      "slug": "mvcc-深度解析-从版本可见性到-mysql-与-postgresql-的设计哲学",
-      "title": "MVCC 深度解析：从版本可见性到 MySQL 与 PostgreSQL 的设计哲学",
-      "date": "2026-07-24",
-      "modifiedAt": "2026-07-24T02:58:33.000Z",
-      "hash": "4beee9a5dfa1ac4b9bba41abc7651038082652456d11fbe6971be2c0222d1a54"
     }
   ]
 }
