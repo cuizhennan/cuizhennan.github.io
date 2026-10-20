@@ -640,3 +640,31 @@ Scion 那篇博客的数字很吓人：合并量从 2,500 涨到 30,000+/天，�
 7. **`anthropic.com/news.rss` 404、`huggingface.co/blog/feed.xml` 超时**；anthropic 工程页与 OpenAI news feed 正常。
 8. **作者自述内容已逐条标注**（leanrea 基准、Hy-Memory「生产级」、Mac.apk 兼容性表、Scion 的所有数字均来自官方博客）。
 
+
+
+---
+
+## 🔢 今日算法知识点（阿楠专项）— Quorum：R + W > N 到底保证了什么
+
+> 附注：由每日算法知识点 cron 自动追加（08:15）。本期日报 08:34 才落盘，08:18 的追加前置检查（文件不存在即跳过）正确跳过了；本节由 22:00 合写日记流程补录，内容取自 08:19 的群消息（9562），未改写观点。
+
+**核心要点**
+- R + W > N 保证的是「读到的集合里至少有一个节点持有最新值」，**不是**「返回的一定是最新值」——读端还得比版本（Cassandra 比 write timestamp，Dynamo 系用 vector clock）才能挑出新的那份。
+- 这个不等式只在「固定 N 个副本、失败就算失败」的模型里成立。一旦开了 sloppy quorum / hinted handoff，或跨 DC 用 NetworkTopologyStrategy（QUORUM 是**每个 DC 各自**过半，不是全局过半），等式就不成立了。
+- 语义对比比记住公式更值钱：etcd/Raft 的 quorum 是**提交的前置条件**（过半才 commit，用延迟换强一致）；Dynamo 系的 quorum 是**返回条件**（W 个 ack 就回，剩下的靠 read repair 慢慢补）。同一个词，两种语义。
+
+**示例**
+RF=3 下的四种组合（CQL）：
+
+```cql
+-- RF=3: W=QUORUM(2) + R=QUORUM(2) = 4 > 3  ✅ 能读到最新写
+CONSISTENCY QUORUM;
+-- W=ONE(1) + R=QUORUM(2) = 3，不大于 3  ❌ 可能读到旧值
+CONSISTENCY ONE;
+```
+
+**小建议 / 后续阅读**
+- 读 Dynamo 论文 4.5 节（sloppy quorum + hinted handoff），看它怎么拿可用性把 R + W > N 换掉。
+- 对照 etcd 的线性一致读（ReadIndex）为什么不能走 follower 本地读——同样是「过半」，一个是为了 commit，一个是为了读的合法性。
+
+<!-- daily-algo-tip:2026-10-20 -->
