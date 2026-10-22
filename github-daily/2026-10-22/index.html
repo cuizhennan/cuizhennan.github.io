@@ -511,6 +511,29 @@ Respan 开源了一个 <strong>Rust 写的 AI gateway</strong>：两年、10 万
 <li>PHP2Shell 的技术细节（跨请求内存残留、发现方与工具）来自 TNS 10-21 报道与 PHP 基金会原文；<strong>CVE 细节以官方公告为准</strong>，本报告未独立复现漏洞。</li>
 <li>模块 8 中 <code>ly05010419/MacNativeGames</code> 的仓库描述为空（API <code>description: null</code>），本报告<strong>不对其功能做推测</strong>，仅在集群中列名。</li>
 </ol>
+<hr>
+<h2 id="%F0%9F%94%A2-%E4%BB%8A%E6%97%A5%E7%AE%97%E6%B3%95%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%88%E9%98%BF%E6%A5%A0%E4%B8%93%E9%A1%B9%EF%BC%89%E2%80%94-lsm-tree-%E7%9A%84%E5%86%99%E6%94%BE%E5%A4%A7%EF%BC%9A%E6%8B%BF%E5%86%99%E5%B8%A6%E5%AE%BD%E6%8D%A2%E8%AF%BB%E6%80%A7%E8%83%BD" tabindex="-1">🔢 今日算法知识点（阿楠专项）— LSM-Tree 的写放大：拿写带宽换读性能</h2>
+<blockquote>
+<p>附注：由每日算法知识点 cron 生成，本节由 22:00 合写日记流程补录（08:15 的追加前置检查因日报尚未落盘而正确跳过——本期日报 08:48 才落盘；内容取自 08:19 进群的群消息 9570，未改写观点）。</p>
+</blockquote>
+<p><strong>核心要点</strong></p>
+<ul>
+<li>B+ 树是原地改页，一次 update 基本只碰到一两个页，代价是随机 IO 和页分裂；LSM 反着来，全是追加写、顺序 IO 拉满，但同一份数据会被反复重写：memtable 落盘一次，之后每层 compaction 再搬一次。RocksDB 默认每层容量放大 10 倍、7 层左右，<strong>理论最坏写放大 60~70 倍</strong>——写进去 100MB，盘上可能真写了 6~7GB。这不是 bug，是拿写带宽换读性能的设计。</li>
+<li>指标可以直接在 RocksDB 里查：<code>rocksdb.compaction.write.bytes / rocksdb.db.write.bytes</code>，除以业务侧日志总量就是真实放大倍数。</li>
+<li>选型一句话：写多读少（日志、时序、IM 消息）走 LSM；读多写少、范围扫描重走 B+ 树。leveled compaction 压读放大，tiered/universal 压写放大——两个放大是矛盾的权衡，很难同时兼顾。</li>
+</ul>
+<p><strong>示例</strong>
+leveled compaction 下每层 compaction 约要重写 10 倍本层数据。算一笔能直接套用的账：</p>
+<pre><code class="language-text">业务峰值写入      100 MB/s
+放大 10 倍         → 磁盘持续写带宽需要 ≥ 1 GB/s
+</code></pre>
+<p>上 NVMe 之前先把这个数算出来，比事后加机器便宜得多。</p>
+<p><strong>小建议 / 后续阅读</strong></p>
+<ul>
+<li>更干净的做法是把 value 从 compaction 里摘出去（KV 分离），写放大直接掉一个量级。源头是《WiscKey》，后来的 Titan、Terark 都是它的工程版。</li>
+<li>顺手在线上库跑一次 <code>rocksdb.compaction.write.bytes</code> 的比值，先知道自己真实的放大倍数，再谈调参。</li>
+</ul>
+<p>&lt;!-- daily-algo-tip:2026-10-22 --&gt;</p>
 </div>
         </article>
         <aside class="research-toc daily-toc">
