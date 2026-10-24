@@ -624,6 +624,35 @@ SEACAST 的洞察是「<strong>不是每个节点都需要每个字节</strong>�
 <li><strong><code>RecursiveSI/flint</code> 的模型卡本轮未逐字核对</strong>，正文仅陈述「发布与 24 小时内被量化为 GGUF」这两个可观察事实，<strong>未对其能力做任何宣称</strong>。</li>
 <li>算法知识点（阿楠专项）由每日算法 cron 产出、经 22:00 合写日记流程补录，<strong>不在本期 11 模块范围内</strong>，本报告不代写。</li>
 </ol>
+<hr>
+<h2 id="%F0%9F%94%A2-%E4%BB%8A%E6%97%A5%E7%AE%97%E6%B3%95%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%88%E9%98%BF%E6%A5%A0%E4%B8%93%E9%A1%B9%EF%BC%89%E2%80%94-chandy-lamport-%E5%88%86%E5%B8%83%E5%BC%8F%E5%BF%AB%E7%85%A7%EF%BC%88flink-checkpoint-%E7%9A%84%E5%86%85%E6%A0%B8%EF%BC%89" tabindex="-1">🔢 今日算法知识点（阿楠专项）— Chandy-Lamport 分布式快照（Flink checkpoint 的内核）</h2>
+<blockquote>
+<p>附注：由每日算法知识点 cron 自动追加（08:15 场次，08:19:01 投递）。本期由 22:00 合写日记流程补录——08:19 追加时今日日报尚未落盘（09:03 才生成），按幂等规则跳过了追加，此处为原文补录，内容未改写。</p>
+</blockquote>
+<p><strong>核心要点</strong></p>
+<ul>
+<li>Flink checkpoint 背后是 1985 年的 <strong>Chandy-Lamport 分布式快照</strong>：要让所有节点在&quot;同一个瞬间&quot;各拍一张自己的状态，且<strong>不许停服</strong>。它没用全局时钟，也没用两阶段提交，只用一个 marker（Flink 里叫 barrier）。</li>
+<li>协议三步：触发方先存自己的状态，再往每条出边塞 marker；下游从<strong>某条入边</strong>第一次收到 marker 就存状态、并把该入边标记为&quot;已切开&quot;；通道切开后再从这条通道收到的消息属于<strong>下一张</strong>快照。</li>
+<li>marker 走数据通道本身（因此要求 <strong>FIFO + 可靠投递</strong>），切面天然对齐——每张照片是&quot;本地状态 + 各通道在途的那几条消息&quot;。barrier alignment 就是&quot;等所有入边的 marker 对齐再往下游发&quot;，exactly-once 的代价花在这段等待上：一条慢 channel 会反压拖慢整条 pipeline。</li>
+</ul>
+<p><strong>示例</strong></p>
+<pre><code class="language-go">onMessage(msg, ch):
+  if msg.isMarker() {
+     if !taken { taken = true; saveState(); sendMarkerOnAllOut() }
+     closed[ch] = true          // 这条入边切在这里
+  } else if closed[ch] {
+    // 属于下一张快照
+  } else {
+    apply(msg)                 // 属于这一张
+  }
+</code></pre>
+<p>前提别忘：channel 得可靠且 FIFO。UDP、或会乱序重传的通道，这套直接失效。</p>
+<p><strong>小建议 / 后续阅读</strong></p>
+<ul>
+<li>读 Chandy &amp; Lamport 1985 原论文《Distributed Snapshots》（二十来页），再对着 Flink 的 checkpointing 文档过一遍，会突然通透。</li>
+<li>顺着反压那条线再想一层：barrier alignment 的等待时间 ≈ 最慢 channel 的延迟，这就是为什么 Flink 后来要推 unaligned checkpoint（把在途数据也一起存进快照）。</li>
+</ul>
+<p>&lt;!-- daily-algo-tip:2026-10-24 --&gt;</p>
 </div>
         </article>
         <aside class="research-toc daily-toc">

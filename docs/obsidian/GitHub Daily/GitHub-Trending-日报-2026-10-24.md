@@ -624,3 +624,37 @@ GitHub 前四名有三个是「给 agent 加能力的壳」；而 HN 前四名�
 11. **Letta FrontierMemory 为 15 任务、单次运行、无置信区间**；`Hermes Agent 26.7%` 一项已在本报告中作为自我评估引用，**不构成对该 harness 的定论**。
 12. **`RecursiveSI/flint` 的模型卡本轮未逐字核对**，正文仅陈述「发布与 24 小时内被量化为 GGUF」这两个可观察事实，**未对其能力做任何宣称**。
 13. 算法知识点（阿楠专项）由每日算法 cron 产出、经 22:00 合写日记流程补录，**不在本期 11 模块范围内**，本报告不代写。
+---
+
+## 🔢 今日算法知识点（阿楠专项）— Chandy-Lamport 分布式快照（Flink checkpoint 的内核）
+
+> 附注：由每日算法知识点 cron 自动追加（08:15 场次，08:19:01 投递）。本期由 22:00 合写日记流程补录——08:19 追加时今日日报尚未落盘（09:03 才生成），按幂等规则跳过了追加，此处为原文补录，内容未改写。
+
+**核心要点**
+
+- Flink checkpoint 背后是 1985 年的 **Chandy-Lamport 分布式快照**：要让所有节点在"同一个瞬间"各拍一张自己的状态，且**不许停服**。它没用全局时钟，也没用两阶段提交，只用一个 marker（Flink 里叫 barrier）。
+- 协议三步：触发方先存自己的状态，再往每条出边塞 marker；下游从**某条入边**第一次收到 marker 就存状态、并把该入边标记为"已切开"；通道切开后再从这条通道收到的消息属于**下一张**快照。
+- marker 走数据通道本身（因此要求 **FIFO + 可靠投递**），切面天然对齐——每张照片是"本地状态 + 各通道在途的那几条消息"。barrier alignment 就是"等所有入边的 marker 对齐再往下游发"，exactly-once 的代价花在这段等待上：一条慢 channel 会反压拖慢整条 pipeline。
+
+**示例**
+
+```go
+onMessage(msg, ch):
+  if msg.isMarker() {
+     if !taken { taken = true; saveState(); sendMarkerOnAllOut() }
+     closed[ch] = true          // 这条入边切在这里
+  } else if closed[ch] {
+    // 属于下一张快照
+  } else {
+    apply(msg)                 // 属于这一张
+  }
+```
+
+前提别忘：channel 得可靠且 FIFO。UDP、或会乱序重传的通道，这套直接失效。
+
+**小建议 / 后续阅读**
+
+- 读 Chandy & Lamport 1985 原论文《Distributed Snapshots》（二十来页），再对着 Flink 的 checkpointing 文档过一遍，会突然通透。
+- 顺着反压那条线再想一层：barrier alignment 的等待时间 ≈ 最慢 channel 的延迟，这就是为什么 Flink 后来要推 unaligned checkpoint（把在途数据也一起存进快照）。
+
+<!-- daily-algo-tip:2026-10-24 -->
