@@ -622,6 +622,44 @@ AWS <strong>Continuum</strong>（找漏洞 → 在你的 AWS 环境里验证 →
 <li><strong>写作口径</strong>：所有数字均引自原始摘要/官方页面；所有判断标注为「我的判断」；二手来源（L2 关停、DePIN 市值）已显式标注未复核。</li>
 </ul>
 </blockquote>
+<hr>
+<h2 id="%F0%9F%94%A2-%E4%BB%8A%E6%97%A5%E7%AE%97%E6%B3%95%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%88%E9%98%BF%E6%A5%A0%E4%B8%93%E9%A1%B9%EF%BC%89%E2%80%94-%E5%B0%BE%E9%83%A8%E6%94%BE%E5%A4%A7%E4%B8%8E%E5%AF%B9%E5%86%B2%E8%AF%B7%E6%B1%82%EF%BC%88hedged-requests%EF%BC%89" tabindex="-1">🔢 今日算法知识点（阿楠专项）— 尾部放大与对冲请求（Hedged Requests）</h2>
+<blockquote>
+<p>附注：由每日算法知识点 cron 自动追加（08:15）。<strong>本条为 22:00 合写日记补记</strong> —— 08:15 该 job 运行时今日日报尚未落盘（日报 09:21 才完成），按幂等规则跳过追加，今日模块缺失；此处按同一份推荐原文补入，来源群消息 <code>message_id 9586</code>，内容未改写。</p>
+</blockquote>
+<p><strong>核心要点</strong></p>
+<ul>
+<li><strong>平均响应时间会骗人。</strong> 一个请求要打 100 个分片，单片 p99 是 1s 听着还行，但「100 片里至少有一片超过 1s」的概率是 <code>1 - 0.99^100 ≈ 63%</code>，整体 p99 就被拖到 2s 以上。这就是尾部放大：<strong>用户体感由最慢的那一片决定，不由平均决定</strong>。所以扩容对 p50 很友好，对 p99 基本没用。</li>
+<li><strong>对冲不是重试。</strong> 主请求发出去，等到 p95 还没回来，就往另一个副本<strong>再发一份一模一样的</strong>，谁先回用谁，另一个直接 cancel。重试是等失败了再发，对冲是<strong>还没失败就先发</strong>。</li>
+<li><strong>代价很划算</strong>：多花 5%～10% 的请求量，p99 能掉一个量级。gRPC 里这是内建策略，Java 端 <code>enableHedging</code> + <code>hedgingDelay</code> 直接设成观测到的 p95 就行。</li>
+</ul>
+<p><strong>示例</strong></p>
+<pre><code class="language-go">ctx, cancel := context.WithCancel(ctx)
+defer cancel()                      // 返回时顺手掐掉还在跑的输家
+
+ch := make(chan res, 2)
+go func() { ch &lt;- get(ctx, replicaA) }()
+
+select {
+case r := &lt;-ch:
+    return r.v, r.err
+case &lt;-time.After(p95):             // 慢得不像话了
+    go func() { ch &lt;- get(ctx, replicaB) }()
+    r := &lt;-ch                       // 谁先到用谁
+    return r.v, r.err
+}
+</code></pre>
+<p><strong>两个坑</strong></p>
+<ul>
+<li>只对<strong>幂等读</strong>天然成立；写请求要对冲必须先有幂等键，否则就是重复扣款。</li>
+<li>副本已经过载时对冲会火上浇油 —— 必须有「最多发 N 份」的上限加重限流，不然慢请求会把整个集群压死。</li>
+</ul>
+<p><strong>小建议 / 后续阅读</strong></p>
+<ul>
+<li>读 Dean &amp; Barroso 的 <em>The Tail at Scale</em>（2013）：里面还有更优雅的变体 <code>tied requests</code> —— 不发第二份请求，而是让两份<strong>在副本队列里排队</strong>，谁先排到谁执行，服务端主动取消另一份。代价比对冲更低，Google 内部用得挺多。</li>
+<li>落地第一步不是加对冲，而是先把 p95/p99 分开观测：<strong>p50 好的系统经常 p99 已经烂了，只是没人量。</strong></li>
+</ul>
+<p>&lt;!-- daily-algo-tip:2026-10-26 --&gt;</p>
 </div>
         </article>
         <aside class="research-toc daily-toc">
