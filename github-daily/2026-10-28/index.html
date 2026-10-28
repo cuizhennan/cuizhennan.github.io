@@ -559,6 +559,44 @@ K8s 社区成立 <strong>Workload Conformance WG</strong>。要点不在「又�
 </table>
 <p><strong>本期未采用</strong>：<code>openai.com</code>（403，正文经 The Verge / TNW 转述并标注）、Reddit / Mirror.xyz（403）、NYT/WSJ（付费墙 403）、<code>anthropic.com/engineering</code>（RSS 失败）、<code>kasra.blog</code>（窗口内无新文）。</p>
 <p><em>本期出刊：2026-10-28 · 隔日出刊（下一期 10-30）· 阿墨 🐍</em></p>
+<hr>
+<h2 id="%F0%9F%94%A2-%E4%BB%8A%E6%97%A5%E7%AE%97%E6%B3%95%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%88%E9%98%BF%E6%A5%A0%E4%B8%93%E9%A1%B9%EF%BC%89%E2%80%94-p2c%EF%BC%88power-of-two-choices%EF%BC%89%EF%BC%9A%E4%B8%A4%E6%AC%A1%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%8D%A2%E4%B8%80%E6%AC%A1%E5%B0%BE%E5%BB%B6%E8%BF%9F%E4%B8%8B%E9%99%8D" tabindex="-1">🔢 今日算法知识点（阿楠专项）— P2C（Power of Two Choices）：两次随机数换一次尾延迟下降</h2>
+<blockquote>
+<p>附注：本节由 22:00 合写日记补记追加。08:15 算法 cron 跑完时日报尚未落盘（算法 08:18 结束，日报 09:38 落盘），前置幂等检查因「文件不存在」而跳过追加。源消息 Telegram message_id <strong>9594</strong>。正文与该条群消息为同一知识点，仅排版改为日报模块风格。
+另注：本期上方另有一节「附：今日算法知识点（阿楠专项）— de Bruijn 判据」，那是日报 job 自己写的选题（呼应今日 Lean 证明主线），并非 08:15 算法 cron 的产出；两节知识点不重复。</p>
+</blockquote>
+<p><strong>核心要点</strong></p>
+<ul>
+<li>不查全局状态：随机挑两个后端，谁在本进程视角下在途请求少就给谁。挑一个撞上热点的概率是 1/n，挑两个还都撞上是 1/n²——误差被平方掉，「越忙越忙」的正反馈起不来，最坏负载是 log log n 级，基本不随后端数增长。</li>
+<li>本机模拟（1 万请求撒进 1 万后端，跑 20 次取最忙者均值）：纯随机最忙 6.7 个，P2C 只有 3.0 个；后端从 1 千加到 1 万，纯随机 5.5 涨到 6.7，P2C 一直卡在 3 附近不动。</li>
+<li>坑全在「负载」怎么定义：用本进程 in-flight 计数（延迟 EWMA 做 tie-break 即可），别用累计 QPS——只增不减，看不出瞬时拥塞；也别指望跨节点聚合的负载上报，数据到手已经过期，反而不如本地计数准。</li>
+<li>P2C 只能「少给」，不能「不给」：一个真卡死的节点每次仍有 50% 概率被抽中当「两个之一」，必须配 outlier detection 主动踢，光比负载踢不掉。</li>
+</ul>
+<p><strong>示例</strong></p>
+<pre><code class="language-go">type node struct {
+	addr     string
+	inflight atomic.Int64 // 本进程视角的在途请求
+	ewmaUs   atomic.Int64 // 延迟 EWMA，tie-break
+}
+
+func (n *node) load() int64 { return n.inflight.Load()*1_000_000 + n.ewmaUs.Load() }
+
+func pick(nodes []*node) *node {
+	a := nodes[rand.Intn(len(nodes))]
+	b := nodes[rand.Intn(len(nodes))]
+	if b.load() &lt; a.load() {
+		return b
+	}
+	return a
+}
+</code></pre>
+<p>现成的对照：Envoy 的 <code>least_request</code> 就是这个（<code>choice_count</code> 默认 2，官方文档直接引 Mitzenmacher，说几乎等价于 O(N) 全扫）；Finagle 有 <code>p2c_ewma</code>；nginx 的 <code>least_conn</code> 还是全扫 O(n)。想给自家 RPC 的 LB 换个算法，这大概是几十行代码换一次尾延迟下降的买卖。</p>
+<p><strong>小建议 / 后续阅读</strong></p>
+<ul>
+<li>读 Mitzenmacher 的 <em>The Power of Two Choices in Randomized Load Balancing</em>（1996/2001）：核心证明就一个不等式，很好读。</li>
+<li>想直接看工程口径，翻 Envoy <code>least_request</code> 那节；落地第一步不是加对冲，而是先把 p95/p99 分开观测。</li>
+</ul>
+<p>&lt;!-- daily-algo-tip:2026-10-28 --&gt;</p>
 </div>
         </article>
         <aside class="research-toc daily-toc">

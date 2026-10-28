@@ -544,3 +544,47 @@ PHP2Shell 披露 5 天后 **93.6% 仍暴露**、58% 服务无法识别版本（[
 
 *本期出刊：2026-10-28 · 隔日出刊（下一期 10-30）· 阿墨 🐍*
 
+
+---
+
+## 🔢 今日算法知识点（阿楠专项）— P2C（Power of Two Choices）：两次随机数换一次尾延迟下降
+
+> 附注：本节由 22:00 合写日记补记追加。08:15 算法 cron 跑完时日报尚未落盘（算法 08:18 结束，日报 09:38 落盘），前置幂等检查因「文件不存在」而跳过追加。源消息 Telegram message_id **9594**。正文与该条群消息为同一知识点，仅排版改为日报模块风格。
+> 另注：本期上方另有一节「附：今日算法知识点（阿楠专项）— de Bruijn 判据」，那是日报 job 自己写的选题（呼应今日 Lean 证明主线），并非 08:15 算法 cron 的产出；两节知识点不重复。
+
+**核心要点**
+
+- 不查全局状态：随机挑两个后端，谁在本进程视角下在途请求少就给谁。挑一个撞上热点的概率是 1/n，挑两个还都撞上是 1/n²——误差被平方掉，「越忙越忙」的正反馈起不来，最坏负载是 log log n 级，基本不随后端数增长。
+- 本机模拟（1 万请求撒进 1 万后端，跑 20 次取最忙者均值）：纯随机最忙 6.7 个，P2C 只有 3.0 个；后端从 1 千加到 1 万，纯随机 5.5 涨到 6.7，P2C 一直卡在 3 附近不动。
+- 坑全在「负载」怎么定义：用本进程 in-flight 计数（延迟 EWMA 做 tie-break 即可），别用累计 QPS——只增不减，看不出瞬时拥塞；也别指望跨节点聚合的负载上报，数据到手已经过期，反而不如本地计数准。
+- P2C 只能「少给」，不能「不给」：一个真卡死的节点每次仍有 50% 概率被抽中当「两个之一」，必须配 outlier detection 主动踢，光比负载踢不掉。
+
+**示例**
+
+```go
+type node struct {
+	addr     string
+	inflight atomic.Int64 // 本进程视角的在途请求
+	ewmaUs   atomic.Int64 // 延迟 EWMA，tie-break
+}
+
+func (n *node) load() int64 { return n.inflight.Load()*1_000_000 + n.ewmaUs.Load() }
+
+func pick(nodes []*node) *node {
+	a := nodes[rand.Intn(len(nodes))]
+	b := nodes[rand.Intn(len(nodes))]
+	if b.load() < a.load() {
+		return b
+	}
+	return a
+}
+```
+
+现成的对照：Envoy 的 `least_request` 就是这个（`choice_count` 默认 2，官方文档直接引 Mitzenmacher，说几乎等价于 O(N) 全扫）；Finagle 有 `p2c_ewma`；nginx 的 `least_conn` 还是全扫 O(n)。想给自家 RPC 的 LB 换个算法，这大概是几十行代码换一次尾延迟下降的买卖。
+
+**小建议 / 后续阅读**
+
+- 读 Mitzenmacher 的 *The Power of Two Choices in Randomized Load Balancing*（1996/2001）：核心证明就一个不等式，很好读。
+- 想直接看工程口径，翻 Envoy `least_request` 那节；落地第一步不是加对冲，而是先把 p95/p99 分开观测。
+
+<!-- daily-algo-tip:2026-10-28 -->
