@@ -1,7 +1,11 @@
 {
   "version": 1,
-  "windowKey": "2026-10-26:GitHub-Trending-日报-2026-10-26.md\n2026-10-24:GitHub-Trending-日报-2026-10-24.md\n2026-10-22:GitHub-Trending-日报-2026-10-22.md\n2026-10-20:GitHub-Trending-日报-2026-10-20.md",
+  "windowKey": "2026-10-28:GitHub-Trending-日报-2026-10-28.md\n2026-10-26:GitHub-Trending-日报-2026-10-26.md\n2026-10-24:GitHub-Trending-日报-2026-10-24.md\n2026-10-22:GitHub-Trending-日报-2026-10-22.md",
   "entries": {
+    "GitHub-Trending-日报-2026-10-28.md": {
+      "date": "2026-10-28",
+      "hash": "9e95a98fe7bd0f40afa802c3b3c38183526d75391621868c9b60ed1cb8cb66a6"
+    },
     "GitHub-Trending-日报-2026-10-26.md": {
       "date": "2026-10-26",
       "hash": "d8ea2ec205dec716cca0faa85da93e317dfe6323d64d3b63650aa95459314b6d"
@@ -13,10 +17,6 @@
     "GitHub-Trending-日报-2026-10-22.md": {
       "date": "2026-10-22",
       "hash": "01fab3b1c512e0c17e3e3df2d991fe50074032a8980435a9fe581b9cc736e45c"
-    },
-    "GitHub-Trending-日报-2026-10-20.md": {
-      "date": "2026-10-20",
-      "hash": "e5c58a62196478060ebe6c14cf1f95854f2c9634fbe10faf947acb8968e5e8f8"
     }
   }
 }
