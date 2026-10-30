@@ -579,3 +579,83 @@ bb84 创始人 Hadamard 披露其跑在以太坊主网的 OP Stack rollup（chai
 - **Web3**：`ethresear.ch/latest.json`（10-24 / 10-26 / 10-27 / 10-28）；Reddit `top.json` 失败（SSL/timeout）、`mirror.xyz` 无 JSON、`blog.ethereum.org` 最新 10-16 —— 均如实标注。
 - **前 3 期上下文**：`/Users/czn/work-docs/github-daily/GitHub-Trending-日报-2026-10-28.md`、`…-2026-10-26.md`、`…-2026-10-24.md`（读取「今日主线 / 趋势判断 / 阿墨点评 / 精选仓库」四节，用于去重与延续判断）。
 - **双写位置**：Obsidian `GavinMoFriends/GitHub Daily/`；workspace 镜像 `/Users/czn/work-docs/github-daily/`。
+
+---
+
+## 🔢 补录 10-29 算法知识点（阿楠专项）— Gorilla 压缩：一个数据点压到 1.37 字节
+
+> 附注：本节原定由每日算法知识点 cron 于 10-29 08:15 自动追加，但 10-29 是非出刊日、当日无日报，追加没有落点；10-30 22:00 合写日记按 10-29 日记中的承诺补录（日报窗口 10-28 09:30 → 10-30 09:45 覆盖该日）。技术内容与原推送一致，未改写。
+
+**核心要点**
+
+1. **时间戳只存「间隔的间隔」（delta-of-delta）**：相邻采样的间隔通常相同，二阶差分就是 0，一个 bit `0` 就编码完了。Gorilla 的分桶：`0` → 1 bit；`±63` → 2+7；`±255` → 3+9；`±2047` → 4+12；再大 → 4+32。本地实测 1 万点、15s 采样：完全等间隔时时间戳 **1.01 bit/点**（裸存 64 bit），带抖动和偶发断点时 **4.32 bit/点**。
+
+2. **浮点值靠 XOR + 前导/尾随零**：相邻值相似 → 与前一值 XOR 后高位全是 0，只存中间有效位；完全相同则 1 bit。并且复用上一次的 leading/trailing 窗口，省掉每点固定的 5+6 bit 头。代价是「断点重同步」——一次大跳变会重置窗口，接下来几个点要重新写头。
+
+3. **压缩率由数据形状决定，不是算法保证**：本地三种序列跑同一套编码 —— 长期不变的分级指标 **0.46 B/点（34.6x）**；正弦 + 噪声的监控指标 **6.67 B/点（2.4x）**；纯随机浮点 **8.38 B/点（1.9x）**。论文里的 1.37 B/点（~12x）来自 Facebook 真实数据：大量重复 + 缓慢变化。拿论文倍数去规划容量会翻车。
+
+**示例**
+
+```go
+// Prometheus / InfluxDB / TimescaleDB 共用的时间戳编码：只写 dod 落在哪个桶
+func dodBits(dod int64) (prefix uint8, prefixLen, nbits int) {
+	switch {
+	case dod == 0:                      return 0b0, 1, 0
+	case dod >= -63 && dod <= 64:       return 0b10, 2, 7
+	case dod >= -255 && dod <= 256:     return 0b110, 3, 9
+	case dod >= -2047 && dod <= 2048:   return 0b1110, 4, 12
+	default:                            return 0b1111, 4, 32
+	}
+}
+// 写入：prefix 占 prefixLen 位，随后 nbits 位存 dod 的偏移量（dod+bias）
+```
+
+**小建议 / 后续阅读**
+
+- 原文 Facebook *Gorilla: A Fast, Scalable, In-Memory Time Series Database*（VLDB 2015）第 4 节，十页读完；工程口径直接读 Prometheus `tsdb/chunkenc`，Go 实现和论文一一对应。
+- 想判断自家指标能不能吃到这口压缩，先量三个数：采样间隔是否稳定、相邻值重复率、增量是否单调。三个都差就只剩 1.9x，不如老实换列存 + 字典编码。
+
+<!-- daily-algo-tip:2026-10-29 -->
+
+---
+
+## 🔢 今日算法知识点（阿楠专项）— Robin Hood 哈希：平均一样，尾部差 20 倍
+
+> 附注：由 22:00 合写日记补录——10-30 08:17 算法 job 已把这条发进群（message_id=9602），但追加时日报尚未落盘（日报 09:53 才出刊），按幂等前置检查静默跳过，未生成 block、未起 poller。本节技术内容与原推送一致，未改写。
+>
+> 另注：本文上方「附：今日算法知识点（阿楠专项）——LRU 的竞争比 k」是 **GitHub 日报 job 自己**填的算法位（标题带「附：」、无 `daily-algo-tip` marker、主题不同），不是算法 job 的产物。两个不同知识点出现在同一份日报里，是本日真实的形态，不做合并。
+
+**核心要点**
+
+1. **线性探测的老毛病是「堆簇」**：运气差的 key 一路挤在一起，越挤越长。Robin Hood 的做法很朴素——插入时比较「离家距离」，如果新来的离自己理想槽位已经比占着坑那位更远，就把坑抢过来，让原来的住客继续往后找。本地对照实验（4096 个槽塞 3900 个 key，负载 95%）：`linear: max=1024 avg=13.16` / `robinhood: max=43 avg=13.16`。**平均探测次数一模一样，最坏情况差 20 多倍——它优化的不是平均复杂度，是尾延迟。**
+
+2. **查得快靠「提前放弃」**：查到某槽时，如果该槽元素的 dist 小于你已经走过的步数，说明目标 key 肯定不在后面，立刻返回——插入时的交换保证了这个单调性。
+
+3. **代价是写路径多一次交换、删除要 tombstone**：读多写少的场景（本地缓存、路由表、连接表）收益最明显。
+
+**示例**
+
+```go
+func insert(t []slot, k string, v int) {
+	i := fnv1a(k) & uint32(len(t)-1)
+	d := 0
+	for {
+		if t[i].key == "" {
+			t[i] = slot{k, v, d}
+			return
+		}
+		if t[i].dist < d { // 我比你更"远"，换你继续往后找
+			t[i], k, v, d = slot{k, v, d}, t[i].key, t[i].val, t[i].dist
+		}
+		i = (i + 1) & uint32(len(t)-1)
+		d++
+	}
+}
+```
+
+**小建议 / 后续阅读**
+
+- 顺带一句：Go 1.24 把内置 map 换成了 Swiss Table 那一族（开放寻址 + 一个 control word 一次比对 8 个槽），方向是同一条——把探测变成 cache line 内的批量比较。
+- 想动手：给上面这段补一个 tombstone 版 delete，再把负载压到 0.9 以上画一下探测距离分布，就明白为什么链地址法在高负载下会被 cache miss 拖死了。
+
+<!-- daily-algo-tip:2026-10-30 -->
