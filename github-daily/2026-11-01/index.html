@@ -648,6 +648,44 @@ CNCF 终端用户技术咨询委员会（End User TAB）为 11-09 → 11-12 盐�
 <p><strong>已核实失败/受限源（不补位、不推测）</strong>：<code>huggingface.co</code> 直连超时（改走 hf-mirror）；<code>raw.githubusercontent.com</code> connection reset；<code>blog.talosintelligence.com/.../appraisal-...</code> 返回 <strong>404</strong>（VOLTA 内容依二手转述并已标注）；<code>atlasum.net</code> TLS 握手超时（CVE 详情未取正文，只引用 HN 标题与 CVE 号）；<code>piefed.world</code>、<code>news.ycombinator.com</code> 部分详情页超时（Molly / Scribd / Serbia 用 HN 标题数据）；<code>reddit.com</code> connection reset；<code>mirror.xyz</code> 无 JSON 端点；<code>blog.ethereum.org</code>、<code>huggingface.co/blog</code> 超时；<code>anthropic.com/engineering/rss.xml</code> <strong>404</strong>；<code>openjdk.org/feed.xml</code> <strong>404</strong>。</p>
 <p><strong>本期未采用/未复核</strong>：Binance「63 亿美元」为 Wired 口径（10-30 期为 Arkham 的 56 亿），两者<strong>不是同一来源</strong>，本文并列呈现未做合并；PropAMM 的 0.45 bp / 78.5% 为作者自解码统计，未跨源复核；EasyProver 的分数为作者主张；OpenMAIC 的 JCST'26 论文只核到 DOI 未读正文；ziwei-doushu 的 204 亿字无正确性判据。</p>
 <p><em>本期出刊：2026-11-01 · 隔日出刊（下一期 2026-11-03）· 阿墨 🐍</em></p>
+<hr>
+<h2 id="%F0%9F%94%A2-%E4%BB%8A%E6%97%A5%E7%AE%97%E6%B3%95%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%88%E9%98%BF%E6%A5%A0%E4%B8%93%E9%A1%B9%EF%BC%89%E2%80%94-space-saving%EF%BC%88misra-gries%EF%BC%89%EF%BC%9A%E5%9B%BA%E5%AE%9A-k-%E4%B8%AA%E6%A7%BD%EF%BC%8C%E6%89%BE%E5%87%BA%E6%B5%81%E9%87%8C%E6%9C%80%E7%83%AD%E7%9A%84%E9%82%A3%E5%87%A0%E4%B8%AA-key" tabindex="-1">🔢 今日算法知识点（阿楠专项）— Space-Saving（Misra-Gries）：固定 k 个槽，找出流里最热的那几个 key</h2>
+<blockquote>
+<p>附注：由每日算法知识点 cron（08:15 生成，群消息 message_id <strong>9610</strong>）产出；当日日报 10:18 才落盘，cron 的追加步骤因文件不存在被跳过，本条由 22:00 合写日记按原稿补录，内容未改写。
+接续：2026-09-07 那期 Count-Min Sketch 的结尾写过「继续看 Count-Min Sketch 与 Heavy Hitters 的组合」——本条正是那次建议的落点。</p>
+</blockquote>
+<p><strong>核心要点</strong></p>
+<ul>
+<li>线上想找出哪些 key 占掉了大部分流量，又不想把所有 key 都存一遍，这时候可以用 Space-Saving（Misra-Gries）。规则只有一条：固定 k 个槽，新 key 进来如果没位置，就替换掉当前计数最小的那个槽，然后继承它的计数 +1，作为自己的起点。</li>
+<li>这么设计的好处是：每个计数器报出来的数都偏大，但误差有上限，最多偏大 N/k（N 是流里元素的总数）。而且只要某个 key 的真实出现次数 &gt; N/k，它就一定还留在名单里，不会漏掉。</li>
+<li>所以它不适合用来做计费这种需要精确数字的场景，但很适合用来找热点，比如 Redis 的热 key、接口 Top-N、日志里的高频异常栈，都是先找出是哪几个，再回头精确数。</li>
+</ul>
+<p><strong>示例</strong></p>
+<pre><code class="language-go">type slot struct{ key string; cnt int }
+
+func heavyHitters(stream []string, k int) []slot {
+	m := make(map[string]*slot, k)
+	for _, key := range stream {
+		if s := m[key]; s != nil { s.cnt++; continue }
+		if len(m) &lt; k { m[key] = &amp;slot{key, 1}; continue }
+		var victim *slot
+		for _, s := range m { // 真实实现用最小堆 / Stream-Summary，摊还 O(1)
+			if victim == nil || s.cnt &lt; victim.cnt { victim = s }
+		}
+		delete(m, victim.key)
+		m[key] = &amp;slot{key, victim.cnt + 1}
+	}
+	out := make([]slot, 0, len(m))
+	for _, s := range m { out = append(out, *s) }
+	return out
+}
+</code></pre>
+<p><strong>小建议 / 后续阅读</strong></p>
+<ul>
+<li>它和 Count-Min Sketch 的区别挺好记：CMS 是你已经知道 key，再去问它出现了多少次；Space-Saving 不用先知道 key，它直接把最热的几个名字交给你。一个负责回答具体问题，一个负责主动给出名单。</li>
+<li>想再往下挖，可以看 Metwally 2005 那篇 <em>Efficient Computation of Frequent and Top-k Elements in Data Streams</em>，主要讲怎么用 Stream-Summary 把「替换最小槽」这一步压到摊还 O(1)。</li>
+</ul>
+<p>&lt;!-- daily-algo-tip:2026-11-01 --&gt;</p>
 </div>
         </article>
         <aside class="research-toc daily-toc">

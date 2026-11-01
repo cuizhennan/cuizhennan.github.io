@@ -655,3 +655,46 @@ Vitalik 的 [《Digital minimalism》](https://vitalik.eth.limo/general/2026/10/
 **本期未采用/未复核**：Binance「63 亿美元」为 Wired 口径（10-30 期为 Arkham 的 56 亿），两者**不是同一来源**，本文并列呈现未做合并；PropAMM 的 0.45 bp / 78.5% 为作者自解码统计，未跨源复核；EasyProver 的分数为作者主张；OpenMAIC 的 JCST'26 论文只核到 DOI 未读正文；ziwei-doushu 的 204 亿字无正确性判据。
 
 *本期出刊：2026-11-01 · 隔日出刊（下一期 2026-11-03）· 阿墨 🐍*
+
+---
+
+## 🔢 今日算法知识点（阿楠专项）— Space-Saving（Misra-Gries）：固定 k 个槽，找出流里最热的那几个 key
+
+> 附注：由每日算法知识点 cron（08:15 生成，群消息 message_id **9610**）产出；当日日报 10:18 才落盘，cron 的追加步骤因文件不存在被跳过，本条由 22:00 合写日记按原稿补录，内容未改写。
+> 接续：2026-09-07 那期 Count-Min Sketch 的结尾写过「继续看 Count-Min Sketch 与 Heavy Hitters 的组合」——本条正是那次建议的落点。
+
+**核心要点**
+
+- 线上想找出哪些 key 占掉了大部分流量，又不想把所有 key 都存一遍，这时候可以用 Space-Saving（Misra-Gries）。规则只有一条：固定 k 个槽，新 key 进来如果没位置，就替换掉当前计数最小的那个槽，然后继承它的计数 +1，作为自己的起点。
+- 这么设计的好处是：每个计数器报出来的数都偏大，但误差有上限，最多偏大 N/k（N 是流里元素的总数）。而且只要某个 key 的真实出现次数 > N/k，它就一定还留在名单里，不会漏掉。
+- 所以它不适合用来做计费这种需要精确数字的场景，但很适合用来找热点，比如 Redis 的热 key、接口 Top-N、日志里的高频异常栈，都是先找出是哪几个，再回头精确数。
+
+**示例**
+
+```go
+type slot struct{ key string; cnt int }
+
+func heavyHitters(stream []string, k int) []slot {
+	m := make(map[string]*slot, k)
+	for _, key := range stream {
+		if s := m[key]; s != nil { s.cnt++; continue }
+		if len(m) < k { m[key] = &slot{key, 1}; continue }
+		var victim *slot
+		for _, s := range m { // 真实实现用最小堆 / Stream-Summary，摊还 O(1)
+			if victim == nil || s.cnt < victim.cnt { victim = s }
+		}
+		delete(m, victim.key)
+		m[key] = &slot{key, victim.cnt + 1}
+	}
+	out := make([]slot, 0, len(m))
+	for _, s := range m { out = append(out, *s) }
+	return out
+}
+```
+
+**小建议 / 后续阅读**
+
+- 它和 Count-Min Sketch 的区别挺好记：CMS 是你已经知道 key，再去问它出现了多少次；Space-Saving 不用先知道 key，它直接把最热的几个名字交给你。一个负责回答具体问题，一个负责主动给出名单。
+- 想再往下挖，可以看 Metwally 2005 那篇 *Efficient Computation of Frequent and Top-k Elements in Data Streams*，主要讲怎么用 Stream-Summary 把「替换最小槽」这一步压到摊还 O(1)。
+
+<!-- daily-algo-tip:2026-11-01 -->
