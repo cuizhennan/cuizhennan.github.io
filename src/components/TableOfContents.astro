@@ -4,17 +4,31 @@ import type { TocHeading } from "../lib/navigation";
 interface Props {
   headings: TocHeading[];
   label?: string;
+  grouped?: boolean;
 }
 
-const { headings, label = "本文目录" } = Astro.props;
+const { headings, label = "本文目录", grouped = false } = Astro.props;
+const sections: { heading: TocHeading; children: TocHeading[] }[] = [];
+for (const heading of headings) {
+  const section = sections.at(-1);
+  if (grouped && heading.depth === 3 && section?.heading.depth === 2) section.children.push(heading);
+  else sections.push({ heading, children: [] });
+}
 ---
 
-<nav class="toc-nav" aria-label={label}>
+<nav class:list={["toc-nav", grouped && "toc-grouped"]} aria-label={label}>
   <p class="toc-title">{label}</p>
   <ol>
-    {headings.map((heading) => (
-      <li class:list={[`toc-depth-${heading.depth}`]}>
+    {sections.map(({ heading, children }) => (
+      <li class:list={[`toc-depth-${heading.depth}`, grouped && "toc-section"]}>
         <a href={`#${heading.slug}`} data-toc-slug={heading.slug}>{heading.text}</a>
+        {children.length > 0 && (
+          <ol class="toc-subsections">
+            {children.map((child) => (
+              <li class="toc-depth-3"><a href={`#${child.slug}`} data-toc-slug={child.slug}>{child.text}</a></li>
+            ))}
+          </ol>
+        )}
       </li>
     ))}
   </ol>

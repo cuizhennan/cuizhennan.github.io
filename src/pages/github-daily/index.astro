@@ -1,75 +1,82 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import { dailyDate, excerptFromBody, titleFromBody } from "../../lib/content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { dailyDate, leadSummary, reportHeadline, titleFromBody } from "../../lib/content";
 
-const dailyReports = (await getCollection("daily")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
-const weeklyReports = (await getCollection("weekly")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
+const series = await Promise.all(([
+  { id: "daily", label: "日报" },
+  { id: "weekly", label: "周报" },
+] as const).map(async ({ id, label }) => {
+  const entries = (await getCollection(id)).map((report) => {
+    const date = dailyDate(report.id);
+    const originalTitle = titleFromBody(report.body, `GitHub Trending ${label} · ${date}`);
+    return {
+      date,
+      href: `/github-${id}/${date}/`,
+      title: id === "daily" ? reportHeadline(originalTitle, date) : originalTitle,
+      body: report.body,
+    };
+  }).sort((a, b) => b.date.localeCompare(a.date));
+  return { id, label, entries, latest: entries[0], months: Object.groupBy(entries, ({ date }) => date.slice(0, 7)) };
+}));
 ---
 
-<BaseLayout title="GitHub Trending 观察" description="GitHub Trending 日报与周报：从每日信号到每周结构性变化。" active="daily">
-  <header class="collection-hero">
-    <p class="collection-kicker"><a href="/">墨萧</a><span>／</span>开源观察</p>
-    <div class="collection-title-row">
-      <div>
-        <p class="eyebrow">GitHub Trending · Reports</p>
-        <h1>从每日信号，<br />抵达每周判断。</h1>
-      </div>
-      <p>日报捕捉正在发生的变化，周报从七日噪声中提炼结构。两种时间尺度，共同记录技术、产品与资本的边界移动。</p>
-    </div>
-    <dl class="collection-stats">
-      <div><dt>日报</dt><dd>{dailyReports.length} 期</dd></div>
-      <div><dt>周报</dt><dd>{weeklyReports.length} 期</dd></div>
-      <div><dt>关注</dt><dd>Tech · Product · Capital</dd></div>
-    </dl>
+<BaseLayout title="GitHub Trending 观察" description="GitHub Trending 日报与周报，记录开源生态的每日进展与每周趋势。" active="daily">
+  <header class="collection-intro">
+    <h1>GitHub 观察</h1>
+    <p>每天追踪开源进展，每周回看值得持续关注的趋势。</p>
   </header>
 
-  <nav class="report-jump" aria-label="报告类型">
-    <a href="#weekly">周报 <span>{weeklyReports.length}</span></a>
-    <a href="#daily">日报 <span>{dailyReports.length}</span></a>
-  </nav>
-
-  <section class="report-section" id="weekly" aria-labelledby="weekly-heading">
-    <div class="list-heading">
-      <div><p class="eyebrow">Weekly Review</p><h2 id="weekly-heading">周报</h2></div>
-      <p>回看一周，提炼值得持续追踪的主线。</p>
-    </div>
-    <div class="report-list">
-      {weeklyReports.map((report, index) => {
-        const date = dailyDate(report.id);
-        return (
-          <article>
-            <time datetime={date}>{date}</time>
-            <div>
-              <p class="eyebrow">{index === 0 ? "Latest Weekly" : "Weekly Review"}</p>
-              <h3><a href={`/github-weekly/${date}/`}>{titleFromBody(report.body, `GitHub Trending 周报 — ${date}`)}</a></h3>
-              <p>{excerptFromBody(report.body, 180)}</p>
-            </div>
-          </article>
-        );
-      })}
-    </div>
-  </section>
-
-  <section class="report-section" id="daily" aria-labelledby="daily-heading">
-    <div class="list-heading">
-      <div><p class="eyebrow">Daily Brief</p><h2 id="daily-heading">日报</h2></div>
-      <p>按日保留开源生态的技术、产品与投资信号。</p>
-    </div>
-    <div class="report-list">
-    {dailyReports.map((report, index) => {
-      const date = dailyDate(report.id);
+  <section class="latest-reports" aria-label="最新报告">
+    {series.map(({ id, label, latest }) => {
+      if (!latest) return null;
+      const title = id === "weekly" ? latest.body?.match(/^###\s+(.+)$/m)?.[1] || "GitHub Trending 周报" : latest.title;
+      const weeklyTheme = id === "weekly" ? latest.body?.match(/^>\s*\*\*本周总命题\*\*[：:]\s*(.+)$/m)?.[1] : undefined;
+      const summary = leadSummary(weeklyTheme ?? latest.body, 85);
       return (
         <article>
-          <time datetime={date}>{date}</time>
-          <div>
-            <p class="eyebrow">{index === 0 ? "Latest Report" : "Daily Report"}</p>
-            <h3><a href={`/github-daily/${date}/`}>{titleFromBody(report.body, `GitHub Trending 日报 — ${date}`)}</a></h3>
-            <p>技术 × 产品 × 投资</p>
-          </div>
+          <p class="entry-meta">最新{label} <time datetime={latest.date}>{latest.date}</time></p>
+          <h2><a href={latest.href}>{title}</a></h2>
+          {summary && <p class="issue-summary">{summary}</p>}
         </article>
       );
     })}
-    </div>
   </section>
+
+  <div class="report-archive">
+    <nav class="report-jump" aria-label="报告类型">
+      {series.map(({ id, label, entries }) => <a href={`#${id}`}>{label} <span>{entries.length} 期</span></a>)}
+    </nav>
+
+    {series.map(({ id, label, months }) => (
+      <section class="report-section" id={id} aria-label={`${label}归档`}>
+        {Object.entries(months).map(([month, reports]) => (
+          <div class="report-month">
+            <h2>{month.slice(0, 4)} 年 {Number(month.slice(5))} 月</h2>
+            <ul>
+              {reports?.map(({ date, href, title }) => (
+                <li>
+                  <time datetime={date}>{date.slice(5)}</time>
+                  <a href={href}>{title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
+    ))}
+  </div>
 </BaseLayout>
+
+<script>
+  const reportTypes = document.querySelectorAll<HTMLAnchorElement>(".report-jump a");
+  const markCurrent = () => {
+    const selected = location.hash === "#weekly" ? "#weekly" : "#daily";
+    reportTypes.forEach((link) => {
+      if (link.hash === selected) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+    });
+  };
+  window.addEventListener("hashchange", markCurrent);
+  markCurrent();
+</script>

@@ -3,6 +3,40 @@ export const dailyDate = (id: string) => id.match(/(\d{4}-\d{2}-\d{2})/)?.[1] ??
 export const titleFromBody = (body: string | undefined, fallback: string) =>
   body?.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? fallback;
 
+export const reportHeadline = (title: string, date: string) => {
+  const prefix = new RegExp(`^GitHub(?: Trending)?\\s*日报\\s*[｜|·—–-]?\\s*${date}(?:[（(]周[一二三四五六日天][）)])?`, "i");
+  const match = title.match(prefix);
+  if (!match) return title;
+  const rest = title.slice(match[0].length).trim();
+  if (!rest) return "GitHub Trending 日报";
+  return /^[：:｜|·—–-]/.test(rest) ? rest.slice(1).trim() || title : title;
+};
+
+export const leadSummary = (body: string | undefined, limit = 96) => {
+  const prose = (body ?? "").replace(/^(`{3,}|~{3,}).*\r?\n[\s\S]*?^\1[ \t]*$/gm, "");
+  for (const block of prose.split(/\r?\n\s*\r?\n/)) {
+    const paragraph = block.trim();
+    if (!paragraph || /^(?:[#>|<]|[-*+]\s|\d+(?:[.)]\s|、)|`{3}|~{3})/.test(paragraph)) continue;
+    if (/^(?:\*\*|__)?(?:关联(?:阅读|记录|笔记|文章)|资料范围|读者与证据边界|来源|统计窗口)[：:]/.test(paragraph)) continue;
+    const firstLine = paragraph.split(/\r?\n/)[0];
+    const text = firstLine
+      .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (original, target: string, label?: string) =>
+        /^(?:\/|[A-Z]:\\)/i.test(target) ? original : label ?? target.split("/").at(-1) ?? target)
+      .replace(/\[\d+\]/g, "")
+      .replace(/\[([^\]]+)\]\[\]/g, "$1")
+      .replace(/!?\[([^\]]+)\]\([^)]*\)/g, "$1")
+      .replace(/(?:https?:\/\/\S+|(?:file|obsidian):\/\/\S+)/gi, "");
+    if (/\/(?:Users|home|tmp|private|mnt)\/|[A-Z]:\\/i.test(text)) continue;
+    const cleaned = excerptFromBody(text.trim(), Infinity);
+    const sentences = cleaned.match(/[^。！？]+[。！？][”’」』]?/gu) ?? [];
+    const firstTwo = sentences.slice(0, 2).join("");
+    const summary = (firstTwo.length <= limit && firstTwo) || sentences[0] || cleaned;
+    if (summary.length < 12 || /[：:]$/.test(summary)) continue;
+    return summary.length > limit ? `${summary.slice(0, limit).trimEnd()}…` : summary;
+  }
+  return "";
+};
+
 export const excerptFromBody = (body: string | undefined, limit = 150) => {
   const text = (body ?? "")
     .replace(/^---[\s\S]*?---/m, "")
@@ -10,7 +44,7 @@ export const excerptFromBody = (body: string | undefined, limit = 150) => {
     .replace(/^#{1,6}\s+.*$/gm, "")
     .replace(/^>\s*(?:\[![^\]]+\])?\s*/gm, "")
     .replace(/!?\[([^\]]+)\]\([^)]*\)/g, "$1")
-    .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, "$2$1")
+    .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, target, label) => label ?? target)
     .replace(/[*_`~|]/g, "")
     .replace(/\s+/g, " ")
     .trim();

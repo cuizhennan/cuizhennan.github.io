@@ -17,21 +17,21 @@ for (const file of requiredFiles) {
 }
 
 const dailyIndex = await readFile(path.join(outputRoot, "github-daily/index.html"), "utf8");
-const reportLinks = [...dailyIndex.matchAll(/href="\/github-daily\/(\d{4}-\d{2}-\d{2})\/"/g)];
+const reportDates = [...new Set([...dailyIndex.matchAll(/href="\/github-daily\/(\d{4}-\d{2}-\d{2})\/"/g)].map((match) => match[1]))];
 
-if (reportLinks.length === 0) {
+if (reportDates.length === 0) {
   throw new Error("日报首页没有任何日报链接");
 }
 
-for (const [, date] of reportLinks) {
+for (const date of reportDates) {
   await access(path.join(outputRoot, "github-daily", date, "index.html"));
 }
 
 const latestReport = await readFile(
-  path.join(outputRoot, "github-daily", reportLinks[0][1], "index.html"),
+  path.join(outputRoot, "github-daily", reportDates[0], "index.html"),
   "utf8",
 );
-for (const marker of ["data-toc-slug", "日报日期", "section-pager"]) {
+for (const marker of ["data-toc-slug", "toc-grouped", 'class="article-archive" href="/github-daily/#daily"', "section-pager"]) {
   if (!latestReport.includes(marker)) throw new Error(`日报详情缺少章节导航标记：${marker}`);
 }
 
@@ -65,6 +65,14 @@ const home = await readFile(path.join(outputRoot, "index.html"), "utf8");
 for (const marker of ["GitHub 观察", "GitHub Trending 周报", "GitHub Trending 日报"]) {
   if (!home.includes(marker)) throw new Error(`首页缺少内容入口：${marker}`);
 }
+if (!home.match(/<article class="hero-edition">[\s\S]*?<\/article>/)?.[0].includes(`href="/github-daily/${reportDates[0]}/"`)) {
+  throw new Error("首页首屏未链接到最新日报");
+}
+for (const id of ["daily", "weekly"]) {
+  if (!dailyIndex.includes(`href="#${id}"`) || !dailyIndex.includes(`id="${id}"`)) {
+    throw new Error(`GitHub 观察页缺少 ${id} 归档入口`);
+  }
+}
 for (const theme of ["editorial", "paper", "ink"]) {
   if (!home.includes(`value="${theme}"`)) throw new Error(`首页缺少 ${theme} 主题选项`);
 }
@@ -87,4 +95,4 @@ for (const slug of techLinks) {
 if (!mermaidArticleFound) throw new Error("同步的技术文章中未发现 Mermaid 图表");
 if (!mathArticleFound) throw new Error("同步的技术文章中未发现构建后的数学公式");
 
-console.log(`站点检查通过：${requiredFiles.length} 个入口，${reportLinks.length} 篇日报，${weeklyLinks.length} 篇周报，${techLinks.length} 篇技术文章，Mermaid、数学公式与章节导航完整`);
+console.log(`站点检查通过：${requiredFiles.length} 个入口，${reportDates.length} 篇日报，${weeklyLinks.length} 篇周报，${techLinks.length} 篇技术文章，Mermaid、数学公式与章节导航完整`);

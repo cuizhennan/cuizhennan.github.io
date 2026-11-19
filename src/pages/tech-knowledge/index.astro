@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { excerptFromBody, titleFromBody } from "../../lib/content";
+import { leadSummary, titleFromBody } from "../../lib/content";
 import manifest from "../../../docs/obsidian/tech-knowledge/manifest.json";
 
 const articles = await getCollection("tech");
@@ -11,30 +11,23 @@ const entries = manifest.entries.map((item) => ({ ...item, article: byTitle.get(
 ---
 
 <BaseLayout title="技术知识" description="从 Obsidian 同步发布的技术原理、系统设计与工程实践文章" active="tech">
-  <header class="collection-hero compact">
-    <p class="collection-kicker"><a href="/">墨萧</a><span>／</span>长期笔记</p>
-    <div class="collection-title-row">
-      <div>
-        <p class="eyebrow">Tech Knowledge · Obsidian Notes</p>
-        <h1>技术知识</h1>
-      </div>
-      <p>从底层原理到工程实践，把近期研究整理成可检索、可串读的长期笔记。</p>
-    </div>
-    <dl class="collection-stats">
-      <div><dt>收录</dt><dd>{entries.length} 篇</dd></div>
-      <div><dt>来源</dt><dd>Obsidian</dd></div>
-      <div><dt>形式</dt><dd>原理 · 实践 · 论文</dd></div>
-    </dl>
+  <header class="collection-intro">
+    <h1>技术知识</h1>
+    <p>关于系统原理、工程实践和研究论文的长期笔记。共 {entries.length} 篇。</p>
   </header>
   <section class="report-list tech-list" aria-label="技术文章列表">
-    {entries.map(({ article, ...item }) => article && (
-      <article>
-        <time datetime={item.date}>{item.date}</time>
-        <div>
-          <h2><a href={`/tech-knowledge/${item.slug}/`}>{item.title}</a></h2>
-          <p>{excerptFromBody(article.body)}</p>
-        </div>
-      </article>
-    ))}
+    {entries.map(({ article, ...item }) => {
+      if (!article) return null;
+      const summary = typeof article.data.description === "string" ? article.data.description.trim() : leadSummary(article.body);
+      return (
+        <article>
+          <time datetime={item.date}>{item.date}</time>
+          <div>
+            <h2><a href={`/tech-knowledge/${item.slug}/`}>{item.title}</a></h2>
+            {summary && <p class="issue-summary">{summary}</p>}
+          </div>
+        </article>
+      );
+    })}
   </section>
 </BaseLayout>

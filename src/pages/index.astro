@@ -1,17 +1,17 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ThemeNote from "../components/ThemeNote.astro";
 import { getCollection } from "astro:content";
-import { dailyDate } from "../lib/content";
-import { researchPages } from "../lib/content";
+import { dailyDate, leadSummary, reportHeadline, titleFromBody } from "../lib/content";
 import techManifest from "../../docs/obsidian/tech-knowledge/manifest.json";
 
 const reports = (await getCollection("daily")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
 const weeklyReports = (await getCollection("weekly")).sort((a, b) => dailyDate(b.id).localeCompare(dailyDate(a.id)));
-const latestDate = reports[0] ? dailyDate(reports[0].id) : "2026-08-11";
+const latest = reports[0];
+const latestDate = latest ? dailyDate(latest.id) : "";
+const latestTitle = latest ? reportHeadline(titleFromBody(latest.body, "GitHub Trending 日报"), latestDate) : "";
+const latestSummary = leadSummary(latest?.body);
 const latestWeeklyDate = weeklyReports[0] ? dailyDate(weeklyReports[0].id) : undefined;
 const latestTech = techManifest.entries[0];
-const currentEdition = latestDate.slice(0, 7).replace("-", "／");
 ---
 
 <BaseLayout active="home">
@@ -21,74 +21,52 @@ const currentEdition = latestDate.slice(0, 7).replace("-", "／");
       <h1>把技术、远方与日常，写成可以慢慢翻阅的纸。</h1>
       <p class="lede">一份持续生长的个人刊物：追踪开源世界的当下，也为技术原理与远方的历史保存上下文。</p>
     </div>
-    <aside class="hero-edition" aria-label="本站内容概览">
-      <p>Current edition</p>
-      <strong>{currentEdition}</strong>
-      <dl>
-        <div><dt>GitHub 报告</dt><dd>{reports.length + weeklyReports.length}</dd></div>
-        <div><dt>技术笔记</dt><dd>{techManifest.entries.length}</dd></div>
-        <div><dt>旅行研究</dt><dd>{researchPages.length}</dd></div>
-      </dl>
-    </aside>
+    {latest && <article class="hero-edition">
+      <p class="entry-meta">最新一期 · GitHub Trending 日报 <time datetime={latestDate}>{latestDate}</time></p>
+      <h2><a href={`/github-daily/${latestDate}/`}>{latestTitle}</a></h2>
+      {latestSummary && <p class="issue-summary">{latestSummary}</p>}
+    </article>}
   </section>
 
   <section class="section-directory" aria-labelledby="directory-heading">
     <div class="section-heading">
-      <p class="eyebrow">Browse by section</p>
       <h2 id="directory-heading">从哪里开始</h2>
     </div>
     <div class="directory-grid home-directory">
       <a href="/github-daily/">
-        <span>01 / REPORTS</span>
         <strong>GitHub 观察</strong>
         <p>在一个目录中阅读日报与周报，从每日信号走向每周判断。</p>
       </a>
       <a href="/tech-knowledge/">
-        <span>02 / NOTES</span>
         <strong>技术知识</strong>
         <p>从系统原理到工程实践，整理值得反复查阅的知识。</p>
       </a>
       <a href="/japan-research/">
-        <span>03 / JOURNEY</span>
         <strong>日本研究</strong>
         <p>在出发前，先理解建筑、城市与历史留下的纹理。</p>
       </a>
     </div>
   </section>
 
-  <section class="issue-list" aria-labelledby="latest-heading">
+  {(latestWeeklyDate || latestTech) && <section class="issue-list" aria-labelledby="latest-heading">
     <div class="section-heading">
-      <p class="eyebrow">Latest Issues</p>
       <h2 id="latest-heading">近来所写</h2>
     </div>
-    <article class="feature-entry">
-      <div class="entry-index">01</div>
-      <div>
-        <p class="entry-meta">{latestDate} · 技术 × 产品 × 投资</p>
-        <h3><a href={`/github-daily/${latestDate}/`}>GitHub Trending 日报</a></h3>
-        <p>从代码仓库、产品信号与投资叙事三条线索，观察开源生态正在发生的变化。</p>
-        <a class="text-link" href="/github-daily/">翻阅 GitHub 观察 →</a>
-      </div>
-    </article>
     {latestWeeklyDate && <article class="feature-entry">
-      <div class="entry-index">02</div>
+      <p class="entry-meta">{latestWeeklyDate}</p>
       <div>
-        <p class="entry-meta">{latestWeeklyDate} · Weekly Review</p>
         <h3><a href={`/github-weekly/${latestWeeklyDate}/`}>GitHub Trending 周报</a></h3>
         <p>从一周日报中抽离短期噪声，辨认技术、产品与资本正在形成的结构性变化。</p>
         <a class="text-link" href="/github-daily/#weekly">翻阅最近周报 →</a>
       </div>
     </article>}
     {latestTech && <article class="feature-entry">
-      <div class="entry-index">03</div>
+      <p class="entry-meta">{latestTech.date}</p>
       <div>
-        <p class="entry-meta">{latestTech.date} · Tech Knowledge</p>
         <h3><a href={`/tech-knowledge/${latestTech.slug}/`}>{latestTech.title}</a></h3>
         <p>系统原理、工程实践与前沿论文的 Obsidian 长期知识库，支持 Mermaid 图表与章节阅读。</p>
         <a class="text-link" href="/tech-knowledge/">进入技术知识库 →</a>
       </div>
     </article>}
-  </section>
-
-  <ThemeNote />
+  </section>}
 </BaseLayout>
